@@ -1,0 +1,687 @@
+\documentclass{book}
+\usepackage{amsmath} 
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\setcounter{tocdepth}{4}
+
+\usepackage{bm}
+\usepackage{lmodern}
+\usepackage{float} 
+\usepackage{setspace}
+\usepackage[svgnames]{xcolor} % Required for colour specification
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{color,colortbl}
+\definecolor{codegreen}{rgb}{0.6,0.6,0.6}
+\definecolor{codegray}{rgb}{0.3,0.3,0.3}
+\definecolor{codelink}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.8,0.8,0.8}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+\definecolor{aureolin}{rgb}{0.99, 0.93, 0.0}
+\lstdefinestyle{stl}{
+    frame=single,
+    rulecolor={\color{backcolour}},
+    backgroundcolor=\color{backcolour},  
+    commentstyle=\color{codegreen},
+    basicstyle=\small\ttfamily,
+    breaklines=true,  
+    classoffset=0,
+}
+\usepackage{textcomp}  
+
+\lstset{
+style=stl,
+emph={givenSoundFile, classesNumber,fileName, somName, treeName, IP, port, tag, eventDuration,valueListToSend,ntimes, dataFolderPath}, emphstyle={\color{black}\textsl},
+literate={~} {$\sim$}{1}, showstringspaces=false,upquote=true}
+
+\usepackage{varioref}
+\usepackage{float}
+\usepackage[square]{natbib}
+
+\usepackage[framemethod=TikZ]{mdframed}
+
+\newmdenv[nobreak=true,linecolor=yellow!20,backgroundcolor=yellow!10,roundcorner=5pt]{info}
+
+\newcommand{\titlebox}[2]{%
+\tikzstyle{titlebox}=[rectangle,inner sep=10pt,inner ysep=10pt,draw]%
+\tikzstyle{title}=[fill=white]%
+%
+\bigskip\noindent\begin{tikzpicture}
+\node[titlebox] (box){%
+    \begin{minipage}{0.94\textwidth}
+#2
+    \end{minipage}
+};
+\node[title] at (box.north) {#1};
+\end{tikzpicture}\bigskip%
+}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\usepackage{sectsty}
+\partnumberfont{\Huge} 
+\parttitlefont{\mdseries\sffamily\Large} 
+
+\usepackage{placeins}
+\usepackage{mathtools}
+\usepackage{fancyhdr}
+
+%\makeatletter
+%\@addtoreset{chapter}{part}
+%\makeatother  
+
+\usepackage{xpatch}
+%
+\xpatchcmd{\part}{\thispagestyle{plain}}
+      {\pagecolor{pink!30}\thispagestyle{plain}}{}{}
+\xpatchcmd{\@endpart}{\vfil\newpage}{\vfil\newpage
+              \pagecolor{white}}{}{}
+
+\usepackage{wrapfig}
+\usepackage{scrextend}
+\usepackage{eso-pic,graphicx} 
+
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor={black},citecolor={black}}
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{blindtext}
+\let\MakeUppercase\relax
+
+\usepackage{contour}
+\usepackage{ulem}
+\AtBeginDocument{\addtocontents{toc}{\protect\thispagestyle{empty}}} 
+
+\renewcommand{\ULdepth}{1.8pt}
+\contourlength{0.8pt}
+
+\newcommand{\myuline}[1]{%
+  \uline{\phantom{#1}}%
+  \llap{\contour{white}{#1}}%
+}
+
+\newcommand{\myulineyellow}[1]{%
+  \uline{\phantom{#1}}%
+  \llap{\contour{yellow!10}{#1}}%
+}
+\usepackage{eso-pic,graphicx} 
+
+\usepackage{etoolbox}
+\patchcmd{\part}{\thispagestyle{plain}}{\thispagestyle{empty}}
+  {}{\errmessage{Cannot patch \string\part}}
+
+\newenvironment{ppl}{\fontfamily{pag}\selectfont}{\par}
+
+\usepackage{longtable,booktabs}
+% Correct order of tables after \paragraph or \subparagraph
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+
+\begin{document}
+
+\pagecolor{aureolin!30}
+\begin{titlepage} % Suppresses headers and footers on the title page
+
+	\raggedleft % Right align everything
+	
+	\vspace*{\baselineskip} % Whitespace at the top of the page
+	
+	{\huge  \textsf{Yann Ics}} % Author name
+	
+	\vspace*{0.167\textheight} % Whitespace before the title
+	
+	\textbf{\LARGE Journal of}\\[\baselineskip] % First title line
+	
+	{\textcolor{Red}{\Huge \textbf{Generative Sonic Art}}}\\[\baselineskip] % Main title line which draws the focus of the reader
+	
+	\vspace{4mm} 
+	
+	{\Large \textsf{2014 -- \today}} % Subtitle
+	
+	\vfill % Whitespace between the titles and the publisher
+	
+	{\includegraphics[scale=0.09]{img/4563}}
+
+	\vspace*{3\baselineskip} % Whitespace at the bottom of the page
+
+\end{titlepage}
+\pagecolor{white}
+
+\renewcommand{\chaptermark}[1]{ \markboth{#1}{} }
+\renewcommand{\sectionmark}[1]{ \markright{Generative Sonic Art} }
+
+\include{src/foreword}
+
+\tableofcontents
+
+{\let\clearpage\relax\listofalgorithms}
+\thispagestyle{empty}
+
+{\let\cleardoublepage\clearpage \listoffigures}
+\addtocontents{lof}{\protect\thispagestyle{empty}}
+
+\setcounter{page}{11}
+
+\part[Generating and analyzing data for musical purpose]{GENERATING AND ANALYZING DATA\\ FOR MUSICAL PURPOSE}
+\thispagestyle{empty}
+
+\mainmatter
+
+\include{src/enk}
+\include{src/m2t}
+\include{src/mds}
+\include{src/am}
+
+\part[Electronic part as algorithmic concept]{ELECTRONIC PART AS ALGORITHMIC CONCEPT}
+
+%#############################################################################
+ \chapter[Formal and structural sketches]{\huge Formal and structural sketches}
+ \thispagestyle{empty}
+
+\label{fss}
+{\texttt{2014} -- \texttt{2019}}
+
+\bigskip
+\smallskip
+\bigskip
+
+Initially  this work has been initiated  as an International Musical Project aiming to share compositional strategy into one work. 
+
+This is some `formal and structural sketches' that I propose.
+
+\bigskip
+
+These algorithms are intended to be used in the \href{http://supercollider.github.io}{SuperCollider} context. Some analysis might require the software \href{http://www.fon.hum.uva.nl/praat}{Praat}. The software \href{http://lilypond.org/}{Lilypond} is also required in order to display scores. Also, some Common Lisp libraries as \href{https://github.com/yannics/cl-cycle}{\textsl{cl-cycle}}, \href{https://github.com/yannics/M2T}{M2T} and \href{https://bitbucket.org/yann\_ics/neuromuse3}{\textsl{Neuromuse3}} can be useful to complete this work.
+
+\bigskip
+
+This writing is a work in progress, and therefore can evolve according to the experience \textit{in situ} and new ideas. 
+
+\smallskip
+
+\titlebox{\textit{\textbf{A philosophical point}}}
+{This compositional approach consists in adopting a transcendent point of view of musical creation.
+The structural models presented in algorithmic form allow an adaptability of the initial material as a musical idea to be developed according to its own inner structure.
+\smallskip
+
+These models are historically and analytically inscribed as musical forms such as sonata form, fugue, canon, etc ... according to some outlines allowing to reinvent themselves as the \myuline{proportional canon}, to develop as a \myuline{fractal} process and to create as the `\myuline{peak morphing}' articulation.
+\smallskip
+
+Time-based algorithms are understood in terms of repetitions/variations. It goes from the strict repetition, if such a phenomenon could exist, to the most striking contrast in term of opposition. It remains to know what kind of opposition that can be done depending on the considered object.
+}
+
+\input{src/imp}
+\input{src/perspective}
+
+ \chapter[\textsl{in situ}]{\huge \textsl{in situ}}
+ \thispagestyle{empty}
+
+\label{insitu}
+
+\makeatletter
+\mdfdefinestyle{stylesec}{settings={\@mkboth{in situ}{Generative Sonic Art}},backgroundcolor=gray!10,linecolor=gray!50,roundcorner=3pt}
+\makeatother
+
+\begin{mdframed}[style=stylesec]
+\section{\textit{Triptyque}}
+\label{tript}
+\smallskip
+\end{mdframed}
+\input{src/triptyque}
+
+\newpage
+
+\begin{mdframed}[style=stylesec]
+\section{\texttt{HEX0}}
+\label{hex0}
+\smallskip
+\end{mdframed}
+\input{src/HEX0}
+
+\bigskip
+
+\begin{mdframed}[style=stylesec]
+\section{\texttt{K540}}
+\label{k540}
+\smallskip
+\end{mdframed}
+\input{src/K540}
+
+\bigskip
+\bigskip
+
+\begin{mdframed}[style=stylesec]
+\section{\texttt{data-01}}
+\label{d01}
+\smallskip
+\end{mdframed}
+\input{src/data-01}
+
+\begin{mdframed}[style=stylesec]
+\section{\textit{untitled}}
+\label{scp}
+\smallskip
+\end{mdframed}
+
+\bigskip
+
+Composition for quadraphonic installation, interpreted the 17th of December, 2019 at NOTAM in Oslo.
+
+\bigskip
+
+\noindent \textbf{{\large Concept}}
+\hrulefill
+
+\bigskip
+
+This composition is an adaptation of the spatial and proportional canon of  the part \textbf{\textit{b/}}
+of \textsl{Triptyque} with the Risset's bells synthesis -- used in the movement I of \texttt{HEX0} -- as the bass drums, followed by an \textsl{Electronic background sketch} (\fullref{imp1}) as a \textit{Postlude}.
+
+\smallskip
+\bigskip
+
+\noindent \textbf{{\large Description}}
+\hrulefill
+
+\bigskip
+
+The data used in this performance -- that is frequencies and M2T analysis --  was generated from the quotation find in the book \textit{Understanding Media}, \citep{mm} p. 351, according to the following procedure.
+
+\bigskip
+
+First, in the terminal:
+
+\begin{lstlisting}[language=bash]
+# each sentences is written in a separate file
+# then the number of sentences is interpreted as a number of voices in order to make interesting combination done with ~OCWR and symmetric permutation
+echo "Any process that approaches instant interrelation of a total field tends to raise itself to the level of conscious awareness, so that computers seem to think." > 1.txt
+echo "In fact, they are highly specialized at present, and quite lacking in the full process of interrelation that makes for consciousness." > 2.txt
+echo "Obviously, they can be made to simulate the process of consciousness, just as our electric global networks now begin to simulate the condition of our central nervous system." > 3.txt
+echo "But a conscious computer would still be one that was an extension of our consciousness." > 4.txt
+
+# voice synthesis as aiff file 
+for text in *.txt; do say -o "${f%.txt}.aiff"; done
+# convert to wav 
+for f in *.aiff; do ffmpeg -i "$f" "${f%.aiff}.wav"; done
+# save spectrum analysis in the current directory
+for f in *.wav; do enkode --spectrum -o './' "$f" 
+   2>/dev/null; done
+\end{lstlisting}
+\begin{lstlisting}[language=bash]
+# generate formantic coll file
+mkdir wavFilesFolder
+mv *.wav ./wavFilesFolder
+./formantAnalysis.sh ./wavFilesFolder/
+\end{lstlisting}
+
+Then, with the M2T library:
+
+ \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
+(dotimes (i 4) (M2T::m2tab (M2T::sort-melody :spectrum 
+   (read-file (format nil "a~S.spectrum" (1+ i))) :partial 5) 
+   (format nil "a~S" (1+ i))) (format t "~%-----------------"))
+\end{lstlisting}
+
+To finish, in the SuperCollider context:
+
+ \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+// read and write M2T files in an array
+ ~profiles = (PathName("".resolveRelative) +/+ 
+   PathName("/src/*.m2t")).pathMatch.collect {|file| 
+      FileReader.read(file).collect({|line| 
+         line.collect(_.asFloat)})};
+// get the n first items until 5000 hz
+~profiles = ~profiles.collect{|mt| mt.copyRange(0, 
+               mt.asList.detectIndex{|item| item[0]==5000}-1)};
+ \end{lstlisting}
+
+%#############################################################################
+\backmatter
+
+\include{src/ref}
+
+%#############################################################################
+\appendix
+\renewcommand\thefigure{\thesection.\arabic{figure}}    
+\setcounter{figure}{0}    
+\chapter{Appendices}
+\thispagestyle{empty}
+%#############################################################################
+\makeatletter
+\setcounter{secnumdepth}{4}
+\makeatother
+%#############################################################################
+%\addcontentsline{toc}{chapter}{Appendices}
+\renewcommand{\thesection}{\Alph{section}}
+\section{Codes}
+
+\subsection{Figures}
+\subsubsection{\ref{fig:g1}}
+\label{an:pro}
+\begin{lstlisting}[language=bash]
+# GNUPLOT
+set terminal png size 800,300 
+set output 'profile.png' 
+set title ''
+unset border
+unset xtics
+unset ytics
+plot  "profile" every ::1::500 using 1 title '' with lines 
+# 500 as 5 seconds according to the time step of 0.01 second
+\end{lstlisting}
+
+\subsubsection{\ref{fig:piano}}
+\label{an:pia}
+\begin{lstlisting}[language=bash]
+# GNUPLOT
+set terminal png size 400,300 
+set output 'sample.png' 
+set title ''
+set logscale y 10
+set xtics 1
+set tic scale 0
+unset key; unset ytics; unset border 
+plot  "sample.txt" using ($0+1):1 title '' with impulse
+# sample.txt is the harmonic profile of the sample
+\end{lstlisting}
+
+\subsubsection{\ref{fig:wave}}
+\label{an:wav}
+\begin{lstlisting}[language=bash]
+# Shell script
+# require SOX + GNUPLOT
+#!/bin/bash
+# $1 = soundfile
+# $2 = textgrid
+# $3 = duration
+
+name=`basename "$1" | cut -d. -f1`
+dur=$3
+sox $1 1.wav trim 0 $dur
+dsr=`soxi -s 1.wav`
+
+# convert sound file to data text
+nc=`soxi -c 1.wav`
+if [ "$nc" -eq 1 ]
+then sf=`sox 1.wav 1.dat`
+elif [ "$nc" -eq 2 ]
+then 
+sox 1.wav 2.wav remix 1,2
+sf=`sox 2.wav 1.dat`
+else
+echo "Accept only mono (1 channel) or stereo (2 channels) sound file."
+fi
+
+> 2.dat
+# the number of bin sample divided by n allows to reduce 
+# the number of data in order to reduce the computation 
+# time according to the image resolution required
+n=10 
+tail -n +3 1.dat > 3.dat
+value=0
+while read line
+do
+    if [ $(( $value % $n )) -eq 0 ] ; then
+        echo -e "$line" | xargs >> 2.dat
+    fi
+        let value=value+1 
+done < 3.dat
+
+# write timing segmentation 
+l=`cat $2 |wc -l`
+ll=`expr $l - 11`
+tail -n $ll $2 > 4.dat
+awk 'NR == 1 || NR % 3 == 0' 4.dat > 5.dat
+rm 4.dat
+while read p; do
+if [ 1 -eq "$(echo "${p} < ${dur}" | bc)" ]
+then
+echo  `awk "BEGIN {printf \"%.3f\n\", $p}"` >> 4.dat
+fi
+done < 5.dat	
+
+# write gnuplot file
+echo "set terminal png size 1200,300" > 1.pl
+echo "set output '$name.png'" >> 1.pl
+echo "unset border;unset xtics;unset ytics" >> 1.pl
+echo "plot \"4.dat\" every ::0::$dsr using 1:(\$1 <=$dur ? 2 : 0) title '' with impulses lc rgb '#A9A9A9', \"2.dat\" every ::0::$dsr using 1:(\$2+1) with lines lc rgb '#696969' title \"\"" >> 1.pl
+gnuplot 1.pl
+rm 1.pl 1.dat 2.dat 3.dat 4.dat 5.dat 1.wav 2.wav	
+\end{lstlisting}
+
+
+\subsection{\texttt{formatTextGrid.praat}}
+\label{ftg}
+
+\begin{lstlisting}[language=bash]
+form reframe TextGrid
+    sentence textgrid ...
+	sentence keyword_(ignore_interval) foo
+	boolean overwrite_TextGrid 1
+endform
+
+Read from file... 'textgrid$'
+current_textgrid$ = selected$ ("TextGrid")
+
+select TextGrid 'current_textgrid$'
+n = Get number of intervals: 1
+
+label$="0"
+
+for nn from 1 to n
+	name$ = Get label of interval: 1, nn
+	if (keyword$ = name$)
+		Set interval text: 1, nn, ""
+	else
+		label$=string$(number(label$)+1)
+		Set interval text: 1, nn, label$
+	endif
+endfor
+
+if (overwrite_TextGrid = 1)
+	Save as short text file: textgrid$
+else	
+	rename$ = textgrid$ - ".TextGrid" + "-reframed.TextGrid"
+	Save as short text file: rename$
+endif
+
+select all
+Remove
+\end{lstlisting}
+
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
+
+\begin{figure}[!hbt]
+	\begin{center}
+		\includegraphics[scale=0.5]{img/7861}
+		\caption{The ScriptEditor window of the script \texttt{formatTextGrid.praat}.}
+		\label{fig:ftg}
+	\end{center}
+\end{figure}
+
+\subsection{Transpose}
+\label{trans}
+%\addcontentsline{toc}{section}{\nameref{trans}}
+\begin{lstlisting}[language=bash]
+# source: https://stackoverflow.com/a/1729980
+transpose(){
+awk '
+{
+    for (i = 1; i <= NF; i++) {
+        if(NR == 1) {
+            s[i] = $i;
+        } else {
+            s[i] = s[i] " " $i;
+        }
+    }
+}
+END {
+    for (i = 1; s[i] != ""; i++) {
+        print s[i];
+    }
+}' $1
+}
+\end{lstlisting}
+
+%#############################################################################
+
+\subsection{\texttt{formantAnalysis.sh}}
+\label{fab}
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Bash]
+#!/bin/bash
+
+dirfile=$1
+dirpraat='/Applications/Praat.app/Contents/MacOS/Praat'
+if [ ! -e $dirpraat ]
+then dirpraat=`readlink -f $(which praat)`;
+fi
+
+#-----------------------------------------------------
+# convert praat.formant in coll file for SuperCollider
+# coded by Fred Voisin - January 2012 
+# modified 21022012/18102015
+\end{lstlisting}
+
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Bash]
+convert(){
+praatfile=$1
+l=`cat $praatfile |wc -l`
+ll=`expr $l - 9`
+tail -n $ll $praatfile > "$praatfile.tmp"
+coll="$praatfile.coll"
+
+i=1
+index=1
+while read LINE
+do
+	ii=$((i + 1))
+	amp=$LINE
+	read n
+	line="$amp "
+	k=1
+	n=`expr $n \* 2`
+	while [ $k -le $n ]
+		do
+		read p
+		line="$line $p"
+		k=$((k + 1))
+		done
+	echo "$line "|cut -d\  -f 1,2,3,4,5,6,7,8  >> $coll
+	i=$((ii + n + 1))
+	index=`expr $index + 1`
+done < $praatfile.tmp
+
+rm $praatfile.tmp
+}
+#-----------------------------------------------------
+echo "form Formant analysis
+	sentence File ...
+endform
+	Read from file... 'file$'
+	To Formant (burg)... 0.005 5 5000 0.025 50	
+	Write to short text file... .tmp
+select all
+Remove" > formant.praat
+#-----------------------------------------------------
+> formant.coll
+
+for file in `find $dirfile/* | grep '/*.mp3\|/*.MP3\|/*.aiff\|/*.AIFF\|/*.WAV\|/*.wav'`
+do
+    $dirpraat formant.praat $file
+
+    convert .tmp
+	
+    cat .tmp.coll >> formant.coll
+    rm .tmp .tmp.coll
+done
+rm formant.praat
+\end{lstlisting}
+%#############################################################################
+\subsection{\texttt{nw\_display}}
+\label{nwck}
+%\addcontentsline{toc}{section}{\nameref{trans}}
+\begin{lstlisting}[language=bash]
+# Source: newick-utils-1.5.0 
+# http://cegg.unige.ch/newick_utils
+# ---> radial
+nw_display -sr -S -w 1000 -W 20 -b 'opacity:0' in.nw 
+> out-r.svg
+# ---> orthogonal
+nw_display -s -w 1000 -u '' -t -W 20 -b 'opacity:0' in.nw 
+> out-o.svg
+\end{lstlisting}
+%#############################################################################
+\newpage
+%#############################################################################
+\section{Distance}
+\label{dist}
+
+The distance involves a dynamic perspective inside the audible field in terms of low-pass filter and cutoff frequency combined with the level implying the dry level of the reverb where required.
+\smallskip
+
+More far is the source, less we perceive the high frequencies which are absorbed by the air.
+The cutoff frequency of the low-pass filter is scaled according to the human audible field between $20$ Hz and $20000$ Hz with an exponential progression: 
+\smallskip
+
+$H.e^{\displaystyle -x \, \left | ln ( L/H ) \right |}$  with $H=High freq$ and $L=Low freq$.
+\bigskip
+
+Also the pressure level (expressed in dB $SPL$) decreases with the distance (see figure \ref{fig:dist}) such as in a given point the sound level is equal to \hbox{$-20\,log_{10}\,d(t)$}, with $d(t)$ equal to the relative distance ranging between $0$ (excluded) -- nearest point from the source -- and $1$ -- furthest point (inaudible).
+\smallskip
+
+ \begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.33]{img/6094}
+\caption{The sound level decreases of 6 dB for each doubling of the distance such as $-20\,log_{10}\: distance$. }
+\label{fig:dist}
+\end{center}
+\end{figure}
+
+Then, to consider the amplitude as the function of the distance remains relative and has to be solved empirically because the maximal value of the amplitude as 1 refers to the loudest sound which is undetermined and contextual.
+
+\bigskip
+
+Also, in the case of a closed space, the notion of remoteness is also defined
+by the `mixing' between the source (dry) and its persistence (wet) in terms of reverberation proportional to the radial coordinate of the source.
+%%#############################################################################
+
+\newpage
+\section{Kj{\o}lhiea -- \textsl{eller hvor du er}}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.31]{img/5572}
+\label{kj}
+\end{center}
+\end{figure}
+
+\newpage
+%\begin{mdframed}[style=stylesec]
+\section{Outline of the Standard MIDI File Structure}
+\label{infomidi}
+%\label{tript}
+%\smallskip
+%\end{mdframed}
+\input{src/midi}
+
+\newpage
+%\begin{mdframed}[style=stylesec]
+\section{The Newick tree format}
+\label{nwdoc}
+%\label{tript}
+%\smallskip
+%\end{mdframed}
+\input{src/newick}
+
+\end{document}

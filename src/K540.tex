@@ -1,0 +1,253 @@
+\subsection[\texttt{v.I}]{Version I}
+
+\smallskip
+
+Composition pour dispositif \'electronique en quadriphonie, 
+interpr\'et\'ee le 29/01/18 -- \textit{Kulturhuset Hausmania} -- Oslo.
+
+\bigskip
+
+\noindent \textbf{{\large Pr\'esentation}}
+\hrulefill
+
+\bigskip
+
+\texttt{K540} se compose de trois mouvements autour de la partition Kj{\o}lhiea (voir appendice \fullref{kj}).
+
+\begin{itemize}[leftmargin=0.4in]
+\item \textbf{Mouvement I} : \textsc{Harmony}. Kj{\o}lhiea est interpr\'et\'ee selon une s\'erie -- harmonique ascendante ou harmonique descendante 
+%ou inharmonique
+%\footnote{\label{inh} Ce dernier est une option pr\'evisionnelle pour une alternative interpr\'etation et n'est pas encore implant\'e.}
+ -- li\'ee \`a une fr\'equence fondamentale donn\'ee, en terme de r\'esonance selon le mode de transition \textsl{peak-morphing} (voir algorithme \ref{pm}).
+
+\textbf{\textit{R\'ef.}} Ce type de synth\`ese s'apparente dans une certaine mesure \`a une complexe combinaison de glissandi dit de Shepard-Risset. De plus, j'aime l'id\'ee que les glissandi se r\'ef\'erent aux sir\'enes ch\`eres \`a Edgar Var\`ese.
+ \end{itemize}
+
+\begin{itemize}[leftmargin=0.4in]
+\item \textbf{Mouvement II} : \textsc{Harmonic}. Kj{\o}lhiea est interpr\'et\'ee selon une s\'erie -- harmonique ascendante ou harmonique descendante 
+%ou inharmonique
+%\footref{inh}
+ -- li\'ee \`a une fr\'equence fondamentale donn\'ee, par signaux sinuso\"idaux selon un mode de transition \textsl{cross-fading}.
+
+\textbf{\textit{R\'ef.}} \textit{You will be hearing a sound. Just allow your body to relax deeply into the sound and learn what it has to teach you.} Tuning forks \citep[pp. 89--99]{hm}.
+
+Dans ce  mod\`ele, 
+l'ambitus harmonique et leurs superpositions en 'accords' favorisent l'\'emergence de fr\'equences diff\'erentielles en tant que sons r\'esultants mais aussi en termes de pulsation et d'infra-sons,  permettant ainsi d'interagir en termes de bienfaits th\'erapeutiques -- relaxation et concentration -- sur l'ensemble du corps incluant les ondes c\'er\'ebrales \citep{ocm} par effet de r\'esonance.
+ \end{itemize}
+
+\begin{itemize}[leftmargin=0.4in]
+\item \textbf{Mouvement III} : \textit{Echo}. Kj{\o}lhiea est interpr\'et\'ee selon l'\textsl{histogram} de la partition d\'eterminant le profil des accords. La m\'elodie est d\'ecoup\'e de fa\c con al\'eatoire afin de cr\'eer plusieurs \'echos sur l'impact du premier \'ev\'enement de chaque segment.
+
+\textbf{\textit{R\'ef.}} L'\'echo est un rebond dans l'espace `caverneux' -- se r\'ef\'erant volontier aux origines de la musique remontant au moins \`a l'age de l'art pari\'etal (soit environ 35 000 BC) et de la philosophie ontologique -- en terme de r\'ep\'etitions et de variations. 
+\end{itemize}
+
+%\bigskip
+%
+%Un pr\'elude ou un postlude \'etait envisag\'e par l'interpr\'etation de Kj{\o}lhiea d'apr\`es la partition \'ecrite pour quatre guitares selon le principe de la "composition ouverte"\cite{oo}, pour une dur\'ee \'equivalente aux autres mouvements.
+%
+% Les interpr\'etes devaient \^etre dispos\'es autant que possible sym\'etriquement afin d'investir l'espace du lieux.
+%
+
+\smallskip
+
+\noindent \textbf{{\large Description}}
+\hrulefill
+
+\bigskip
+
+  \textbf{\textit{a/ } Conversion du fichier midi}
+  
+  \smallskip
+  Dans le cas pr\'esent, Kj{\o}lhiea est un fichier midi dont les 4 voix ont \'et\'e combin\'ees sur une port\'ee et r\'einterpr\'et\'ee en tand que partition MDS avec un \textsl{histogram} calcul\'e en arrondissant la somme des dur\'ees  diff\'erentielles d'une note donn\'ee divis\'ee par le nombre d'occurrences de cette m\^eme note.
+
+  \bigskip
+
+  \textbf{\textit{b/ } Transposition des accords en profil harmonique }
+  
+  \smallskip
+
+Le profil harmonique est calcul\'e pour chaque note\footnote{\textit{Each note of the}  \textsl{score}  \textit{is defined by the harmonic series of a given root frequency. This is done by selecting recursively the harmonic range of the nearest harmonic according the modulo 12 as midi note, or in other words the degree of the note according the note C equal zero as root.}} 
+%-- voir algorithme \ref{mn2hp} en Appendices -- 
+formant l'accord de fa\c con \`a ne retenir que la plus grande valeur pour chaque harmonique d'une fr\'equence fondamentale donn\'ee.
+
+  \bigskip
+
+D\'etails de la proc\'edure de transposition:
+\setlist[enumerate,1]{leftmargin=1.3cm}
+\setenumerate{label*=\footnotesize {\textit {\arabic*.}}}
+\begin{enumerate}
+ \item Cr\'eer une s\'erie harmonique de r\'ef\'erence.\\ Les arguments sont le nombre d'harmoniques, la fr\'equence fondamentale et s'il s'agit d'une s\'erie ascendante ou descendante.
+ \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+ if(desc,
+      {serRoot=Array.fill(nharms,{|i| freqroot/(i+1)})},
+      {serRoot=Array.series(nharms,freqroot,freqroot)});
+\end{lstlisting}
+ \item Cr\'eer une s\'erie harmonique pour une note donn\'ee.
+ Les arguments sont le nombre d'harmoniques retenues d\'efini par le \texttt{$\sim$spread}, la note midi et s'il s'agit d'une s\'erie ascendante ou descendante.
+ \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+ if(desc,
+     {serNote=Array.fill(~spread,{|i| note.midicps/(i+1)})},
+     {serNote=Array.series(~spread, note.midicps,
+         note.midicps)});
+\end{lstlisting}
+
+ \item Puis de mani\`ere r\'ecursive \`a travers le r\'esultat pr\'ec\'edent.
+ %\verbatimfont{\footnotesize}%
+ \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+serNote.do{ |hr|
+   // 3.1
+   serDiff= serRoot.collect({|it,i|
+       (it.cpsmidi.mod(12)-hr.cpsmidi.mod(12)).abs});
+   // 3.2
+   arIn= serDiff.indicesOfEqual(serDiff.minItem);
+   // 3.3.
+   tmp= ~getNearestHarm.value(hr,arIn,serRoot,profil);
+   if(tmp.isNil.not, {profil=profil.add(tmp)});
+  };
+\end{lstlisting}
+
+ \begin{enumerate}
+ \item Lister les diff\'erences en midi et en modulo 12 entre chaque harmonique d'une note donn\'ee et les harmoniques de la fr\'equence fondamentale.
+ \item Lister les indices de la valeur minimal du r\'esultat pr\'ec\'edent.
+ \item La fonction \texttt{$\sim$getNearestHarm} s\'electionne l'indice -- si il existe -- le plus pr\`es de la fr\'equence r\'eelle et n'appartenant pas encore au profil.
+  \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+~getNearestHarm = {
+  |note, arIn, arRoot, arRef|
+  var res, indexOrder, out;
+  // 3.3.1.
+  indexOrder=arIn.collect({|it| 
+      (note-arRoot[it]).abs}).order;
+  res=Array.fill(arIn.size,0);
+  indexOrder.do({|it,i| res=res.put(it,arIn[i])});
+  // 3.3.2.
+  res.do({|item|
+    if(arRef.includes(item),
+        {out},
+        {out=out.add(item)})});
+  out.first;
+ };\end{lstlisting}
+ \color{black}
+ \begin{enumerate}
+ \item Ordonner les indices selon la proximit\'e de leur fr\'equence r\'eelle avec la fr\'equence fondamentale.
+ \item Ajouter l'indice dont la fr\'equence est la plus proche dans le profil harmonique -- si l'indice n'est pas d\'ej\`a dans le profil.
+ \end{enumerate}
+ \end{enumerate}
+ \item Le r\'esultat est une liste ordonn\'ee d'indices se r\'ef\'erent \`a la s\'erie harmonique de la fr\'equence fondamentale.
+ \end{enumerate}
+
+Le r\'esultat pr\'ec\'edemment d\'ecrit s'inscrit dans le profil harmonique d'un accord selon un profil d'intensit\'e de r\'ef\'erence li\'e \`a une note (avec un cardinal de la valeur du \texttt{$\sim$spread}). 
+Cela induit, le cas \'ech\'eant, de ne retenir que la plus grande valeur d'intensit\'e pour un harmonique donn\'e.
+
+De la sorte, un accord est d\'efini par une liste d'indices harmoniques associ\'es \`a leur respective intensit\'e.
+
+   \bigskip
+
+ \textbf{\textit{c/ } Profil d'amplitudes des accords }
+  
+  \smallskip
+  Le profil d'amplitudes consiste \`a normaliser la somme des poids de chaque note de l'accord d\'efinie par l'\textsl{histogram} (voir \textbf{\textit{a/}}) avec la fonction \texttt{$\sim$recArWeight}. Ainsi, le profil des accords pour chaque cycle est r\'ealis\'e al\'eatoirement entre cette normalisation, l'inverse de cette normalisation et un m\'elange des deux.
+  
+   \bigskip
+
+  \textbf{\textit{d/ } Profil \'echo\"iques segmentaire }
+  
+  \smallskip
+  Pour un th\`eme m\'elodico-harmonique donn\'ee (en l'occurence Kj{\o}lhiea, le profil \'echo\"iques est r\'ealis\'e -- selon une segmentarisation du th\`eme dont le nombre d'\'el\'ements est compris entre deux valeurs donn\'ees (voir param\'etrage) -- avec la fonction \texttt{$\sim$rtmEcho} comme suit:
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+Array.geom(rtm.size, 1, 1.618).reverse.normalize(~farest,0)
+\end{lstlisting}
+
+ 1.618 est le nombre d'or $\Phi$ et constitue la raison de la s\'erie g\'eom\'etrique de cardinal le nombre d'\'el\'ements constituant le segment consid\'er\'e (ce qui se rapproche de la s\'erie de Fibonacci). La normalisation se fait en inversant la s\'erie du point le plus \'eloign\'e au point le plus pr\`es.
+  
+\bigskip
+
+\noindent \textbf{{\large Param\'etrage}}
+\hrulefill
+
+\smallskip
+
+\begin{description}[font=\normalfont\space,itemsep=10pt]
+\item[\texttt{[1][2][3]}] 
+\hfill
+\begin{description}[font=\itshape\space,leftmargin=*]
+\item[$\sim$\textsl{partDur}]-- dur\'ee des parties \texttt{[1]}, \texttt{[2]} (affecte les dur\'ees des accords) et \texttt{[3]} (affecte le nombre de cycle m\'elodico-harmonique avec le param\'etre \textbf{$\sim$\textsl{tempoDivisionnel}}). 
+\end{description}
+
+\item[\texttt{[1][2]}] 
+\hfill
+\begin{description}[font=\itshape\space,leftmargin=*]
+\item[$\sim$\textsl{spread}]-- nombre d'harmoniques retenu pour chaque note (ceux-ci s'inscrivent dans un profil d'amplitude d\'efini par \textbf{$\sim$\textsl{ampSer}}). Ceci implique que pour un accord donn\'e, le nombre d'harmonique est compris entre $\sim$\textsl{spread} et $\sim$\textsl{spread} $\times$ \textsl{chord.length}.
+\item[$\sim$\textsl{freqRoot}]-- fr\'equence fondamentale d\'efinissant la s\'erie de \textbf{$\sim$\textsl{nharms}} harmoniques ascendant ou descendant (d\'efini par \textbf{$\sim$\textsl{desc}}, respectivement \textsl{false} ou \textsl{true}) -- voir fonction $\sim$\textsl{midinote2harm}.
+\end{description}
+
+\item[\texttt{[3]}] 
+\hfill
+\begin{description}[font=\itshape\space,leftmargin=*]
+\item[$\sim$\textsl{farest}]-- valeur de l'\'echo le plus \'eloign\'e (valeur comprise entre 0 et 1, respectivement pr\`es et loin). Le nombre d'\'echo est compris al\'eatoirement entre \textbf{$\sim$\textsl{minVal}} et \textbf{$\sim$\textsl{maxVal}}.  
+\end{description}
+
+\end{description}
+
+\smallskip
+
+\noindent \textbf{{\large Spatialisation}}
+\hrulefill
+
+\smallskip
+
+\begin{description}[itemsep=10pt]
+\item[Mvt \texttt{[1]}]
+\hfill
+
+Chaque \textit{glissandi} et \textit{sustained note} est distribu\'e individuellement et al\'eatoi- rement \`a une seule enceinte de l'espace quadriphonique.
+\item[Mvt \texttt{[2]}]
+\hfill
+
+Distribution \'egale de chaque harmonique dans l'espace quadriphonique (coordonn\'ee x,y).
+
+\item[Mvt \texttt{[3]}]
+\hfill
+
+Distribution gaussienne de l'accord en fonction de la valeur de l'\'echo le plus \'eloign\'e moins sa distance effective \`a l'instant $t$.
+  \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+ Pgauss(~farest-Pkey(\dist),0.25,inf)
+\end{lstlisting}
+\end{description}
+
+\subsection[\texttt{v.II}]{Version II}
+
+\smallskip
+
+Composition for quadraphonic installation, interpreted the 7th and the 8th of June at the \textit{UddeboFestidalen 2019} in Sweden.
+
+\bigskip
+
+\noindent \textbf{{\large Concept}}
+\hrulefill
+
+\bigskip
+
+\texttt{K540 v.II} echoes the first version of this work and the previous work \texttt{HEX0}. Indeed, it is about mixing by frequency modulation mentioned in \texttt{HEX0} between the movements I and II -- respectively \textsl{Harmony} and \textsl{Harmonic} -- of  \texttt{K540 v.I}, reinterpreted for the circumstance. 
+
+That is to say, the sequence is generated at random as a brownian walk in term of presence as amplitude level correlated to the distance.
+
+Also, each sound as a sine wave or as a `peak morphing'  assumes the quadraphonic space as a moving object according to the Bell distribution regarding the space to avoid, in this case the middle of the quadraphonic space.
+
+\smallskip
+
+\texttt{K540 v.II} resumes the synthesis of \textit{Triptyque} parts \textbf{\textit{b/}} and  \textbf{\textit{c/}} as expanded material in rhythmic terms.% as follow:
+
+\subsection[\texttt{v.III}]{Version III}
+
+\smallskip
+
+Composition for quadraphonic installation, interpreted the 27th and 28th of July, at the \textit{Trans' Festival }2019 in Norway. % Flisa
+
+\bigskip
+
+\noindent \textbf{{\large Concept}}
+\hrulefill
+
+\bigskip
+
+\texttt{K540 v.III} is a mix between the mix of \texttt{K540 v.II} and the mix of \textsl{Electronic background sketch} (\fullref{imp1}) with its \textit{octava bassa} according to Kj{\o}lhiea. 

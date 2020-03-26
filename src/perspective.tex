@@ -1,0 +1,200 @@
+\section{Perspectives}
+\label{Perspective}
+%\addcontentsline{toc}{chapter}{\nameref{Perspective}}
+
+\subsection{Generating data files}
+\label{gdf}
+%\addcontentsline{toc}{section}{Generating data files}
+
+One possible approach to manage the algorithms described in this paper is to generate data files in order to be used as arrays according to some third-part algorithms. 
+%Some of them are described in \href{https://www.overleaf.com/read/sjhfhthgkgdj}{\textit{GSA: Analytical Modeling}}.
+
+Also, in this perspective, the interesting part is to work from existing music or soundscape as a sound file. Then, the sound file is analysed with the command line \textsl{enkode} in order to generate data as a list of musical or sonic events. The analysis returns for each event the duration, $f0$ as the first significant partial, the centroid, the loudness and the bass loudness after low pass filtering. These data can be interpreted as such, that is to say as raw data, or according to the discrimination in classes described in \fullref{enk:dic}. 
+%-- see \href{https://www.overleaf.com/read/sjhfhthgkgdj}{\textit{GSA: Documentation of the executable script \textsl{enkode}}}. 
+
+\smallskip
+
+In this sense, it is possible to apply the contrastive analysis with the dendrogram for symbolisation as described previously in \fullref{sym} within the Common Lisp package N3 of the artificial neural network \textsl{Neuromuse3}.
+Note that the sound file supposes to be in a \textsl{dataFolderPath}:
+
+\smallskip
+
+ \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
+;; Display graph to select the optimum number of classes:
+N3> (open-graph <treeName>)
+;; Write file as structure sequence according to selected the number of classes:
+N3> (write-file (structure-s (list (alpha-seq <somName> <treeName> <classesNumber>)) :result :last) :name '<fileName>.dat' 
+    :path '<dataFolderPath>/')
+\end{lstlisting}
+
+\subsection{Reading data files}
+\label{rdf}
+%\addcontentsline{toc}{section}{Reading data files}
+
+From this point, all is managed in the SuperCollider context.
+First, we collect all data in their respective array in order to correlate an indice according to the \texttt{$\sim$arraySamples} -- if needed--, the \texttt{$\sim$arrayScores} and the \texttt{$\sim$arrayStructures} as a sample plus its score plus its structure. Depending of the result of \textsl{enkode} -- that is to say as raw data or as number of classes -- the \texttt{$\sim$arrayScores} should be in a case number of classes associated with the values of the 5 first lines of \textsl{$<$fileName$>$.info}.
+
+\smallskip
+
+ \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java] 
+ // if needed ------------
+~arraySamples = (PathName(<dataFolderPath> +/+ "*.wav"))
+   .pathMatch.collect{|file| Buffer.read(s, file)};
+ // ----------------------
+ 
+~arrayScores = (PathName(<dataFolderPath> +/+ "*.score"))
+   // or *.raw for raw data score
+      .pathMatch.collect{|file| 
+         FileReader.read(file)}.asInteger; 
+            // or .asFloat for raw data score
+
+~arrayStructures = (PathName(<dataFolderPath> +/+ "*.dat"))
+   .pathMatch.collect{|file| 
+      FileReader.read(file, true, true).collect({|i| 
+         Array.fill(i[0].size,{arg at; i[0][at]})})};
+\end{lstlisting}  
+
+\subsection{Interpreting data files}
+\label{idf}
+%\addcontentsline{toc}{section}{Interpretating data files}
+
+The algorithmic interpretation of the data in SuperCollider context may require some preliminary function to select sub-sequence according to the segmentation of the contrastive analysis. 
+
+\begin{enumerate}
+    \item Select randomly a rhythm pattern for the algorithms such as \textsl{fractal} or \textsl{proportional canon} with at least \texttt{diffarg} different durations and according to the test function \texttt{n} as string applied to the length of the pattern as \texttt{"odd"}, \texttt{"even"} or \texttt{"isInteger"}:
+    
+    \smallskip
+    
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+~setr = { | it, r, n |
+	var x;
+	x=case
+	{r.isNil} {it}
+	{(it.size > r.size) 
+           && (format("%.%", it.size, n).interpret)} {it}
+	{(format("%.%", it.size, n).interpret) 
+           && (format("%.%.not", r.size, n).interpret)} {it}
+	{(format("%.%.not", it.size, n).interpret) 
+           && (format("%.%.not", r.size, n).interpret) 
+           && (it.size > r.size)} {it};
+	if(x.isNil, {r}, {x}) 
+};
+\end{lstlisting}  
+%\newpage
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]	
+~select_rtm = { | index, diffarg=3, n="odd", limit=10, r |
+	var arDurSubs=~arrayScores[index]
+	    .clumps(~arrayStructures[index]
+            .collect({|subs| subs.size}));
+	var rndp=arDurSubs.choose;
+	var res=~setr.value(rndp, r, n);
+	if ((res.flop[0].asSet.size >= diffarg) 
+	 && (format("%.%", res.size, n).interpret) 
+	 || (limit == 0), {res}, 
+       {~select_rtm.value(index, diffarg, n, limit-1, res)})};
+\end{lstlisting}  
+ \item Select a sub-sequence from a sound file, randomly or depending on a given sub-sequence indice and according to a minimal and a maximal values if set (which can be used to adjust the fade in and the fade out, for a Doppler effect for instance):
+ 
+ \smallskip
+ 
+ \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+~select_part = {
+        | index=0, minDur, maxDur, isubs |
+        var arDurSubs, arStartFrame, arNumFrames, 
+           theSubs, theDur, mind, maxd;
+        // for index get durations by subs
+        arDurSubs = ~arrayScores[index].flop.first
+           .clumps(~arrayStructures[index]
+           .collect({|subs| subs.size}));
+        // get duration by subs
+        arDurSubs = arDurSubs.collect({|a| a.sum});
+        // get frames number by subs
+        arNumFrames = arDurSubs.normalizeSum 
+	     * ~arraySamples[0].numFrames;
+        // round it as integer
+        arNumFrames = arNumFrames.round;
+        // integrate from 0 to get starting frames list
+        arStartFrame = arDurSubs.integrate.insert(0,0)
+           .normalize(0,~arraySamples[index].numFrames)
+           .round;
+        //-----------------------------------
+        if(isubs.isNil, 
+           {theSubs=arStartFrame.size.rand},
+           {theSubs=isubs});
+        theDur = rrand(
+            if(minDur.isNil, 
+                    {mind=arDurSubs[theSubs]},
+                    {
+                        if(arDurSubs[theSubs]>minDur, 
+                           {mind=arDurSubs[theSubs]}, 
+                           {mind=minDur})
+                    }),
+            if(maxDur.isNil, 
+                    {maxd=arDurSubs[theSubs]},
+                    {
+                        if(arDurSubs[theSubs]>maxDur,
+                           {maxd=arDurSubs[theSubs]}, 
+                           {maxd=maxDur})
+                    }))
+          * ~arraySamples[index].sampleRate.round;
+        //-----------------------------------
+        Buffer.read(s, ~arraySamples[index].path, 
+           arNumFrames[theSubs]/2 
+           + arStartFrame[theSubs]
+           - (theDur/2).round, theDur);
+};
+\end{lstlisting}  
+\end{enumerate}
+
+\subsection{OSC}
+\label{osc}
+%\addcontentsline{toc}{section}{OSC}
+
+Another way to manage this kind of data is to `communicate' directly from the analysis done in \textsl{Neuromuse3} to SuperCollider through the OSC protocole.
+
+\smallskip
+
+Let the Markov chain described in \fullref{mcres}
+ %in \href{https://www.overleaf.com/read/sjhfhthgkgdj}{\textit{GSA: Analytical Modeling}} 
+ be an illustration of an OSC communication in real time.
+ 
+ \smallskip
+ 
+ \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
+;; start thread -- require sb-thread SBCL in this instance
+(defparameter send-markov-chain
+ (sb-thread:make-thread
+  (let* ((s (alpha-seq <somName> <treeName> <classesNumber>))
+	 (w (list (next-event-probability nil s 
+	            :result :compute)))
+	 (r w))
+   #'(lambda () (loop do
+    (let* ((tmpw (nthcdr (length (loop for i from 0
+				until
+		(let ((tmp (multiple-value-bind (a b)
+			(next-event-probability 
+			  (nthcdr i w) s :result :compute) 
+			(declare (ignore a)) b)))
+		   (if (> tmp 1) t (if (= 1 (length w)) t nil)))
+				collect i)) w))
+       (tmpnep (multiple-value-bind (a b)
+	        (next-event-probability 
+	          tmpw s :result :compute) 
+	        (list a b)))
+       (nep (if (= 1 (cadr tmpnep))
+		(next-event-probability
+		  nil s :result :compute)
+		(car tmpnep))))
+	(setf w (append tmpw (list nep)))
+	(push nep r)
+	(send-udp (read-from-string 
+               (format nil "(\"/~A\" ~{\"~S\"~})"
+                  <tag>
+                  <valueListToSend>)) 
+	    (string <IP>) <port>)
+	(sleep <eventDuration>)))))
+   :name "send-markov-chain"))
+   
+;; stop thread
+(sb-thread:terminate-thread send-markov-chain)
+\end{lstlisting}

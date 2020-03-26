@@ -1,0 +1,233 @@
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\renewcommand{\thesubsection}{}
+
+
+%\hypertarget{outline-of-the-standard-midi-file-structure}{%
+%\section{Outline of the Standard MIDI File
+%Structure}\label{outline-of-the-standard-midi-file-structure}}
+
+Go to: {[} \protect\hyperlink{header_chunk}{header chunk} \textbar{}
+\protect\hyperlink{track_chunk}{track chunk} \textbar{}
+\protect\hyperlink{track_event}{track event} \textbar{}
+\protect\hyperlink{meta_event}{meta event} \textbar{}
+\protect\hyperlink{sysex_event}{system exclusive event} \textbar{}
+\protect\hyperlink{variable_length}{variable length values} {]}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+A standard MIDI file is composed of "chunks". It starts with a header
+chunk and is followed by one or more track chunks. The header chunk
+contains data that pertains to the overall file. Each track chunk
+defines a logical track.
+
+\begin{verbatim}
+ 
+SMF = <header_chunk> + <track_chunk> [+ <track_chunk> ...]
+\end{verbatim}
+
+A chunk always has three components, similar to Microsoft RIFF files
+(the only difference is that SMF files are big-endian, while RIFF files
+are usually little-endian). The three parts to each chunk are:
+
+\begin{enumerate}
+\tightlist
+\item
+  The track ID string which is four charcters long. For example, header
+  chunk IDs are "\texttt{MThd}", and Track chunk IDs are
+  "\texttt{MTrk}".
+\item
+  next is a four-byte unsigned value that specifies the number of bytes
+  in the data section of the track (part 3).
+\item
+  finally comes the data section of the chunk. The size of the data is
+  specified in the length field which follows the chunk ID (part 2).
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\protect\hypertarget{header_chunk}{}{}
+
+\hypertarget{header-chunk}{%
+\subsection*{Header Chunk}\label{header-chunk}}
+
+The header chunk consists of a literal string denoting the header, a
+length indicator, the format of the MIDI file, the number of tracks in
+the file, and a timing value specifying delta time units. Numbers larger
+than one byte are placed most significant byte first.
+
+\begin{verbatim}
+ 
+header_chunk = "MThd" + <header_length> + <format> + <n> + <division>
+ 
+\end{verbatim}
+
+\begin{description}
+\tightlist
+\item[\textbf{\texttt{\ "MThd"}} 4 bytes]
+the literal string MThd, or in hexadecimal notation: 0x4d546864. These
+four characters at the start of the MIDI file indicate that this
+\emph{is} a MIDI file.
+\item[\textbf{\texttt{\textless{}header\_length\textgreater{}}} 4 bytes]
+length of the header chunk (always 6 bytes long-\/-the size of the next
+three fields which are considered the header chunk).
+\item[\textbf{\texttt{\textless{}format\textgreater{}}} 2 bytes]
+\textbf{0} = single track file format\\
+\textbf{1} = multiple track file format\\
+\textbf{2} = multiple song file format (\emph{i.e.}, a series of type 0
+files)
+\item[\textbf{\texttt{\textless{}n\textgreater{}}} 2 bytes]
+number of track chunks that follow the header chunk
+\item[\textbf{\texttt{\textless{}division\textgreater{}}} 2 bytes]
+unit of time for delta timing. If the value is positive, then it
+represents the units per beat. For example, +96 would mean 96 ticks per
+beat. If the value is negative, delta times are in SMPTE compatible
+units.
+\end{description}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\protect\hypertarget{track_chunk}{}{}
+
+\hypertarget{track-chunk}{%
+\subsection*{Track Chunk}\label{track-chunk}}
+
+A track chunk consists of a literal identifier string, a length
+indicator specifying the size of the track, and actual event data making
+up the track.
+
+\begin{verbatim}
+ 
+track_chunk = "MTrk" + <length> + <track_event> [+ <track_event> ...]
+ 
+\end{verbatim}
+
+\begin{description}
+\tightlist
+\item[\textbf{\texttt{"MTrk"}} 4 bytes]
+the literal string MTrk. This marks the beginning of a track.
+\item[\textbf{\texttt{\textless{}length\textgreater{}}} 4 bytes]
+the number of bytes in the track chunk following this number.
+\item[\textbf{\texttt{\textless{}track\_event\textgreater{}}}]
+a sequenced track event.
+\end{description}
+
+\protect\hypertarget{track_event}{}{}
+
+\hypertarget{track-event}{%
+\subsection*{Track Event}\label{track-event}}
+
+A track event consists of a delta time since the last event, and one of
+three types of events.
+
+\begin{verbatim}
+ 
+track_event = <v_time> + <midi_event> | <meta_event> | <sysex_event>
+ 
+\end{verbatim}
+
+\begin{description}
+\tightlist
+\item[\textbf{\texttt{\textless{}v\_time\textgreater{}}}]
+a variable length value specifying the elapsed time (delta time) from
+the previous event to this event.
+\item[\textbf{\texttt{\textless{}midi\_event\textgreater{}}}]
+any MIDI channel message such as note-on or note-off. Running status is
+used in the same manner as it is used between MIDI devices.
+\item[\textbf{\texttt{\textless{}meta\_event\textgreater{}}}]
+an SMF meta event.
+\item[\textbf{\texttt{\textless{}sysex\_event\textgreater{}}}]
+an SMF system exclusive event.
+\end{description}
+
+\protect\hypertarget{meta_event}{}{}
+
+\hypertarget{meta-event}{%
+\subsection*{Meta Event}\label{meta-event}}
+
+Meta events are non-MIDI data of various sorts consisting of a fixed
+prefix, type indicator, a length field, and actual event data..
+
+\begin{verbatim}
+ 
+meta_event = 0xFF + <meta_type> + <v_length> + <event_data_bytes>
+ 
+\end{verbatim}
+
+\begin{description}
+\tightlist
+\item[\textbf{\texttt{\ \textless{}meta\_type\textgreater{}}} 1 byte]
+meta event types:
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\endhead
+\textbf{Type} & \textbf{Event} & \textbf{Type} &
+\textbf{Event}\tabularnewline
+0x00 & Sequence number & 0x20 & MIDI channel prefix
+assignment\tabularnewline
+0x01 & Text event & 0x2F & End of track\tabularnewline
+0x02 & Copyright notice & 0x51 & Tempo setting\tabularnewline
+0x03 & Sequence or track name & 0x54 & SMPTE offset\tabularnewline
+0x04 & Instrument name & 0x58 & Time signature\tabularnewline
+0x05 & Lyric text & 0x59 & Key signature\tabularnewline
+0x06 & Marker text & 0x7F & Sequencer specific event\tabularnewline
+0x07 & Cue point & &\tabularnewline
+\bottomrule
+\end{longtable}
+\item[\textbf{\texttt{\textless{}v\_length\textgreater{}}}]
+length of meta event data expressed as a variable length value.
+\item[\textbf{\texttt{\textless{}event\_data\_bytes\textgreater{}}}]
+the actual event data.
+\end{description}
+
+\protect\hypertarget{sysex_event}{}{}
+
+\hypertarget{system-exclusive-event}{%
+\subsection*{System Exclusive Event}\label{system-exclusive-event}}
+
+A system exclusive event can take one of two forms:
+
+\texttt{\ \ sysex\_event\ =\ 0xF0\ +\ \textless{}data\_bytes\textgreater{}\ 0xF7\ }
+
+or
+
+\texttt{\ \ sysex\_event\ =\ 0xF7\ +\ \textless{}data\_bytes\textgreater{}\ 0xF7\ \ }
+
+In the first case, the resultant MIDI data stream would include the
+0xF0. In the second case the 0xF0 is omitted.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\protect\hypertarget{variable_length}{}{}
+
+\hypertarget{variable-length-values}{%
+\subsection*{Variable Length Values}\label{variable-length-values}}
+
+Several different values in SMF events are expressed as variable length
+quantities (e.g. delta time values). A variable length value uses a
+minimum number of bytes to hold the value, and in most circumstances
+this leads to some degree of data compresssion.
+
+A variable length value uses the low order 7 bits of a byte to represent
+the value or part of the value. The high order bit is an "escape" or
+"continuation" bit. All but the last byte of a variable length value
+have the high order bit set. The last byte has the high order bit
+cleared. The bytes always appear most significant byte first.
+
+Here are some examples:
+
+\begin{verbatim}
+   Variable length              Real value
+   0x7F                         127 (0x7F)
+   0x81 0x7F                    255 (0xFF)
+   0x82 0x80 0x00               32768 (0x8000)
+\end{verbatim}
+
+\begin{verbatim}
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\href{craig@ccrma.stanford.edu}{\texttt{\small craig@ccrma.stanford.edu}}
+
