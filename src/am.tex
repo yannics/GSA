@@ -79,7 +79,7 @@ N3> (create-mlt 'test (length (car *DATA*)) (length *DATA*)
      :carte #'rnd-map)
 N3> (loop for neuron in (neurons-list test) 
      for dat in *DATA* do (setf (output neuron) dat))
-N3> (dendrogram test 3 :with-data t)
+N3> (dendrogram test 3 :and-data t)
 ;; The second argument is the aggregation type :
 ;; Ward's method in this case
 -934.9051+

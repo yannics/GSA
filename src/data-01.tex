@@ -183,7 +183,7 @@ N3> (create-mlt 'aaa (length (car *DATA*)) (length *DATA*)
    :carte #'rnd-map)
 N3> (loop for neuron in (neurons-list aaa)
    for dat in *DATA* do (setf (output neuron) dat))
-N3> (dendrogram aaa 3 :with-data t)
+N3> (dendrogram aaa 3 :and-data t)
 -6031.028+
 N3> (open-graph *tree*)
 N3> (defparameter *alpha-seq-9* (alpha-seq aaa *tree* 9))
