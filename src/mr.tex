@@ -117,7 +117,7 @@ Let the tables \ref{table:mrdiff} and \ref{table:mrsim} be the results of the fu
 \centering
 {\ttfamily
  \begin{tabular}{|c|r|r|r|}\hline%
-\bfseries :diff & \bfseries :opt :min & \bfseries :opt :max & \bfseries :opt :mean \csvreader[head to column names]{src/dtb-diff.csv}{}
+\bfseries :diff & \bfseries :opt :min & \bfseries :opt :max & \bfseries :opt :mean \csvreader[head to column names]{csv/dtb-diff.csv}{}
  {\\\diff & \min & \max & \mean}%
  \\\hline 
  \end{tabular}}
@@ -129,7 +129,7 @@ Let the tables \ref{table:mrdiff} and \ref{table:mrsim} be the results of the fu
 \centering
  {\ttfamily 
  \begin{tabular}{|c|r|r|r|}\hline%
-\bfseries :sim & \bfseries :opt :min & \bfseries :opt :max & \bfseries :opt :mean \csvreader[head to column names]{src/dtb-sim.csv}{}
+\bfseries :sim & \bfseries :opt :min & \bfseries :opt :max & \bfseries :opt :mean \csvreader[head to column names]{csv/dtb-sim.csv}{}
  {\\\sim & \min & \max & \mean}%
  \\\hline 
  \end{tabular}}
@@ -142,7 +142,7 @@ For the last two cases, that means all notes of the shortest snippet match with 
 
 Also, the \textsf{D}\sh \  of the snippet (d) does not match with others because of the delay of the onset, and the first \textsf{B} of the snippet (b) disrupt the melodic profile on the snippets (a) and (c) ($y$\texttt{:diff}$=0.11$ and $y$\texttt{:sim}$=0.89$).
 
-Note that difference and similarity as normalised vectors (by dividing the norm of the vector by square root of two) are not complementary values in that sense their sum is not always equal to 100\%. More specifically, when the absolute value of $x$ minus $y$ tends toward one, then the summation of the normalised norm of the vectors, respectively as the difference distance $D$ and as the similarity distance $S$, tends toward the square root of two;
+Note that difference and similarity as normalised vectors (by dividing the norm of the vector by square root of two) are not complementary values in that sense their sum is not always equal to 100\%. More specifically, when the absolute value of $x$ minus $y$ tends toward one, then the summation of the normalised norm of the vectors, respectively as the difference distance $D$ and as the similarity distance $S$, tends toward the square root of two:
 $$\text{if } |x-y| \to 1 \text{ then } \frac{||\overrightarrow{D}||}{\sqrt{2}} + \frac{||\overrightarrow{S}||}{\sqrt{2}} \to \sqrt{2}$$
  and furthermore
  $$\text{if } |x-y| \to 0 \text{ then } \frac{||\overrightarrow{D}||}{\sqrt{2}} + \frac{||\overrightarrow{S}||}{\sqrt{2}} \to 1$$
@@ -205,7 +205,7 @@ Finally, built the Minimal Spanning Tree with the Boruvka's algorithm -- belongi
 
 \section{Discussion}
 
-The MST can give some interesting information but the interpretation remains at the least empirical, even intuitive, and the formalisation is therefore difficult to generalise. Indeed, in the current case, the formalisation can be done in terms of the dichotomy between the leaves and nodes with degrees superior or equal to three (see figure \ref{fig:mstcor}), but unfortunately, this relationship is first not exclusive and secondly disappears as soon as the timing threshold changes. Nevertheless, some tendencies can reveal formal relationships such as the grouping of the minor tones -- or the major tones according to the timing threshold applied -- and quantify the variation amount between all \textit{fuga} themes.
+The MST can give some interesting information but the interpretation remains at the least empirical, even intuitive, and the formalisation is therefore difficult to generalise. Indeed, in the current case, the formalisation can be done in terms of the dichotomy between the leaves and nodes with degrees superior or equal to three (see figure \ref{fig:mstcor}), but unfortunately, this relationship is first not exclusive and secondly disappears as soon as the timing threshold changes. Nevertheless, some tendencies can reveal formal relationships such as the grouping of the minor tones -- or the major tones depending on the timing threshold value applied -- and quantify the variation amount between all \textit{fuga} themes.
 
 \bigskip
 
