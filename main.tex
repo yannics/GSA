@@ -23,7 +23,6 @@
     rulecolor={\color{backcolour}},
     backgroundcolor=\color{backcolour},  
     commentstyle=\color{codegreen},
-    stringstyle=\color{codegray},
     basicstyle=\small\ttfamily,
     breaklines=true,  
     classoffset=0,
@@ -70,8 +69,6 @@ literate={~} {$\sim$}{1}, showstringspaces=false,upquote=true}
 \usepackage{placeins}
 \usepackage{mathtools}
 \usepackage{fancyhdr}
-\usepackage{musicography}
-\usepackage{csvsimple}
 
 %\makeatletter
 %\@addtoreset{chapter}{part}
@@ -166,15 +163,13 @@ literate={~} {$\sim$}{1}, showstringspaces=false,upquote=true}
 
 \tableofcontents
 
-%{\let\clearpage\relax\listofalgorithms}
-%\thispagestyle{empty}
+{\let\clearpage\relax\listofalgorithms}
+\thispagestyle{empty}
 
-{\let\clearpage\relax \listoffigures}
-
-%{\let\cleardoublepage\clearpage \listoffigures}
+{\let\cleardoublepage\clearpage \listoffigures}
 \addtocontents{lof}{\protect\thispagestyle{empty}}
 
-%\setcounter{page}{11}
+\setcounter{page}{11}
 
 \part[Generating and analyzing data for musical purpose]{GENERATING AND ANALYZING DATA\\ FOR MUSICAL PURPOSE}
 \thispagestyle{empty}
@@ -185,7 +180,6 @@ literate={~} {$\sim$}{1}, showstringspaces=false,upquote=true}
 \include{src/m2t}
 \include{src/mds}
 \include{src/am}
-\include{src/mr}
 
 \part[Electronic part as algorithmic concept]{ELECTRONIC PART AS ALGORITHMIC CONCEPT}
 
@@ -617,6 +611,7 @@ rm formant.praat
 %#############################################################################
 \subsection{\texttt{nw\_display}}
 \label{nwck}
+%\addcontentsline{toc}{section}{\nameref{trans}}
 \begin{lstlisting}[language=bash]
 # Source: newick-utils-1.5.0 
 # http://cegg.unige.ch/newick_utils
@@ -628,94 +623,8 @@ nw_display -s -w 1000 -u '' -t -W 20 -b 'opacity:0' in.nw
 > out-o.svg
 \end{lstlisting}
 %#############################################################################
-
-\subsection{WTC I}
-\label{codewtc}
-\subsubsection{\texttt{scoreSnippet.sh}}
-\label{scsh}
-\begin{lstlisting}[language=bash,basicstyle=\footnotesize\ttfamily]
-#!/bin/bash
-file=$1
-lilypond=/opt/local/bin/lilypond
-# https://imagemagick.org
-convert=/opt/local/bin/convert
-# lilypond version 
-version=2.20.0
-bwv=846
-while read p
-do
-    echo "%---
-#(set! paper-alist
-  (cons '(\"extr\" . (cons (* 10 cm) (* 2 cm))) paper-alist))
-\paper {
-  #(set-paper-size \"extr\")
-  top-margin = 0\cm
-  left-margin = 0\cm
-}
-\version \"$version\"
-\header{
-  tagline = \"\"  
-}\score { 
-  \context Staff
-  << {
-    $p
-  } >>
-}" > $bwv.ly
-    $lilypond $bwv.ly
-    $convert -density 600 $bwv.pdf $bwv.png
-    $convert $bwv.png -gravity West -chop 130x0 bwv$bwv.png
-    rm $bwv*
-    bwv=$((bwv + 1))
-done < $file
-
-# The input file is formated as follow (with one `score' by line) :
-# \\time 4/4 r8 c' d' e' f'8. g'32 f' e'8 a' d'[ g']\\laissezVibrer
-# \\key c \\minor \\time 4/4 r8 c''16 b' c''8 g'8 aes' c''16 b'    c''8 d'' g'8 c''16 b' c''8 d''
-# ...
-\end{lstlisting}
-
-\subsubsection{\texttt{midiCorpus.sh}}
-\label{midcor}
-\begin{lstlisting}[language=bash,basicstyle=\footnotesize\ttfamily]
-#!/bin/bash
-file=$1
-lilypond=/opt/local/bin/lilypond
-# lilypond version 
-version=2.20.0
-bwv=846
-while read p
-do
-    echo "%---
-\version \"$version\"
-\score { 
-  \context Staff
-  << {
-    $p
-  } >>
-  \midi { }
-}" > $bwv.ly
-    $lilypond $bwv.ly
-    rm $bwv.ly
-    bwv=$((bwv + 1))
-done < $file
-
-# The input file is formated as follow (with one `score' by line) :
-# c'8 d' e' f'8. g'32 f' e'8 a' d' g'
-# c''16 b' c''8 g' aes' c''16 b' c''8 d'' g' c''16 b' c''8 d''
-# ...
-#--------------------------------------
-# (let* ((dir ".../corpus/")
-#        (stdout (format nil "~a" (UIOP:run-program (format nil
-#           "sh -c 'cd ~S; for f in *.midi; do echo $f; done'" dir)
-# 	    :output :string)))       
-#        (dirc (M2T::string-to-list stdout)))
-#   (loop for file in dirc collect (M2T::mat-trans (M2T::midi2mds
-# 	    (M2T::scoring-midi (concatenate 'string dir (format nil
-#	    "~(~a~)" file))) :to 'N3))))
-\end{lstlisting}
-%#############################################################################
-
 \newpage
+%#############################################################################
 \section{Distance}
 \label{dist}
 
@@ -726,9 +635,8 @@ More far is the source, less we perceive the high frequencies which are absorbed
 The cutoff frequency of the low-pass filter is scaled according to the human audible field between $20$ Hz and $20000$ Hz with an exponential progression: 
 \smallskip
 
-$H.e^{\displaystyle \color{red}-x\color{black} \, \left | ln ( L/H ) \right |}$  with $H=$ highest frequency and $L=$ lowest frequency.
-
-\smallskip
+$H.e^{\displaystyle -x \, \left | ln ( L/H ) \right |}$  with $H=High freq$ and $L=Low freq$.
+\bigskip
 
 Also the pressure level (expressed in dB $SPL$) decreases with the distance (see figure \ref{fig:dist}) such as in a given point the sound level is equal to \hbox{$-20\,log_{10}\,d(t)$}, with $d(t)$ equal to the relative distance ranging between $0$ (excluded) -- nearest point from the source -- and $1$ -- furthest point (inaudible).
 \smallskip
@@ -743,15 +651,10 @@ Also the pressure level (expressed in dB $SPL$) decreases with the distance (see
 
 Then, to consider the amplitude as the function of the distance remains relative and has to be solved empirically because the maximal value of the amplitude as 1 refers to the loudest sound which is undetermined and contextual.
 
+\bigskip
+
 Also, in the case of a closed space, the notion of remoteness is also defined
 by the `mixing' between the source (dry) and its persistence (wet) in terms of reverberation proportional to the radial coordinate of the source.
-
-\smallskip
-
-To solve the last two points from a sound file, I have taken the liberty of applying a high-pass filter according to the `opposite' exponential progression, as seen previously with the low-pass filter:
-\smallskip
-
-$H.e^{\displaystyle \color{red}(x-1)\color{black} \, \left | ln ( L/H ) \right |}$
 %%#############################################################################
 
 \newpage
@@ -764,18 +667,21 @@ $H.e^{\displaystyle \color{red}(x-1)\color{black} \, \left | ln ( L/H ) \right |
 \end{figure}
 
 \newpage
+%\begin{mdframed}[style=stylesec]
 \section{Outline of the Standard MIDI File Structure}
 \label{infomidi}
+%\label{tript}
+%\smallskip
+%\end{mdframed}
 \input{src/midi}
 
 \newpage
+%\begin{mdframed}[style=stylesec]
 \section{The Newick tree format}
 \label{nwdoc}
+%\label{tript}
+%\smallskip
+%\end{mdframed}
 \input{src/newick}
-
-\newpage
-\section{\textsl{Das Wohltemperierte Clavier}}
-\label{wtc1}
-\input{src/corpus}
 
 \end{document}
