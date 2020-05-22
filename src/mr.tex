@@ -187,10 +187,11 @@ Building on what we now know about our algorithm as a distance; let the semi-mat
 
 First, the semi matrix of the corpus is computed as follow:
 \begin{lstlisting}[language=Lisp]
-(defvar *matrix* (N3::differential-vector *corpus* nil))
+(defvar *corpus* '(((4 4 4 6 1 1 4 4 4 4) (60 62 64 65 67 65 64 69 62 67)) ...))
+(defvar *matrix* (N3:differential-vector *corpus* nil))
 \end{lstlisting}
 
-Then, set a list such as indices of the list matches their corresponding tonality:
+Then, set a list such as indices of the list match their corresponding tonality:
 \begin{lstlisting}[language=Lisp]
 (defvar *al* '("C" "Cm" "C#" "C#m" "D" "Dm" "Eb" "Ebm" "E" 
    "Em" "F" "Fm" "F#" "F#m" "G" "Gm" "Ab" "G#m" "A" "Am" 
@@ -200,7 +201,7 @@ Then, set a list such as indices of the list matches their corresponding tonalit
 Finally, built the Minimal Spanning Tree with the Boruvka's algorithm -- belonging to the Common Lisp package \textsl{cl-mst} (see \fullref{amst}): 
 
 \begin{lstlisting}[language=Lisp]
-(cl-mst::neato (cl-mst::boruvka 
+(cl-mst:neato (cl-mst:boruvka 
    (loop for i in *matrix* 
      collect 
    (list (nth (car i) *al*) (nth (cadr i) *al*) (caddr i)))) :scale t :len t)
