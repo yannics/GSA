@@ -3,6 +3,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \setcounter{tocdepth}{4}
+\usepackage{tocbibind}
 
 \usepackage{bm}
 \usepackage{lmodern}
@@ -164,6 +165,7 @@ literate={~} {$\sim$}{1}, showstringspaces=false,upquote=true}
 
 \tableofcontents
 
+\addcontentsline{toc}{chapter}{List of Algorithms}
 {\let\clearpage\relax\listofalgorithms}
 \thispagestyle{empty}
 
