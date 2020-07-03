@@ -345,6 +345,18 @@ To finish, in the SuperCollider context:
 ~profiles = ~profiles.collect{|mt| mt.copyRange(0, 
                mt.asList.detectIndex{|item| item[0]==5000}-1)};
  \end{lstlisting}
+ 
+ \bigskip
+
+\begin{mdframed}[style=stylesec]
+\section{\texttt{105A1408}}
+\label{105A1408}
+\smallskip
+\end{mdframed}
+\input{src/105A1408}
+
+\bigskip
+%\bigskip
 
 %#############################################################################
 \backmatter
@@ -465,37 +477,35 @@ rm 1.pl 1.dat 2.dat 3.dat 4.dat 5.dat 1.wav 2.wav
 \label{ftg}
 
 \begin{lstlisting}[language=bash]
-form reframe TextGrid
-    sentence textgrid ...
-	sentence keyword_(ignore_interval) foo
-	boolean overwrite_TextGrid 1
+form Save intervals 
+	sentence SoundFile ...
+	sentence TextGrid ...
+	optionmenu extract_every_interval_whose_label 2
+		option is equal to
+		option is not equal to
+	sentence the_text foo
+	sentence TargetFolder ...
 endform
 
-Read from file... 'textgrid$'
-current_textgrid$ = selected$ ("TextGrid")
+Read from file... 'SoundFile$'
+current_sound$ = selected$("Sound")
+Read from file... 'TextGrid$'
+current_textgrid$ = selected$("TextGrid")
+select Sound 'current_sound$'
+plus TextGrid 'current_textgrid$'
+Extract intervals where: 1, "no", extract_every_interval_whose_label$, the_text$
 
-select TextGrid 'current_textgrid$'
-n = Get number of intervals: 1
-
-label$="0"
-
-for nn from 1 to n
-	name$ = Get label of interval: 1, nn
-	if (keyword$ = name$)
-		Set interval text: 1, nn, ""
-	else
-		label$=string$(number(label$)+1)
-		Set interval text: 1, nn, label$
-	endif
+n = numberOfSelected("Sound")
+for i from 1 to n
+    s'i' = selected("Sound",'i')
+    s'i'$ = selected$("Sound",'i')
 endfor
 
-if (overwrite_TextGrid = 1)
-	Save as short text file: textgrid$
-else	
-	rename$ = textgrid$ - ".TextGrid" + "-reframed.TextGrid"
-	Save as short text file: rename$
-endif
-
+for i from 1 to n
+    n$ = s'i'$
+    select s'i'
+    Write to WAV file... 'TargetFolder$''n$'.wav
+endfor
 select all
 Remove
 \end{lstlisting}
