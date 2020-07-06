@@ -32,7 +32,7 @@ The mix concerns the layers as such and the balance between the guitares and the
 
 \begin{itemize}[leftmargin=0.4in]
 \item \textbf{Layer I} : \textsc{`Birdscape'} 
-\item \textbf{Layer II} : \textsc{Fractal} $\rightarrow$ on the rhythm analysis of the `birdscape' -- involved the command line \textsl{enkode} ($\rightarrow$ see \ref{enk}) for the analysis as initial data, the Common Lisp libraries N3 (function \texttt{differential-vector} $\rightarrow$ see \ref{motrec}) and \textsl{cl-mst} (functions \texttt{rhizome-degree} and \texttt{boruvka} $\rightarrow$ see \ref{amst}) -- as MDS $\rightarrow$ see \ref{mds}. 
+\item \textbf{Layer II} : \textsc{Fractal} $\rightarrow$ on the rhythm analysis of the `birdscape' -- involved the command line \textsl{enkode} ($\rightarrow$ see Chapter \ref{enk}) for the analysis as initial data, the Common Lisp libraries N3 (function \texttt{differential-vector} $\rightarrow$ see Chapter \ref{motrec}) and \textsl{cl-mst} (functions \texttt{rhizome-degree} and \texttt{boruvka} $\rightarrow$ see Section \ref{amst}) -- as MDS $\rightarrow$ see Chapter \ref{mds}. 
 \item \textbf{Layer III} : \textsc{Formantic Wind} 
 \end{itemize}
 
@@ -109,19 +109,19 @@ enkode -I 3 birdscape.wav > data.txt
 {\ttfamily
 \begin{tabular}{|l|c|c|c|}
 \cline{2-4}
-    \multicolumn{1}{c|}{} & source (Hz) & range (Hz) & scale \\ 
+    \multicolumn{1}{c|}{} & \textbf{source (Hz)} & \textbf{range (Hz)} & \textbf{scale} \\ 
     \hline 
-    formant 1 (f1) & 312 - 750 & 300 - 750 & lin \\ 
+    \textbf{formant 1 (f1)} & 312 - 750 & 300 - 750 & lin \\ 
  \hline
- bandwidth f1 & 90 & 45 - 180 & exp \\ 
+ \textbf{bandwidth f1} & 90 & 45 - 180 & exp \\ 
  \hline
- formant 2 (f2) & 781 - 2031 & 750 - 2050 & lin \\ 
+ \textbf{formant 2 (f2)} & 781 - 2031 & 750 - 2050 & lin \\ 
  \hline
- bandwidth f2 & 110 & 55 - 220 & exp \\ 
+ \textbf{bandwidth f2} & 110 & 55 - 220 & exp \\ 
  \hline
- formant 3 (f3) & 2469 - 3187 & 2450 - 3200 & lin \\ 
+ \textbf{formant 3 (f3)} & 2469 - 3187 & 2450 - 3200 & lin \\ 
  \hline
- bandwidth f3 & 170 & 85 - 340 & exp \\ 
+ \textbf{bandwidth f3} & 170 & 85 - 340 & exp \\ 
  \hline
 \end{tabular}}
 \caption{Formant frequency ranges with their respective bandwidths, interpreted as an exponential range between half and the double of the initial value. The column `source' refers to the data in \citep{adc}.}
