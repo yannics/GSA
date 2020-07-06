@@ -8,18 +8,11 @@ Di-quadraphonic -- post quarantine -- private installation, interpreted the 26th
 \bigskip
 
 The performance requires four suspended `prepared' guitars\footnote{Inspired by the work of Alexander Refsum Jensenius -- see figure \ref{arj} (a). \\ \href{https://www.arj.no/2017/09/11/sverm-resonans/}{\scriptsize{\texttt{https://www.arj.no/2017/09/11/sverm-resonans/}}}
-} with vibrating speakers inside the guitar boxes fixed as sound post of violins, inside a quadraphonic space using then four `normal' speakers.
+} with vibrating speakers inside the guitar boxes fixed as sound post of violins, inside a quadraphonic space using then four `normal' speakers -- see figure \ref{dpan}.
 
-This composition plays on three layers, which are mixed and interpreted as an improvisation through the SuperCollider GUI -- see figure \fullref{hk}. Hence, the duration is \textit{ad libitum} and should be managed as an installation, playing currently the `birdscape' in guitars as a `standby' state. 
+This composition plays on three layers, which are mixed and interpreted as an improvisation through the SuperCollider GUI -- see figure \ref{hk}. Hence, the duration is \textit{ad libitum} and should be managed as an installation, playing currently the `birdscape' in guitars as a `standby' state. 
 
-The mix concerns 
-the layers as such and the balance between the guitares and the speakers.
-
-\begin{itemize}[leftmargin=0.4in]
-\item \textbf{Layer I} : \textsc{`Birdscape'} 
-\item \textbf{Layer II} : \textsc{Fractal} $\rightarrow$ on the rhythm analysis of the `birdscape' -- involved the command line \textsl{enkode} ($\rightarrow$ see \ref{enk}) for the analysis as initial data, the Common Lisp libraries N3 (function \texttt{differential-vector} $\rightarrow$ see \ref{motrec}) and \textsl{cl-mst} (functions \texttt{rhizome-degree} and \texttt{boruvka} $\rightarrow$ see \ref{amst}) -- as MDS $\rightarrow$ see \ref{mds}. 
-\item \textbf{Layer III} : \textsc{Formantic Wind} 
-\end{itemize}
+The mix concerns the layers as such and the balance between the guitares and the speakers.
 
  \begin{figure}[hbt]
 \begin{center}
@@ -28,6 +21,22 @@ the layers as such and the balance between the guitares and the speakers.
 \label{arj}
 \end{center}
 \end{figure}
+
+ \begin{figure}[H]
+\begin{center}
+\includegraphics[scale=3.5]{img/6644}
+\caption{`Di-quadraphonic' disposal in the shed -- \texttt{S} $\rightarrow$ Speaker, \texttt{G} $\rightarrow$ Guitar.}
+\label{dpan}
+\end{center}
+\end{figure}
+
+\begin{itemize}[leftmargin=0.4in]
+\item \textbf{Layer I} : \textsc{`Birdscape'} 
+\item \textbf{Layer II} : \textsc{Fractal} $\rightarrow$ on the rhythm analysis of the `birdscape' -- involved the command line \textsl{enkode} ($\rightarrow$ see \ref{enk}) for the analysis as initial data, the Common Lisp libraries N3 (function \texttt{differential-vector} $\rightarrow$ see \ref{motrec}) and \textsl{cl-mst} (functions \texttt{rhizome-degree} and \texttt{boruvka} $\rightarrow$ see \ref{amst}) -- as MDS $\rightarrow$ see \ref{mds}. 
+\item \textbf{Layer III} : \textsc{Formantic Wind} 
+\end{itemize}
+
+\bigskip
 
 \noindent \textbf{{\large Description}}
 \hrulefill
@@ -46,27 +55,21 @@ the layers as such and the balance between the guitares and the speakers.
 enkode -I 3 birdscape.wav > data.txt
 \end{lstlisting}
 
-\item generating MDS
+\item generating MDS -- require package N3 and \textsl{cl-mst}
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
-(require 'N3)
-
-(require 'cl-mst)
-
 (defparameter *DATA* (mapcar #'N3::string-to-list 
-   (N3::read-text-lines "/.../data.txt")))
-
+   (N3::read-text-lines "data.txt")))
 (defparameter *SEQ* (loop for i in *DATA* collect 
    (list (car i) (caddr i))))
-
 (defvar *N* nil) ;; number of events
 
 (defun loop-rtm (seq n)
   (loop for i from 0 to (- (length seq) n) by n 
      collect (subseq seq i (+ i n))))
-
+     
 (dotimes (n 5)
   (setf *N* (+ 5 n))
-  (N3::>data-file (format nil "/.../mds/105A1408-~S.mds" *N*) 
+  (N3::>data-file (format nil "mds/105A1408-~S.mds" *N*) 
     (let ((dat (loop for i from 0 to (1- *N*) 
            collect
 	  (let* ((mds (N3::mat-trans (nthcdr i *SEQ*)))
@@ -91,7 +94,7 @@ enkode -I 3 birdscape.wav > data.txt
 
 \begin{figure}[hbt]
 \begin{center}
-	\includegraphics[scale=0.55]{img/9809}		
+	\includegraphics[scale=0.48]{img/9809}		
 \caption{Playing and mixing \textit{in situ} with the SuperCollider GUI. Note that concerning the `fractal' layer, each slider represents a fractal recursivity from the right to the left, and the amount of the slider set how far is this recursivity.}
 \label{hk}
 \end{center}
@@ -99,7 +102,7 @@ enkode -I 3 birdscape.wav > data.txt
 
   \textbf{\textit{b/} Formantic wind}
   
-  \smallskip
+  \smallskip 
   
   \begin{table}[htp]
 \begin{center}
