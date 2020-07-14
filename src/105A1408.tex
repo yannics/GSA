@@ -59,8 +59,10 @@ enkode -I 3 birdscape.wav > data.txt
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
 (defparameter *DATA* (mapcar #'N3::string-to-list 
    (N3::read-text-lines "data.txt")))
+
 (defparameter *SEQ* (loop for i in *DATA* collect 
    (list (car i) (caddr i))))
+
 (defvar *N* nil) ;; number of events
 
 (defun loop-rtm (seq n)
@@ -72,29 +74,31 @@ enkode -I 3 birdscape.wav > data.txt
   (N3::>data-file (format nil "mds/105A1408-~S.mds" *N*) 
     (let ((dat (loop for i from 0 to (1- *N*) 
            collect
-	  (let* ((mds (N3::mat-trans (nthcdr i *SEQ*)))
-		 (tmp (mapcar #'list (loop-rtm (car mds) *N*) 
-			             (loop-rtm (cadr mds) *N*)))
-		 (matrix (N3::differential-vector tmp nil 
-		                         :result :diff-x))
-		 (mst (cl-mst:boruvka (mapcar #'(lambda (x) 
-		       (list (car x) (cadr x) 
-		              ;; avoid zero distance
-		              (+ 0.01 (caddr x)))) 
-		          matrix)))
-		 (len (1- (length tmp)))
-		 (res (loop for iii from 0 to len 
-			collect (cl-mst:rhizome-degree iii mst)))
-		 (maxi (car (N3::ordinate res '>))))
-	     (list maxi (nth (+ i (position maxi res)) tmp))))))
+        (let* ((mds (N3::mat-trans (nthcdr i *SEQ*)))
+	       (tmp (mapcar #'list 
+	                         (loop-rtm (car mds) *N*) 
+		                 (loop-rtm (cadr mds) *N*)))
+	       (matrix (N3::differential-vector tmp nil 
+				    :result :diff-x))
+	       (mst (cl-mst:boruvka (mapcar #'(lambda (x) 
+			       (list (car x) (cadr x) 
+			       ;; avoid zero distance
+				 (+ 0.01 (caddr x)))) 
+				             matrix)))
+	      (len (1- (length tmp)))
+	      (res (loop for iii from 0 to len 
+	           collect (cl-mst:rhizome-degree iii mst)))
+	      (maxi (car (N3::ordinate res '>))))
+    (list maxi (nth (+ i (position maxi res)) tmp))))))
 	(append (loop for i in dat append (cadr i)) 
 	        (list (cons 2 (mapcar #'car dat)))))))
 \end{lstlisting}
+In this case, we only compare incrementally a pattern of \texttt{*N*} events sequentially -- that is to say every  \texttt{*N*} events from the initial pattern -- within the remainder of the sequence with the function \texttt{loop-rtm}.
 \end{enumerate}
 
-\begin{figure}[hbt]
+\begin{figure}[h!]
 \begin{center}
-	\includegraphics[scale=0.48]{img/9809}		
+	\includegraphics[scale=0.5]{img/9809}		
 \caption{Playing and mixing \textit{in situ} with the SuperCollider GUI. Note that concerning the `fractal' layer, each slider represents a fractal recursivity from the right to the left, and the amount of the slider set how far is this recursivity.}
 \label{hk}
 \end{center}
@@ -104,7 +108,7 @@ enkode -I 3 birdscape.wav > data.txt
   
   \smallskip 
   
-  \begin{table}[htp]
+  \begin{table}[H]
 \begin{center}
 {\ttfamily
 \begin{tabular}{|l|c|c|c|}
