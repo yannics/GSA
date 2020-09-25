@@ -11,16 +11,26 @@ Composition for quadraphonic installation, interpreted the 17th of June, 2019 at
 
 The composition \texttt{data-01} is a direct application of the work describe in the chapter \textsl{\nameref{am}} applied to a given sample defined as \texttt{data-01} and it is composed of 3 parts as layers.
 
+\bigskip
+
+\texttt{Can you imagine ...} 
+
 \begin{itemize}[leftmargin=0.4in]
 \item \textbf{Part I} : \textsc{Drop water as a Markov chain walk}. 
+
+\texttt{... before the language ...} 
 
 Interpreted as a continuum background, the part I is a Markov chain applied to the \textsl{Symbolisation} as \textsl{Hierarchical clustering} and the \textsl{Systemic analysis} as \textsl{Developmental process} of the referent sample.
 
 \item \textbf{Part II} : \textsc{Collatz synthesis as a proportional canon}. 
 
+\texttt{... and beyond the language ...} 
+
 Triggered process, the part II is a proportional canon of a chosen rhythm (see figure \ref{rtm}) defined by the \textsl{Contrastive analysis} as \textsl{Segmentation by marker} of the sample. The Collatz algorithm as a normalized profile controls the bandwidth ratio of the \textsl{UGen} \texttt{Resonz} applied to a pink noise.
 
 \item \textbf{Part III} : \textsc{Fractal on Radio}. 
+
+\texttt{... and into the language.} 
 
 Triggered process, the part III is a `fractalization' of the previous defined rhythm as an alternately spatialized streaming radio.
 
@@ -44,25 +54,34 @@ Triggered process, the part III is a `fractalization' of the previous defined rh
 
 This is a very simplified synthesis for a drop water, allowing some interesting sound beyond the realistic purpose.
 
-\begin{enumerate}
-  \item Generate a sine wave according to the water drop \texttt{rad}ius in the millimeter unit:
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
-FSinOsc.ar(3/(rad/1000))
-\end{lstlisting}  
-The frequency is estimated as $f=3/r$ with $r$ the water drop radius in meters \citep{kvdd}.
+\smallskip
 
-  \item Volume envelope:
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]  
-Env.new([1, 0], [0.1])
-\end{lstlisting}
+A sine wave is generated according to the water drop \texttt{rad}ius in the millimeter unit $\Rightarrow$ \texttt{FSinOsc.ar(3/(rad/1000))}. The frequency is estimated as $f=3/r$ with $r$ the water drop radius in meters \citep{kvdd}. The volume envelope is defined by $\Rightarrow$ \texttt{Env.new([1, 0], [0.1])}, and the pitch envelope by $\Rightarrow$ \texttt{Env.new([0, 2], [atk])}
 
-  \item Pitch envelope:
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
-Env.new([0, 2], [atk])
-\end{lstlisting}
-% Note that \texttt{atk} can be interpreted as a surface type where the water drop falls and/or as a damp value.
+\smallskip
+
+Note that \texttt{atk} can be interpreted as a surface type where the water drop falls and/or as a damp value.
  
-\end{enumerate}
+
+%\begin{enumerate}
+%  \item Generate a sine wave according to the water drop \texttt{rad}ius in the millimeter unit:
+%\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+%FSinOsc.ar(3/(rad/1000))
+%\end{lstlisting}  
+%The frequency is estimated as $f=3/r$ with $r$ the water drop radius in meters \citep{kvdd}.
+%
+%  \item Volume envelope:
+%\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]  
+%Env.new([1, 0], [0.1])
+%\end{lstlisting}
+%
+%  \item Pitch envelope:
+%\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
+%Env.new([0, 2], [atk])
+%\end{lstlisting}
+%% Note that \texttt{atk} can be interpreted as a surface type where the water drop falls and/or as a damp value.
+% 
+%\end{enumerate}
    
 \begin{figure}[H]
 \begin{center}
