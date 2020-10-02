@@ -52,50 +52,14 @@ Triggered process, the part III is a `fractalization' of the previous defined rh
 
 \smallskip
 
-This is a very simplified synthesis for a drop water, allowing some interesting sound beyond the realistic purpose.
-
-\smallskip
-
-A sine wave is generated according to the water drop \texttt{rad}ius in the millimeter unit $\Rightarrow$ \texttt{FSinOsc.ar(3/(rad/1000))}. The frequency is estimated as $f=3/r$ with $r$ the water drop radius in meters \citep{kvdd}. The volume envelope is defined by $\Rightarrow$ \texttt{Env.new([1, 0], [0.1])}, and the pitch envelope by $\Rightarrow$ \texttt{Env.new([0, 2], [atk])}
-
-\smallskip
-
-Note that \texttt{atk} can be interpreted as a surface type where the water drop falls and/or as a damp value.
- 
-
-%\begin{enumerate}
-%  \item Generate a sine wave according to the water drop \texttt{rad}ius in the millimeter unit:
-%\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
-%FSinOsc.ar(3/(rad/1000))
-%\end{lstlisting}  
-%The frequency is estimated as $f=3/r$ with $r$ the water drop radius in meters \citep{kvdd}.
-%
-%  \item Volume envelope:
-%\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]  
-%Env.new([1, 0], [0.1])
-%\end{lstlisting}
-%
-%  \item Pitch envelope:
-%\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
-%Env.new([0, 2], [atk])
-%\end{lstlisting}
-%% Note that \texttt{atk} can be interpreted as a surface type where the water drop falls and/or as a damp value.
-% 
-%\end{enumerate}
-   
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.65\linewidth]{img/3187} 
-\caption{ The drop water that is falling in water implies some kind of replication as a \texttt{del}ay of the initial drop.}
-% Pixabay License -- Free for commercial use -- No attribution required
-% source : https://pixabay.com/photos/drops-of-water-water-liquid-fresh-578897/
-% Canon EOS 7d -- 90.0mm · ƒ/25.0 · 1/250s · ISO 640 ↯
-% Image type: JPG -- Resolution:	3309×2206 -- Created: April 8, 2012 -- Uploaded: Dec. 28, 2014
-% by Rony Michaud  --  Montreal/Canada  -- Pixabay Member since Dec. 14, 2014
+\caption{`The impact creates a cavity which then begins to recoil a small air bubble is then trapped under the water in a process referred to as bubble entrainment.' \citep{sdw}}
 \label{dropwater}
 \end{center}
 \end{figure}
-   
+
 \noindent \textbf{
   %\textit{b/ } 
   Collatz resonance }
@@ -176,7 +140,7 @@ $\sim$\textsc{collatz}($x,r.add[x]$)
 
 % For the record, I extended this principle for any array of frequencies as a list of integers. The relevance of this approach remains very relative, but this can be a guideline for further work -- see \nameref{cs} in Annex 3 p. \pageref{cs}.
 
-\newpage
+%\newpage
 
 \noindent \textbf{{\large Description}}
 \hrulefill
@@ -190,7 +154,7 @@ $\sim$\textsc{collatz}($x,r.add[x]$)
   \smallskip
  
  According to the Markov chain walk described in the section \textsl{\nameref{osc}} p. \pageref{osc}, 
- the values of the list to send -- done with the discriminative classification analysis of \textsl{enkode} -- according to durations as triggers \textit{in time}, are respectively the loudness as distance, the centroid as the 'main' drop and $f0$ as the delayed drop (see figure \ref{dropwater} p. \pageref{dropwater}), both interpreted as millimeter unit (see table p. \pageref{tab:apc}).
+ the values of the list to send -- done with the discriminative classification analysis of \textsl{enkode} -- according to durations as triggers \textit{in time}, are respectively the loudness as distance, the centroid and $f0$ as the frequencies drop variation interpreted as millimeter unit (see table p. \pageref{tab:apc}).
   
  \bigskip
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
@@ -245,8 +209,7 @@ N3> (mk-alraw *alpha-seq-9* (read-file "aaa.raw"))
 %\hline
 \textsl{duration} &  OSC trigger   & \multicolumn{1}{c}{none}  \\
 \textsl{loudness} &  \texttt{dist}ance   &  \texttt{.linlin($min$, $max$, 0.6, 0.1)} \\
-\textsl{centroid} & \texttt{rad}ius 1 & \texttt{.linexp($min$, $max$, 4, 1)}\\
-$f0$ & \texttt{rad}ius 2 & \texttt{.linexp($min$, $max$, 6, 3)} \\
+\textsl{centroid}, $f0$ &  \texttt{rad}ius 1 & \makecell{\texttt{rrand(}\textsl{centroid}, $f0$\texttt{)}\\ \texttt{.linexp($min$, $max$, 4, 1)}} \\
 \end{tabular}
 \label{tab:apc}
 
@@ -254,9 +217,9 @@ $f0$ & \texttt{rad}ius 2 & \texttt{.linexp($min$, $max$, 6, 3)} \\
 
  For convenience, the data needed for the Markov chain are stored in a \textsl{lisp} file. This concerns the \texttt{alpha-seq} according to the retained number of classes as \texttt{*alpha-seq-9*} and the hash table \texttt{*alraw*} which associates alpha symbol to all corresponding raw values.
 
-\bigskip
-\smallskip
-%\newpage
+%\bigskip
+%\smallskip
+\newpage
   
   \textbf{
   %\textit{b/ } 
@@ -280,9 +243,11 @@ $f0$ & \texttt{rad}ius 2 & \texttt{.linexp($min$, $max$, 6, 3)} \\
 
 \textbf{$\sim$rtm} -- the selection of the rhythm \textbf{$\sim$rtm} is done inside to the panel of rhythm as indice according to the structure discrimination. The choice is done through a \textsl{pdf} file (see figure \ref{rtm}). 
 
+\bigskip 
+
  \begin{figure}[htbp]
 \begin{center}
-\includegraphics[scale=0.43]{img/6710} 
+\includegraphics[scale=0.44]{img/6710} 
 \caption{Extract of the list of rhythms generated with Lilypond as a \textsl{pdf} file.}
 \label{rtm}
 \end{center}
