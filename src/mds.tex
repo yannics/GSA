@@ -13,7 +13,7 @@
 This work allows creating a bridge between data as a musical object or as a traditional score notation, and some algorithmic environment in terms of interpretation, analysis and synthesis such as neural network \textsl{Neuromuse3} (N3) and SuperCollider (SC). Then, this applies basically to a text file in order to be interpreted as a data list -- according to some preliminary conversion -- for the learning process in the N3 context, 
 or as a SC array in the context of \href{http://doc.sccode.org/Tutorials/Streams-Patterns-Events1.html}{\textit{Streams, Patterns and Events}} and \href{http://doc.sccode.org/Tutorials/Getting-Started/15-Sequencing-with-Routines-and-Tasks.html}{\textit{Sequencing with Routines and Tasks}}, or as a \href{http://doc.sccode.org/Classes/Score.html}{\textit{Score}} in \href{http://doc.sccode.org/Guides/Non-Realtime-Synthesis.html}{\textit{Non-Realtime Synthesis (NRT)}}.
 
-The aims of this article is then a proposition of formatting what I call a Music Data Score (MDS) from a partition, analysis data and midi file -- using some tools for midi conversion attached to the Common Lisp library M2T (see chapter \textsl{\nameref{m2t}}) --, and a guideline of how to use it in the N3 and SC context.
+The aims of this article is then a proposition of formatting what I call a Music Data Score (MDS) from a partition, analysis data and midi file -- using the Common Lisp library MDS --, and a guideline of how to use it in the N3 and SC context.
 
 \section{Writing Music Data Score}
 
@@ -106,7 +106,7 @@ For any formatted midi file with the extension .mid or .midi there are 2 ways to
 \begin{lstlisting}[language=bash]
 fluidsynth -F outfile.wav /usr/share/sounds/sf2/FluidR3_GM.sf2 infile.mid
 \end{lstlisting}
-\item The conversion midi to MDS can be done as a raw data -- see \textsl{\nameref{infomidi}} in appendice \fullref{infomidi} -- using some extra tools of the Common Lisp library M2T which is described in the two next sections \textsl{Duration} and \textsl{Score}. Note that this library requires in this case the package MIDI. 
+\item The conversion midi to MDS can be done as a raw data -- see \textsl{\nameref{infomidi}} in appendice \fullref{infomidi} -- using tools of the Common Lisp library MDS which is described in the two next sections \textsl{Duration} and \textsl{Score}. Note that this library requires in this case the package MIDI. 
 
 \end{enumerate}
 
@@ -152,7 +152,7 @@ In order to illustrate how to manage the midi conversion to the MDS, here are so
 In this case, the scope of the possible division according to the time division of the midi file is set to \texttt{(1 2 4 8)}, that is to say respectively the quarter note, the eighth note, the sixteenth note and the thirty-second note.
 
 \begin{lstlisting}[language=Lisp]
-M2T> (setf *scope* '(1 2 4 8))
+MDS> (setf *scope* '(1 2 4 8))
 \end{lstlisting}
 
 \subsubsection{to N3}
@@ -164,7 +164,7 @@ In the N3 context, the aim is to format the MDS as an irreducible sonic object i
 In this way, the MDS is transposed as a matrix with the relative duration followed by the midi note for each voice of the midi score. 
 
 \begin{lstlisting}[language=Lisp]
-M2T> (midi2mds (add-tie (scoring-midi "~/Kjolheia.mid")) 
+MDS> (midi2mds (add-tie (scoring-midi "~/Kjolheia.mid")) 
    :to 'N3)
 ((2 54 47 62 62) (2 59 62 59 66) (2 59 66 61 66) 
  (2 59 62 54 66) (2 62 64 59 62) (2 59 62 47 67) 
@@ -179,7 +179,7 @@ Note that the function \texttt{add-tie} is applied for each track of the score.
 
 For the performances \texttt{K540}, the midi file Kj{\o}lhiea has been converted to a MDS file as follow:
 \begin{lstlisting}[language=Lisp]
-M2T> (midi2mds (mix-track (scoring-midi "~/Kjolheia.mid")) 
+MDS> (midi2mds (mix-track (scoring-midi "~/Kjolheia.mid")) 
    :out "~/Kjolheia" :to 'SC)
 \end{lstlisting}
 
