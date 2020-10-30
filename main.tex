@@ -734,32 +734,34 @@ done < $file
 \label{dist}
 
 The distance involves a dynamic perspective inside the audible field in terms of low-pass filter and cutoff frequency combined with the level implying the dry level of the reverb where required.
-\smallskip
+\bigskip
 
 More far is the source, less we perceive the high frequencies which are absorbed by the air.
 The cutoff frequency of the low-pass filter is scaled according to the human audible field between $20$ Hz and $20000$ Hz with an exponential progression: 
-\smallskip
+\bigskip
 
 $H.e^{\displaystyle -x \, \left | ln ( L/H ) \right |}$  with $H=High freq$ and $L=Low freq$.
 \bigskip
 
-Also the pressure level (expressed in dB $SPL$) decreases with the distance (see figure \ref{fig:dist}) such as in a given point the sound level is equal to \hbox{$-20\,log_{10}\,d(t)$}, with $d(t)$ equal to the relative distance ranging between $0$ (excluded) -- nearest point from the source -- and $1$ -- furthest point (inaudible).
-\smallskip
+Also the pressure level (expressed in dB $SPL$) decreases with the distance ($\rightarrow$ figure \ref{fig:dist}) such as in a given point the sound level is equal to \hbox{$-20\,log_{10}\,d(t)$}, with $d(t)$ equal to the relative distance ranging between $0$ (excluded) -- nearest point from the source -- and $1$ -- furthest point (inaudible).
 
- \begin{figure}[H]
-\begin{center}
-\includegraphics[scale=0.33]{img/6094}
-\caption{The sound level decreases of 6 dB for each doubling of the distance such as $-20\,log_{10}\: distance$. }
-\label{fig:dist}
-\end{center}
-\end{figure}
+\bigskip
 
 Then, to consider the amplitude as the function of the distance remains relative and has to be solved empirically because the maximal value of the amplitude as 1 refers to the loudest sound which is undetermined and contextual.
 
 \bigskip
 
 Also, in the case of a closed space, the notion of remoteness is also defined
-by the `mixing' between the source (dry) and its persistence (wet) in terms of reverberation proportional to the radial coordinate of the source.
+by the `mixing' between the source (dry) and its persistence (wet) in terms of reverberation proportional to the radial coordinate of the source ($\rightarrow$ figure \ref{fig:dist}).
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.6]{img/1122}
+\caption{Graph showing direct vs. reverberant sound for distance from source in reverberant rooms. The sound level decreases of 6 dB for each doubling of the distance such as $-20\,log_{10}\: distance$.}
+%% image source: http://www.moultonlabs.com/more/acoustical_measurements_for_the_rest_of_us/P1/
+\label{fig:dist}
+\end{center}
+\end{figure}
 %%#############################################################################
 
 \newpage
