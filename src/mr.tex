@@ -172,54 +172,9 @@ Also, in the case of the \textit{fuga} subjects, it might appear some unexpected
 
 \subsection{Results}
 
-Building on what we now know about our algorithm as a distance; let the semi-matrix of distances applied to the corpus -- such as the number of distances is equal to the triangular number\footnote{Defined by $T_n=\displaystyle\frac{n(n+1)}{2}$.} namely equal to 276 -- be the expression of the following statistic terms:
-
-\begin{itemize}
-\item[] Median\footnote{Defined by $median(a)=\displaystyle\frac{a_{\left \lfloor{\frac{n+1}{2}}\right \rfloor } + a_{\left \lceil{\frac{n+1}{2}}\right \rceil }}{2}$ where $a$ is an ordered list of $n$ numbers, and $\displaystyle \lfloor \cdot \rfloor$  and $\displaystyle \lceil \cdot \rceil$  denote the floor and ceiling functions, respectively.}  = 0.482709
-\item[] Mean\footnote{Defined by $\bar{x}=\displaystyle\frac{1}{n}\sum_{i=1}^n x_i$.}  = 0.499717
-\item[] Standard Deviation\footnote{Defined by $\sigma=\displaystyle\sqrt{\frac{1}{n}\sum_{i=1}^n x^2_i - \bar{x}^2}$.}  =  0.135762
-\item[] Minimum = 0.192847 
-\item[] Maximum = 0.959239
-\item[] Range = 0.766391
-\end{itemize}
-
-\subsection{MST}
-
-First, the semi matrix of the corpus is computed as follow:
-\begin{lstlisting}[language=Lisp]
-(defvar *corpus* '(((4 4 4 6 1 1 4 4 4 4) (60 62 64 65 67 65 64 69 62 67)) ...))
-(defvar *matrix* (N3:differential-vector *corpus* nil))
-\end{lstlisting}
-
-Then, set a list such as indices of the list match their corresponding tonality:
-\begin{lstlisting}[language=Lisp]
-(defvar *al* '("C" "Cm" "C#" "C#m" "D" "Dm" "Eb" "Ebm" "E" 
-   "Em" "F" "Fm" "F#" "F#m" "G" "Gm" "Ab" "G#m" "A" "Am" 
-   "Bb" "Bbm" "B" "Bm"))
-\end{lstlisting}
-
-Finally, built the Minimal Spanning Tree with the Boruvka's algorithm -- belonging to the Common Lisp package \textsl{cl-mst} (see \fullref{amst}): 
-
-\begin{lstlisting}[language=Lisp]
-(cl-mst:neato (cl-mst:boruvka 
-   (loop for i in *matrix* 
-     collect 
-   (list (nth (car i) *al*) (nth (cadr i) *al*) (caddr i)))) :scale t :len t)
-\end{lstlisting}
-
-\begin{figure}[!hbt]
-	\begin{center}
-		\includegraphics[scale=3]{img/8801}
-		\caption{The Minimal Spanning Tree of the \textit{fuga} subjects of WTC I.}
-		\label{fig:mstcor}
-	\end{center}
-\end{figure}
+{\color{red}[ ONGOING REVISION ]}
 
 \section{Discussion}
-
-The MST can give some interesting information but the interpretation remains at the least empirical, even intuitive, and the formalisation is therefore difficult to generalise. Indeed, in the current case, the formalisation can be done in terms of the dichotomy between the leaves and nodes with degrees superior or equal to three (see figure \ref{fig:mstcor}), but unfortunately, this relationship is first not exclusive and secondly disappears as soon as the timing threshold changes. Nevertheless, some tendencies can reveal formal relationships such as the grouping of the minor tones -- or the major tones depending on the timing threshold value applied -- and quantify the variation amount between all \textit{fuga} themes.
-
-\bigskip
 
 The relevance is relative but this algorithm -- like others -- gives some guidelines in paradigmatic terms as family likeness focusing on the event onsets sync \myuline{proportionally} and on the first derivative \myuline{profile} as the sign values. 
 
