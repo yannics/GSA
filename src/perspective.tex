@@ -166,24 +166,24 @@ Let the Markov chain described in \fullref{mcres}
  (sb-thread:make-thread
   (let* ((s (alpha-seq <somName> <treeName> <classesNumber>))
 	 (w (list (next-event-probability nil s 
-	            :result :compute)))
+	            :result :eval)))
 	 (r w))
    #'(lambda () (loop do
     (let* ((tmpw (nthcdr (length (loop for i from 0
 				until
 		(let ((tmp (multiple-value-bind (a b)
 			(next-event-probability 
-			  (nthcdr i w) s :result :compute) 
+			  (nthcdr i w) s :result :eval) 
 			(declare (ignore a)) b)))
 		   (if (> tmp 1) t (if (= 1 (length w)) t nil)))
 				collect i)) w))
        (tmpnep (multiple-value-bind (a b)
 	        (next-event-probability 
-	          tmpw s :result :compute) 
+	          tmpw s :result :eval) 
 	        (list a b)))
        (nep (if (= 1 (cadr tmpnep))
 		(next-event-probability
-		  nil s :result :compute)
+		  nil s :result :eval)
 		(car tmpnep))))
 	(setf w (append tmpw (list nep)))
 	(push nep r)

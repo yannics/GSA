@@ -158,23 +158,7 @@ $$\text{if } |x-y| \to 1 \text{ then } \frac{||\overrightarrow{D}||}{\sqrt{2}} +
  and furthermore
  $$\text{if } |x-y| \to 0 \text{ then } \frac{||\overrightarrow{D}||}{\sqrt{2}} + \frac{||\overrightarrow{S}||}{\sqrt{2}} \to 1$$
  
- \subsection{Corpus}
- 
- In this chapter, the function \texttt{differential-vector} will be applied on the corpus composed of the \textit{fuga} subjects of the first book of the Well-Tempered Clavier (noted WTC I) by Johann Sebastian Bach -- see appendix \fullref{wtc1}.
-
-\smallskip
-
-A note about the corpus; for convenience, every score snippet has been rewritten -- I should say recoded -- in order to elude all articulations and rests since we do not need this information. Concerning the rests it is about to remove them when they are at the head of the melody or to prolong the previous note by adding both durations -- this led to the Lilypond code on the top of each cell of the corpus -- see code in appendix \fullref{code:corpus} in order to generate scores, midi-files and MDS. This is done upstream but this can be done downstream, for instance by filtering the require data on the MDS by keeping pitch durations on their respective onsets in time. 
-
-\smallskip
-
-Also, in the case of the \textit{fuga} subjects, it might appear some unexpected truncation, but sometimes one has to take a side about where the subject stops and when can one considers some `tail' as either a variation, an articulation, a punctuation or a transition. Thus, the problematic raised by the corpus in terms of tails is partially solved by eluding it.
-
-\subsection{Results}
-
-{\color{red}[ ONGOING REVISION ]}
-
-\section{Discussion}
+ \section{Discussion}
 
 The relevance is relative but this algorithm -- like others -- gives some guidelines in paradigmatic terms as family likeness focusing on the event onsets sync \myuline{proportionally} and on the first derivative \myuline{profile} as the sign values. 
 
