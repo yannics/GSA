@@ -63,9 +63,10 @@ So, to get a Collatz sequence from any integer $n$ superior to 1, each step is d
 } 
 
 
-The Collatz sequence is interpreted as a normalized profile -- see figure \ref{coltz} -- envelope which is defined by its duration as the length of the sequence according to a value of $dx$ in second. Note that the value zero is added at the end of the sequence.
+The Collatz sequence is interpreted as a normalized profile -- see figure \ref{coltz} -- envelope which is defined by its \texttt{duration} as the length of the sequence according to a value of \texttt{dx} in second. Note that the value zero is added at the end of the sequence.
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
-Env.new(collatz.add(0).normalize, Array.fill(collatz.size, dx))
+Env.new(n.collatz.add(0).normalize, Array.fill(n.collatz.size, dx))
+// Env.collatz(n, duration, 0, \max) // i.e. class method of cycle
 \end{lstlisting} 
 
 %This envelope can be interpreted musically according to at least two \textit{modi operandi}.

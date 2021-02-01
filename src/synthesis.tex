@@ -1,0 +1,66 @@
+\section{\texttt{Ulam}}
+\label{colz}
+
+\texttt{UGens>Generators>Deterministic}
+
+\bigskip
+
+See description of the algorithmic process on page \pageref{colres}. 
+
+See also the class method \texttt{collatz} in the SuperCollider extension \textbf{cycle}. %See also codes \fullref{colzpcsc}.
+
+\href{https://github.com/yannics/cl-mst}{\texttt{\small https://github.com/yannics/cycle}}
+
+\bigskip
+For a given positive integer $n$, the Collatz algorithm generate a finite series which is interpreted as an amplitude envelop on the time/x-axis. The envelope is normalised on the amplitude/y-axis by divided the envelope by $n$ as frequency or as a maximal value of the profile. 
+
+\bigskip
+
+Each profile as an envelope is multiplied by its respective \textit{Ugen} taking into account the value $n$ as the frequency argument. This is done recursively through a given array of frequencies as integers.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{\texttt{Sow}}
+\label{cfso}
+
+\texttt{UGens>Generators>Deterministic}
+
+\bigskip
+
+The idea is to apply some `macro' formal objects to a sonic object as it is. These macro-forms are described in the previous chapters respectively as \nameref{imp2} on page \pageref{imp2} and \nameref{imp3} on page \pageref{imp3}.
+
+\bigskip
+The sonic object is a sample as a sound file. First, the synthesis algorithm detects the index $ind$ of the absolute maximal value of the signal, in order to compute the duration of the climax of the sample. Then, according to a given array, which is normalised (by divided each element of the array by the smallest value), and which set the ratio of the duplicated sound and the delay to match the climax. For the given array $S$, the ratios $R$ are computed according to two modalities, namely defined by the symbols \texttt{\textbackslash sup} (if we consider the ratio from the biggest value of $S$) or \texttt{\textbackslash inf} (if we consider the ratio from the smallest value of $S$).
+
+\[
+     R =
+\begin{dcases}
+	\frac{min(S)}{(S, >)}  & \text{if \texttt{\textbackslash sup}}\\
+	\frac{(S, <)}{min(S) \times max(S)}  & \text{if \texttt{\textbackslash inf}} 
+   \end{dcases}
+\]
+
+Then, the respective delays $D$ are computed as follow ($sr$ is the sample rate):
+ 
+\[
+D = \bigcup_{i \in R} \frac{ind}{sr}  \left( \frac{1}{min(R)} - \frac{1}{R_i} \right)
+\]
+
+\section{\texttt{Distance}}
+\label{ugdist}
+
+\texttt{UGens>Filters}
+
+\bigskip
+
+See description appendice \fullref{dist}.
+
+\section{\texttt{Doppler4}}
+\label{ugdop}
+
+\texttt{UGens>Filters}
+
+\bigskip
+
+See description on page \pageref{dop}.
+

@@ -225,6 +225,26 @@ Time-based algorithms are understood in terms of repetitions/variations. It goes
 \input{src/imp}
 \input{src/perspective}
 
+%#############################################################################
+ \chapter[Sound design studies]{\huge Sound design studies}
+ \thispagestyle{empty}
+
+\label{sds}
+{\texttt{2018} -- \texttt{2021}}
+
+\bigskip
+\smallskip
+
+This is some \textit{UGens} developed in the context of this writing. An \textit{UGen} -- i.e. an unit generator -- is a SuperCollider object that processes or generates sound.
+
+See SC code appendice \fullref{gsasc}.
+%\href{https://github.com/yannics/...}{\texttt{\small https://github.com/yannics/...}}
+
+
+\input{src/synthesis}
+%#############################################################################
+
+
  \chapter[\textsl{in situ}]{\huge \textsl{in situ}}
  \thispagestyle{empty}
 
@@ -641,6 +661,8 @@ nw_display -sr -S -w 1000 -W 20 -b 'opacity:0' in.nw
 nw_display -s -w 1000 -u '' -t -W 20 -b 'opacity:0' in.nw 
 > out-o.svg
 \end{lstlisting}
+
+\input{src/code}
 %#############################################################################
 
 \newpage
@@ -651,7 +673,7 @@ nw_display -s -w 1000 -u '' -t -W 20 -b 'opacity:0' in.nw
 The distance involves a dynamic perspective inside the audible field in terms of low-pass filter and cutoff frequency combined with the level implying the dry level of the reverb where required.
 \bigskip
 
-More far is the source, less we perceive the high frequencies which are absorbed by the air.
+The further is the source, less we perceive the high frequencies which are absorbed by the air.
 The cutoff frequency of the low-pass filter is scaled according to the human audible field between $20$ Hz and $20000$ Hz with an exponential progression: 
 \bigskip
 
