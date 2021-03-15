@@ -3,35 +3,26 @@
 
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
 /*
-GSA
-<https://www.overleaf.com/read/sjhfhthgkgdj>
+GSA <https://www.overleaf.com/read/sjhfhthgkgdj>
 Sound design studies
 version 1.0.1
------------------------------------------------------
-To install: clone or copy this folder to Platform.userExtensionDir
------------------------------------------------------
-   UGen     |   args             .. -> i.e. mull add
-------------|----------------------------------------
- Ulam       | ar, stretch, nx, ny, sig, rec ..
- Sow        | buf, ser, sym ..
- -----------------------------------------------------
 <by.cmsc@gmail.com>
 */
 
 Ulam {
-	*ar { |ar, stretch=5, nx=0, ny=\max, sig=\norm, rec, mul=1, add=0|
+	*ar { |ar, stretch=5, nx=0, ny=\max, sig=\norm, detune=0, rndAmp=1, mul=1, add=0|
 		var signal=Silent.ar;
-		ar.do{ |n|
-			signal = FSinOsc.ar(n) 
-			  * EnvGen.kr(Env.collatz(n, stretch, nx, ny), doneAction:2) + signal;
+		ar.detune(detune).do{ |n|
+		  signal = FSinOsc.ar(n) 
+		    * EnvGen.kr(Env.collatz(n, stretch, nx, ny), doneAction:2) * rrand(rndAmp, 1) + signal;
 		};
 		if (sig == \norm)
 		{
-			signal.range(-1, 1)
+			signal = signal.range(-1, 1)
 		};
 		if (sig == \tanh)
 		{
-			signal.tanh
+			signal = signal.tanh
 		};
 		signal = signal * mul + add;
 		^signal
@@ -75,12 +66,11 @@ Sow {
 		var arr=this.as(Set).as(Array).sort;
 		if (sym == \sup)
 		{
-			res=(arr/this.minItem).reciprocal.reverse
+		  res=(arr/this.minItem).reciprocal.reverse
 		};
 		if (sym == \inf)
 		{
-			res=(arr/this.minItem)*this.maxItem
-			  .reciprocal
+		  res=(arr/this.minItem)*this.maxItem.reciprocal
 		};
 		res=res.collect{|it| 
 		  [it, res.minItem.reciprocal-it.reciprocal
@@ -92,9 +82,20 @@ Sow {
 			i=i-res.last[1];
 			res = res.collect{|it| [it[0], it[1]+i]};
 		}
-		// this.harmRatio.flop[0] = ratio
-		// this.harmRatio.flop[1] = delay
-		^res
+			^res
+	}
+	
+	detune  {
+		|n=3, len=1000|
+		var tmp;
+		tmp = this.collect{|it| it+n.rand2};
+		if((len < this.size) && (len > 0))
+		{
+			^tmp.scramble[0..len-1]
+		}
+		{
+			^tmp
+		}
 	}
 }
 \end{lstlisting} 
