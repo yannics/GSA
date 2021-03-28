@@ -2,7 +2,7 @@
 \thispagestyle{empty}
 
 \label{mds}
-{\texttt{2016} -- \texttt{2020}}
+{\texttt{2016} -- \texttt{2021}}
 
 \bigskip
 \smallskip
@@ -10,8 +10,9 @@
 \section{Purpose}
 \label{purp}
 
-This work allows creating a bridge between data as a musical object or as a traditional score notation, and some algorithmic environment in terms of interpretation, analysis and synthesis such as neural network \textsl{Neuromuse3} (N3) and SuperCollider (SC). Then, this applies basically to a text file in order to be interpreted as a data list -- according to some preliminary conversion -- for the learning process in the N3 context, 
-or as a SC array in the context of \href{http://doc.sccode.org/Tutorials/Streams-Patterns-Events1.html}{\textit{Streams, Patterns and Events}} and \href{http://doc.sccode.org/Tutorials/Getting-Started/15-Sequencing-with-Routines-and-Tasks.html}{\textit{Sequencing with Routines and Tasks}}, or as a \href{http://doc.sccode.org/Classes/Score.html}{\textit{Score}} in \href{http://doc.sccode.org/Guides/Non-Realtime-Synthesis.html}{\textit{Non-Realtime Synthesis (NRT)}}.
+This work allows creating a bridge between data as a musical object or as a traditional score notation, and some algorithmic environment in terms of interpretation, analysis and synthesis such as neural network \textsl{Neuromuse3} (N3) and SuperCollider (SC). 
+Then, this takes the form of a text file, which is interpreted as a data list, referring to the settings defining each sonic object. This text file can be read for instance as a learning dataset  in the N3 context, 
+or as a SC array in the context of \href{http://doc.sccode.org/Tutorials/Streams-Patterns-Events1.html}{\textit{Streams, Patterns and Events}} and \href{http://doc.sccode.org/Tutorials/Getting-Started/15-Sequencing-with-Routines-and-Tasks.html}{\textit{Sequencing with Routines and Tasks}}.
 
 The aims of this article is then a proposition of formatting what I call a Music Data Score (MDS) from a partition, analysis data and midi file -- using the Common Lisp library MDS --, and a guideline of how to use it in the N3 and SC context.
 
@@ -206,13 +207,15 @@ Thus, the score is interpreted as an array and therefore can be read inside a st
 
 \section{Discussion}
 
-This proposition is a satisfying compromise for fixed scores as dataset for `non-real-time synthesis'. Indeed, MDS retains a partition which allows any kind of structural or formal analysis de facto \textit{a posteriori} and algorithmically, on the understanding that does not solve the discrimination issue of the sonic object as an irreducible and signifier axiom. 
+This proposition is an attempt of `normalisation' for fixed scores as dataset for `non-real-time synthesis'. Indeed, MDS retains a partition which allows any kind of structural or formal analysis de facto \textit{a posteriori} and algorithmically, on the understanding that does not solve the discrimination issue of the sonic object as an irreducible and signifier axiom\footnote{For instance the counterpoint in terms of relationship between different musical layers, or the sonic object as an emergent phenomenon and perceived as such, which can be subjective and hence dependant of the teleological object.}. 
 
 \bigskip 
 
 Finally, it is also convenient as a file that can be read in different contexts such as  \textsl{Neuromuse3} or SuperCollider to name but two which have been outlined in this article, and easy to write from traditional score or midi file, even to generate from or as raw data.
 
-\bigskip 
+Also, this format allows convenient possibilities of conversion such as any object-oriented programming (OOP) or SC \href{http://doc.sccode.org/Classes/Score.html}{\textit{Score}} in \href{http://doc.sccode.org/Guides/Non-Realtime-Synthesis.html}{\textit{Non-Realtime Synthesis (NRT)}}.
+
+%\bigskip 
 
 %Concerning the conversion of midi files to MDS, this remains a proposition because, in some context, it will be not enough to reduce some durations as described in the chapter \textsl{Duration} section \textsl{In time}. Also, more information can be selected from the midi file, such as the level and the midi instrument. Another point, for now, each track is computed independently, and this should be able to merge from any track to any other track.
 

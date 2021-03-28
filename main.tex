@@ -129,6 +129,11 @@ literate={~} {$\sim$}{1}, showstringspaces=false,upquote=true}
 \IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
 \makesavenoteenv{longtable}
 
+\usepackage{pifont}
+\usepackage{guitar}
+\usepackage{caption}
+\usepackage[hang,flushmargin]{footmisc}
+
 \begin{document}
 
 \pagecolor{aureolin!30}
@@ -728,4 +733,42 @@ by the `mixing' between the source (dry) and its persistence (wet) in terms of r
 %\end{mdframed}
 \input{src/newick}
 
+%++++++++++++++++++++++++++++++++++++++++++++++
+%++++++++++++++++++++++++++++++++++++++++++++++
+%\part[Music Programming ... about music vestiges]{MUSIC PROGRAMMING ... ABOUT MUSIC VESTIGES}
+%
+%\markboth{... about music vestiges -- Works}{Generative Sonic Art}
+%\thispagestyle{empty}
+%
+%
+%\include{mp/main}
+%
+%\markboth{... about music vestiges -- Annexes}{Generative Sonic Art}
+%\thispagestyle{empty}
+%
+%\include{mp/ntube}
+%
+%\include{mp/sh}
+
+\begin{titlepage} 
+\clearpage
+\ifodd\thepage\hbox{}\newpage\else\fi%si page paire ou impaire
+\thispagestyle{empty}
+
+\pagecolor{aureolin!30}
+
+\vspace*{\baselineskip} 	
+	
+	\vspace*{0.167\textheight} 
+	
+\centerline{\includegraphics[scale=0.8]{mp/img/logo}}
+\vspace{.5cm}
+  
+\centerline{  {\tiny  \texttt{Hans Holbein's <Dance of death>} }}
+\vspace{-0.2cm} 
+\centerline{  {\tiny  \texttt{woodcut <The New-Married Lady>} }}
+
+\end{titlepage}
+%++++++++++++++++++++++++++++++++++++++++++++++
+%++++++++++++++++++++++++++++++++++++++++++++++
 \end{document}
