@@ -240,16 +240,16 @@ s.pid.asBoolean
 + Platform {
 	*gsa {
 		var dirs =
-		(Platform.userExtensionDir +/+ "gsa*").pathMatch ++
-		(Platform.systemExtensionDir +/+ "gsa*").pathMatch ++
-		(Platform.userAppSupportDir +/+ "quarks" +/+ "gsa*").pathMatch ++
-		(Platform.systemAppSupportDir +/+ "quarks" +/+ "gsa*").pathMatch ++
-		(Platform.userAppSupportDir +/+ "downloaded-quarks" +/+ "gsa*").pathMatch ++
-		(Platform.systemAppSupportDir +/+ "downloaded-quarks" +/+ "gsa*").pathMatch;
+		(Platform.userExtensionDir +/+ "GSA*").pathMatch ++
+		(Platform.systemExtensionDir +/+ "GSA*").pathMatch ++
+		(Platform.userAppSupportDir +/+ "quarks" +/+ "GSA*").pathMatch ++
+		(Platform.systemAppSupportDir +/+ "quarks" +/+ "GSA*").pathMatch ++
+		(Platform.userAppSupportDir +/+ "downloaded-quarks" +/+ "GSA*").pathMatch ++
+		(Platform.systemAppSupportDir +/+ "downloaded-quarks" +/+ "GSA*").pathMatch;
 		dirs = dirs.select { |p| PathName(p).isFolder and: { PathName(p +/+ "oc").isFolder } };
 		if (dirs.size == 0)
 		{
-			"\nWARNING: no directory beginning with name 'gsa' found within extension directories\n".postln;
+			"\nWARNING: no directory beginning with name 'GSA' found within extension directories\n".postln;
 		}
 		{
 			^dirs
@@ -267,7 +267,7 @@ s.pid.asBoolean
 		dirs = dirs.select { |p| PathName(p).isFolder and: { PathName(p +/+ "SystemOverwrites").isFolder } };
 		if (dirs.size == 0)
 		{
-			"\nWARNING: 'gsa' extension requires 'cycle' extension\n---> https://github.com/yannics/cycle\n".postln;
+			"\nWARNING: 'GSA' extension requires 'cycle' extension\n---> https://github.com/yannics/cycle\n".postln;
 		}
 		{
 			^dirs
