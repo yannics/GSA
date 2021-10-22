@@ -208,7 +208,7 @@ This is some `formal and structural sketches' that I propose.
 
 \bigskip
 
-These algorithms are intended to be used in the \href{http://supercollider.github.io}{SuperCollider} context. Some analysis might require the software \href{http://www.fon.hum.uva.nl/praat}{Praat}. The software \href{http://lilypond.org/}{Lilypond} is also required in order to display scores. Also, some Common Lisp libraries as \href{https://github.com/yannics/cl-cycle}{\textsl{cl-cycle}}, \href{https://github.com/yannics/M2T}{M2T} and \href{https://bitbucket.org/yann\_ics/neuromuse3}{\textsl{Neuromuse3}} can be useful to complete this work.
+These algorithms are intended to be used in the \href{http://supercollider.github.io}{SuperCollider} context. Some analysis might require the software \href{http://www.fon.hum.uva.nl/praat}{Praat}. The software \href{http://lilypond.org/}{Lilypond} is also required in order to display scores. Also, some Common Lisp libraries as \href{https://github.com/yannics/cl-cycle}{\textsl{cl-cycle}}, \href{https://github.com/yannics/cl-gsa}{\textsl{cl-gsa}} and \href{https://bitbucket.org/yann\_ics/neuromuse3}{\textsl{Neuromuse3}} can be useful to complete this work.
 
 \bigskip
 
@@ -242,8 +242,8 @@ Time-based algorithms are understood in terms of repetitions/variations. It goes
 
 This is some convenient \textit{Pseudo-UGens}\footnote{An \textit{UGen} -- i.e. an Unit Generator -- is a SuperCollider object that processes or generates sound.} designed in the context of this writing. 
 
-See SC code appendice \fullref{gsasc}.
-%\href{https://github.com/yannics/...}{\texttt{\small https://github.com/yannics/...}}
+%See SC code appendice \fullref{gsasc}.
+See \texttt{gsa.sc} SuperCollider extension at \href{https://github.com/yannics/GSA}{\texttt{\small https://github.com/yannics/GSA}}
 
 
 \input{src/synthesis}
@@ -325,7 +325,7 @@ of \textsl{Triptyque} with the Risset's bells synthesis -- used in the movement 
 
 \bigskip
 
-The data used in this performance -- that is frequencies and M2T analysis --  was generated from the quotation find in the book \textit{Understanding Media}, \citep{mm} p. 351, according to the following procedure.
+The data used in this performance -- that is frequencies and  \textsl{\nameref{m2t}} analysis --  was generated from the quotation find in the book \textit{Understanding Media}, \citep{mm} p. 351, according to the following procedure.
 
 %\bigskip
 \newpage
@@ -503,56 +503,57 @@ rm 1.pl 1.dat 2.dat 3.dat 4.dat 5.dat 1.wav 2.wav
 \end{lstlisting}
 
 
-\subsection{\texttt{formatTextGrid.praat}}
-\label{ftg}
-
-\begin{lstlisting}[language=bash]
-form reframe TextGrid
-    sentence textgrid ...
-	sentence keyword_(ignore_interval) foo
-	boolean overwrite_TextGrid 1
-endform
-
-Read from file... 'textgrid$'
-current_textgrid$ = selected$ ("TextGrid")
-
-select TextGrid 'current_textgrid$'
-n = Get number of intervals: 1
-
-label$="0"
-
-for nn from 1 to n
-	name$ = Get label of interval: 1, nn
-	if (keyword$ = name$)
-		Set interval text: 1, nn, ""
-	else
-		label$=string$(number(label$)+1)
-		Set interval text: 1, nn, label$
-	endif
-endfor
-
-if (overwrite_TextGrid = 1)
-	Save as short text file: textgrid$
-else	
-	rename$ = textgrid$ - ".TextGrid" + "-reframed.TextGrid"
-	Save as short text file: rename$
-endif
-
-select all
-Remove
-\end{lstlisting}
+%\subsection{\texttt{formatTextGrid.praat}}
+%\label{ftg}
+%
+%\begin{lstlisting}[language=bash]
+%form reframe TextGrid
+%    sentence textgrid ...
+%	sentence keyword_(ignore_interval) foo
+%	boolean overwrite_TextGrid 1
+%endform
+%
+%Read from file... 'textgrid$'
+%current_textgrid$ = selected$ ("TextGrid")
+%
+%select TextGrid 'current_textgrid$'
+%Duplicate tier: 1, 1, ""
+%n = Get number of intervals: 1
+%
+%label$="0"
+%
+%for nn from 1 to n
+%	name$ = Get label of interval: 1, nn
+%	if (keyword$ = name$)
+%		Set interval text: 1, nn, ""
+%	else
+%		label$=string$(number(label$)+1)
+%		Set interval text: 1, nn, label$
+%	endif
+%endfor
+%
+%if (overwrite_TextGrid = 1)
+%	Save as short text file: textgrid$
+%else	
+%	rename$ = textgrid$ - ".TextGrid" + "-reframed.TextGrid"
+%	Save as short text file: rename$
+%endif
+%
+%select all
+%Remove
+%\end{lstlisting}
 
 \makeatletter
 \setlength{\@fptop}{0pt}
 \makeatother
 
-\begin{figure}[!hbt]
-	\begin{center}
-		\includegraphics[scale=0.5]{img/7861}
-		\caption{The ScriptEditor window of the script \texttt{formatTextGrid.praat}.}
-		\label{fig:ftg}
-	\end{center}
-\end{figure}
+%\begin{figure}[!hbt]
+%	\begin{center}
+%		\includegraphics[scale=0.5]{img/7861}
+%		\caption{The ScriptEditor window of the script \texttt{formatTextGrid.praat}.}
+%		\label{fig:ftg}
+%	\end{center}
+%\end{figure}
 
 \subsection{Transpose}
 \label{trans}
@@ -667,7 +668,7 @@ nw_display -s -w 1000 -u '' -t -W 20 -b 'opacity:0' in.nw
 > out-o.svg
 \end{lstlisting}
 
-\input{src/code}
+%\input{src/code}
 %#############################################################################
 
 \newpage

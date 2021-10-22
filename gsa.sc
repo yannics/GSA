@@ -246,7 +246,9 @@ s.pid.asBoolean
 		(Platform.systemAppSupportDir +/+ "quarks" +/+ "GSA*").pathMatch ++
 		(Platform.userAppSupportDir +/+ "downloaded-quarks" +/+ "GSA*").pathMatch ++
 		(Platform.systemAppSupportDir +/+ "downloaded-quarks" +/+ "GSA*").pathMatch;
-		dirs = dirs.select { |p| PathName(p).isFolder and: { PathName(p +/+ "oc").isFolder } };
+		dirs = dirs.select { |p| PathName(p).isFolder
+			//and: { PathName(p +/+ "oc").isFolder }
+		};
 		if (dirs.size == 0)
 		{
 			"\nWARNING: no directory beginning with name 'GSA' found within extension directories\n".postln;

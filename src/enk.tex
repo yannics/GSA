@@ -1,7 +1,7 @@
 \chapter{Documentation of the executable script \textsl{enkode}}
 \thispagestyle{empty}
 \label{enk}
-{\texttt{2014} -- \texttt{2020}}
+{\texttt{2014} -- \texttt{2021}}
 
 \bigskip
 \smallskip
@@ -260,7 +260,9 @@ Most of the time, these values have to be adjusted empirically according to the 
 
 \smallskip
 
-Sometimes, the discriminative algorithm is not accurate or efficient enough. In this case, the segmentation can be edited in Praat. In order to format the TextGrid as an ordered integer as label, it is recommanded to apply the script \nameref{ftg} -- see appendice \fullref{ftg}.
+Sometimes, the discriminative algorithm is not accurate or efficient enough. In this case, the segmentation can be edited or created in Praat. 
+Then, it is recommended to `reframe' the TextGrid, that is to say labelled the first tier as an ordered integer. This can be done with the script \texttt{enkode.praat} -- see section \fullref{enkps}.
+%In order to format the TextGrid as an ordered integer as label, it is recommended to apply the script \nameref{ftg} -- see appendice \fullref{ftg}.
 
 \item Default behavior:
 \begin{lstlisting}[language=bash]
@@ -315,8 +317,10 @@ March 9, 2020
 %\newpage
 
 \section{Post-scriptum}
-
-The script \texttt{enkode.praat} allows to work directly on Praat with the TextGrid of the user. The script does the same than \textsl{enkode} except the \textsl{\nameref{enk:es}} and the \textsl{\nameref{enk:dic}}. Mind that the TextGrid has to be well formated -- see \nameref{ftg} in appendice \fullref{ftg}.
+\label{enkps}
+The script \texttt{enkode.praat} allows to work directly on Praat with the TextGrid of the user. The script does the same than \textsl{enkode} except the \textsl{\nameref{enk:es}} and the \textsl{\nameref{enk:dic}}. 
+Optionally,  the TextGrid can be `reframed'.
+%Mind that the TextGrid has to be well formated -- see \nameref{ftg} in appendice \fullref{ftg}.
 
 \smallskip
 
@@ -326,7 +330,7 @@ The script \texttt{enkode.praat} allows to work directly on Praat with the TextG
 
 \begin{figure}[!hbt]
 	\begin{center}
-		\includegraphics[scale=0.5]{img/5611}
+		\includegraphics[scale=0.5]{img/5612}
 		\caption{The ScriptEditor window of the script \texttt{enkode.praat}.}
 		\label{fig:praat}
 	\end{center}
