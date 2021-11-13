@@ -83,8 +83,7 @@ Sow {
 }
 
 Distance {
-	*ar { |in, rdist=0, idist=0.96875, abs=(-7), mul=1, add=0|
-		// idist = 0.96875 => 31/32
+	*ar { |in, rdist=0, abs=(-7), mul=1, add=0|
 		var signal, fcut;
 		fcut = rdist.lincurve(0, 1, 20000, 20, abs);
 		signal = LPF.ar(in*(1-rdist), fcut);
