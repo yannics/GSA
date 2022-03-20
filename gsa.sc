@@ -11,7 +11,8 @@ To install: clone or copy this folder to Platform.userExtensionDir
  Ulam       | ar, ind, stretch, nx, ny, sig, detune, rndAmp ..
  Delbuf     | buf, del, rate, da ..
  Sow        | buf, ser, sym ..
- Distance   | in, rdist, idist, abs ..
+ Distance   | in, rdist, abs ..
+ InH2O      | in, rdepth, turbulance, abs ..
 -------- [ TODO ] ------------------------------------------------
  Doppler4   | bufnum, xIn, bf, dist, zenith, lap ..
 ==================================================================
@@ -21,9 +22,7 @@ To install: clone or copy this folder to Platform.userExtensionDir
  db2dist    | Number    | --
  harmRatio  | Array     | sym, ind, sr, del
  detune     | Array     | n, len
--------- [ Experimental - Work in Progress ] ---------------------
-recording   | Function  | duration, numChannels, path
-asyncThread | Function  | --
+ select     | Buffer    | maxDur, minDur, server
 ==================================================================
 <by.cmsc@gmail.com>
 */
@@ -92,6 +91,20 @@ Distance {
 	}
 }
 
+InH2O {
+	*ar { |in, rdepth=0.5, turbulance=#[0.1, 20], abs=(-7), mul=1, add=0|
+		var fcut, noise, chainA, chainB, chain, out;
+		fcut = rdepth.lincurve(0, 1, 20000, 20, abs);
+		noise = LPF.ar(WhiteNoise.ar*(1-rdepth), fcut+LFNoise2.kr(turbulance[0], turbulance[1]));
+		chainA = FFT(LocalBuf(2048), noise);
+		chainB = FFT(LocalBuf(2048), in*(1-rdepth)*2);
+		chain = PV_MagMul(chainA, chainB);
+		out = IFFT(chain)*0.05;
+		out = out * mul + add;
+		^out
+	}
+}
+
 + Number {
 	dist2db {
 		^(-20*(1-this).reciprocal.log10)
@@ -142,80 +155,6 @@ Distance {
 	}
 
 }
-
-/*+++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-+ Function {
-
-	recording {
-		|duration, numChannels=1, path|
-		// /!\ THIS is an audio function -- e.g. {SinOsc.ar}
-		Routine({
-			var s = Server.default;
-			var name, bus, dir, tmp;
-			if (s.isRecording)
-			{
-				(format("Server % is currently recording ...", s)).warn
-			}
-			{
-				name = if(~recVal.notNil) {~recVal} {Date.getDate.rawSeconds.asInteger};
-				bus = Bus.audio(s, numChannels);
-				if (path.notNil)
-				{dir=path.asAbsolutePath}
-				{dir=thisProcess.platform.recordingsDir +/+ "/GSA/"};
-				"----------------------------".postln;
-				this.play(outbus: bus);
-				s.record(dir +/+ name ++ ".wav", duration: duration, bus: bus);
-				if(s.pid.asBoolean) {File.use(dir +/+ "info", "a", { |f| f.write(format("% -> %\n", name, this.def.sourceCode))})};
-				s.sync;
-				(duration+0.1).wait;
-				bus.free;
-				this.free;
-				"Completed!".postln;
-			}
-		}).next;
-	}
-
-	asyncThread {
-		// /!\ THIS is a function -- e.g. {...}
-		// ---> add the following code at line 165 of Recorder.sc
-		//------------------------------------------------
-		// if(~recVal == PathName(recordPath).fileNameWithoutExtension.asInteger)
-		// {
-		//     ("kill" + File.readAllString(PathName.tmp +/+ ~recVal ++ ".pid").asInteger).unixCmd;
-		//     File.delete(PathName.tmp +/+ ~recVal ++ ".pid");
-		//     File.delete(PathName.tmp +/+ ~recVal ++ ".scd")
-		// };
-		//------------------------------------------------
-		var sclang = "/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang";
-		var recVal = Date.getDate.rawSeconds.asInteger;
-		var dir, pid;
-		dir = PathName.tmp +/+ recVal ++ ".scd";
-		File.use(dir, "a", { |f| f.write(format("(~recVal = %; s.waitForBoot(%))", recVal, this.def.sourceCode))});
-		pid = (sclang + dir.replace(" ", "\\ ")).unixCmd;
-		File.use(PathName.tmp +/+ recVal ++ ".pid", "a", { |f| f.write(format("%", pid))});
-		//postf("----------------------------\npid[%] = %\n----------------------------\n", recVal, pid);
-		^pid
-	}
-
-}
-
-/*
-s = Server.default;
-s.pid.asBoolean
-// if(~recVal == PathName(recordPath).fileNameWithoutExtension.asInteger) {"read pid file -- kill pid -- remove pid and scd files".postln;} {"~recVal = Nil".postln;};
-
-{{Ulam.ar(Array.rand(55,34,4444),1,ny:\freq)*0.1!2}.recording(1,2)}.asyncThread
-// File.readAllString(PathName.tmp +/+ 1615923238 ++ ".pid").asInteger;
-// File.delete(PathName.tmp +/+ 1615922823 ++ ".pid")
-// File.delete(PathName.tmp +/+ 1615922823 ++ ".scd")
-
-{Ulam.ar(Array.rand(55,34,4444),1,ny:\freq)*0.1!2}.recording(1,2)
-
-//Server.default
-
-{1+2}.asCompileString
-*/
 
 + Buffer {
 	select {
