@@ -154,6 +154,17 @@ InH2O {
 		}
 	}
 
+	reorder {
+		|ar|
+		var ac = Array.newFrom(ar);
+		if((this.size==ar.size) && ac.sort.isSeries && (ac.sort[0]==0))
+		{
+			if(this[0].isArray && this.any{|it|it != ar.size})
+			{ ^this.collect{|it| ar.collect{|i| it[i] }} }
+			{ ^ar.collect{|it| this[it]} }
+		}
+		{ "reorder argument requires an array built with a series from 0 to the size minus one of the array (or sub-array) to reorder.".error; ^nil }
+	}
 }
 
 + Buffer {
@@ -214,3 +225,97 @@ InH2O {
 		}
 	}
 }
+
+//-----------------------------------------------------
+// SuperCollider conversion tools to Guido syntax
+// [ https://guidodoc.grame.fr/ ]
+// for real time musical notation INScore context
+// [ https://inscore.grame.fr/ ]
+//----------------------
+// guidonote -> midinote
+//    C-4    ->    0
+//    C-3    ->    12
+//    C-2    ->    24
+//    C-1    ->    36
+//    C0     ->    48
+//    C1     ->    60
+//    A1     ->    69 (440Hz)
+//    C2     ->    72
+//    C3     ->    84
+//    C4     ->    96
+//----------------------
+/*
+gmn score syntax
+    gmn -> { score }
+  score -> [ staff ] or [ staff1 ], [ staff2 ] ...
+  staff -> tag(s) + note(s)
+    tag -> \symbol or \symbol<value(s)> or \symbol(staff) or \symbol<value(s)>(staff)
+*/
++ Integer {
+	midiguido {
+		arg dur = 0.25; // dur is a fraction of the whole note
+		var notes = ["c", "c#", "d", "e&", "e", "f", "f#", "g", "g#", "a", "b&", "b"]; // my own chromatic scale
+		var rat = dur.asFraction;
+		^(notes[this%12] ++ (this.div(12)-4).asString ++ format("*%/%", rat[0], rat[1]))
+	}
+
+	degguido {
+		arg
+		dur = 0.25,
+		range = #[48, 84], // ---> ~ viola range
+		to = \chord, // or midinote (nearest of)
+		asChord = true;
+		if (to.isInteger)
+		{
+			^(to.nearestInList((range[0]..range[1]).select{|mid| mid%12 == this})).midiguido(dur)
+		}
+		{
+			^(range[0]..range[1]).select{|mid| mid%12 == this}.midiguido(dur, asChord: asChord)
+		}
+	}
+}
+
++ Array  {
+	midiguido {
+		arg
+		dur = 0.25,
+		extend = \clip, // or extend = \wrap
+		asChord = true;
+		var rtm = if(extend == \wrap) { dur.asArray.wrapExtend(this.size) } { dur.asArray.clipExtend(this.size) };
+		if (asChord)
+		{
+			^("{ " ++ this.size.collect{|i| this[i].midiguido(rtm[i])}.join(", ") ++ " }")
+		}
+		{
+			^this.size.collect{|i| this[i].midiguido(rtm[i])}.join(" ")
+		}
+	}
+}
+
++ String {
+	tag {
+		|tag, args|
+		var ar=[];
+		if (args.asArray.size == 1)
+		{ ar = if (args.asArray.first.isNumber) { args.asArray } { format("'%'", args.asArray.first).asSymbol.asArray} }
+		{ args.asDict.keysValuesDo{|k,v| ar=ar.add(if (v.isNumber) { format("%=%", k, v) } { format("%='%'", k, v) })} };
+		case
+		{ this.isEmpty && args.isNil }
+		{
+			^("\\" ++ format("%", tag))
+		}
+		{ this.isEmpty && args.notNil }
+		{
+			^("\\" ++ format("%<%>", tag, ar.join(",")))
+		}
+		{ this.isEmpty.not && args.isNil }
+		{
+			^("\\" ++ format("%", tag) ++ "(" ++ this ++ ")")
+		}
+		{ this.isEmpty.not && args.notNil }
+		{
+			^("\\" ++ format("%<%>", tag, ar.join(",")) ++ "(" ++ this ++ ")")
+		}
+	}
+}
+//-----------------------------------------------------
