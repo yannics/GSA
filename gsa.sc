@@ -250,11 +250,19 @@ gmn score syntax
   score -> [ staff ] or [ staff1 ], [ staff2 ] ...
   staff -> tag(s) + note(s)
     tag -> \symbol or \symbol<value(s)> or \symbol(staff) or \symbol<value(s)>(staff)
+====================================================
+   method   |   class   |   args
+------------|-----------|---------------------------
+ midiguido  | Integer   | dur
+ degguido   | Integer   | dur, range, to, asChord
+ midiguido  | Array     | dur, extend, asChord
+ tag        | String    | tag args
+====================================================
 */
 + Integer {
 	midiguido {
 		arg dur = 0.25; // dur is a fraction of the whole note
-		var notes = ["c", "c#", "d", "e&", "e", "f", "f#", "g", "g#", "a", "b&", "b"]; // my own chromatic scale
+		var notes = ["c", "c#", "d", "e&", "e", "f", "f#", "g", "g#", "a", "b&", "b"]; // my own chromatic scale ...
 		var rat = dur.asFraction;
 		^(notes[this%12] ++ (this.div(12)-4).asString ++ format("*%/%", rat[0], rat[1]))
 	}
@@ -279,7 +287,7 @@ gmn score syntax
 	midiguido {
 		arg
 		dur = 0.25,
-		extend = \clip, // or extend = \wrap
+		extend = \clip, // or \wrap
 		asChord = true;
 		var rtm = if(extend == \wrap) { dur.asArray.wrapExtend(this.size) } { dur.asArray.clipExtend(this.size) };
 		if (asChord)
@@ -297,7 +305,7 @@ gmn score syntax
 		|tag, args|
 		var ar=[];
 		if (args.asArray.size == 1)
-		{ ar = if (args.asArray.first.isNumber) { args.asArray } { format("'%'", args.asArray.first).asSymbol.asArray} }
+		{ ar = if (args.asArray.first.isNumber) { args.asArray } { format("'%'", args.asArray.first).asSymbol.asArray } }
 		{ args.asDict.keysValuesDo{|k,v| ar=ar.add(if (v.isNumber) { format("%=%", k, v) } { format("%='%'", k, v) })} };
 		case
 		{ this.isEmpty && args.isNil }
