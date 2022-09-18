@@ -1,3 +1,101 @@
+\section{\texttt{Distance}}
+\label{ugdist}
+
+\texttt{UGens>Filters}
+
+\bigskip
+
+See description appendice \fullref{dist}.
+
+\section{\texttt{Doppler4}}
+\label{ugdop}
+
+\texttt{UGens>Buffer}
+
+\bigskip
+
+See description on page \pageref{dop}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{\texttt{Pan4MSXY}}
+\label{msxy}
+
+\texttt{UGens>Buffer}
+
+\bigskip
+
+This  \textit{Pseudo-UGens} convert quadraphonic recording MS/XY (using the re- corder Zoom H2N for instance, see page \pageref{mp:msxy} for details) to a four channels equal power panner, with outputs in order LeftFront, RightFront, LeftBack, RightBack.
+
+Note the method \texttt{convertPan4toArray}, which distributes amplitudes in the quadraphonic space according to the panoramic positions (see description on page \pageref{pandist}).
+
+%\newpage
+\bigskip
+
+\begin{addmargin}[1em]{0em}%
+\mdfdefinestyle{mystyle}{backgroundcolor=gray!5,linecolor=gray!25,roundcorner=3pt}
+\begin{mdframed}[style=mystyle]
+
+\bigskip
+
+{\large \textbf{Pan4MSXY}}
+
+\hrulefill
+
+\color{gray!80}Arguments:\color{black} 
+
+\bigskip
+
+\begin{tabular}{l c p{7.5cm}}
+\textbf{bufMS} &  & The index of the stereo buffer MS.\\
+\textbf{bufXY} &  & The index of the stereo buffer XY.\\
+\textbf{dist} & 0 &  -1 to +1, relative distance from the listener. \\
+\textbf{rate} & 1.0 & speed ratio  of the soundfile. 1.0 is the normal rate, 2.0 is one octave up, 0.5 is one octave down, etc.\\
+\textbf{mid} & 1 & as level. \\
+\textbf{side} & 1 &  as level.\\
+\textbf{xy} & 1 & as level.\\
+\textbf{xpos} & 0 &  -1 to +1, x-axis position, \textit{i.e.} left to right.\\
+\textbf{ypos} & 0 &  -1 to +1, y-axis position, \textit{i.e.} back to front.\\
+\textbf{ring} & false & depending of the quadraphonic configuration. If outputs are a ring of channels, swap channels 2 and 3 is required.
+\end{tabular}
+
+\bigskip
+
+\end{mdframed}
+\end{addmargin}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{\texttt{Sow}}
+\label{cfso}
+
+\texttt{UGens>Buffer}
+
+\bigskip
+
+The idea is to apply some `macro' formal objects to a sonic object as it is. These macro-forms are described in the previous chapters respectively as \nameref{imp2} on page \pageref{imp2} and \nameref{imp3} on page \pageref{imp3}.
+
+\bigskip
+The sonic object is a sample as a sound file. First, the synthesis algorithm detects the index $ind$ of the absolute maximal value of the signal, in order to compute the duration of the climax of the sample. Then, according to a given array, which is normalised (by divided each element of the array by the smallest value), and which set the ratio of the duplicated sound and the delay to match the climax. For the given array $S$, the ratios $R$ are computed according to two modalities, namely defined by the symbols \texttt{\textbackslash sup} (if we consider the ratio from the biggest value of $S$) or \texttt{\textbackslash inf} (if we consider the ratio from the smallest value of $S$).
+
+\[
+     R =
+\begin{dcases}
+	\frac{min(S)}{(S, >)}  & \text{if \texttt{\textbackslash sup}}\\
+	\frac{(S, <)}{min(S) \times max(S)}  & \text{if \texttt{\textbackslash inf}} 
+   \end{dcases}
+\]
+
+%\newpage
+\bigskip
+Then, the respective delays $D$ are computed as follow ($sr$ is the sample rate):
+ 
+\[
+D = \bigcup_{i \in R} \frac{ind}{sr}  \left( \frac{1}{min(R)} - \frac{1}{R_i} \right)
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{\texttt{Ulam}}
 \label{colz}
 
@@ -43,49 +141,4 @@ For a given positive integer $n$, the Collatz algorithm generate a finite series
 
 Each profile as an envelope is multiplied by its respective \textit{Ugen} taking into account the value $n$ as the frequency argument. This is done recursively through a given array of frequencies as integers.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{\texttt{Sow}}
-\label{cfso}
-
-\texttt{UGens>Generators>Deterministic}
-
-\bigskip
-
-The idea is to apply some `macro' formal objects to a sonic object as it is. These macro-forms are described in the previous chapters respectively as \nameref{imp2} on page \pageref{imp2} and \nameref{imp3} on page \pageref{imp3}.
-
-\bigskip
-The sonic object is a sample as a sound file. First, the synthesis algorithm detects the index $ind$ of the absolute maximal value of the signal, in order to compute the duration of the climax of the sample. Then, according to a given array, which is normalised (by divided each element of the array by the smallest value), and which set the ratio of the duplicated sound and the delay to match the climax. For the given array $S$, the ratios $R$ are computed according to two modalities, namely defined by the symbols \texttt{\textbackslash sup} (if we consider the ratio from the biggest value of $S$) or \texttt{\textbackslash inf} (if we consider the ratio from the smallest value of $S$).
-
-\[
-     R =
-\begin{dcases}
-	\frac{min(S)}{(S, >)}  & \text{if \texttt{\textbackslash sup}}\\
-	\frac{(S, <)}{min(S) \times max(S)}  & \text{if \texttt{\textbackslash inf}} 
-   \end{dcases}
-\]
-
-Then, the respective delays $D$ are computed as follow ($sr$ is the sample rate):
- 
-\[
-D = \bigcup_{i \in R} \frac{ind}{sr}  \left( \frac{1}{min(R)} - \frac{1}{R_i} \right)
-\]
-
-\section{\texttt{Distance}}
-\label{ugdist}
-
-\texttt{UGens>Filters}
-
-\bigskip
-
-See description appendice \fullref{dist}.
-
-\section{\texttt{Doppler4}}
-\label{ugdop}
-
-\texttt{UGens>Filters}
-
-\bigskip
-
-See description on page \pageref{dop}.
 

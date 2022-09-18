@@ -67,13 +67,13 @@ De plus, la pr\'{e}cipitation \'{e}v\'{e}nementielle induit une contraction temp
 \bigskip
   \bigskip
 
-\noindent \textbf{{\large dop4D4sample}}
+\noindent \textbf{{\large Doppler4}}
 \hrulefill
 \label{dop}
 
   \bigskip
 
-Le synth\'etiseur  \textsl{dop4D4sample} consiste \`a appliquer l'effet Doppler \`a une source sonore d\'elib\'er\'ee se d\'epla\c{c}ant dans une \myuline{trajectoire rectiligne} de type $S(t)=m x +p$, \`a \myuline{vitesse constante} et dans le champ audible de l'auditeur. Ainsi, le point d'\'emergence susceptible d'\^etre per\c{c}u ou autrement dit la distance seuil de perception est fonction de l'amplitude de la source, donc relative. Pr\'esentement, ce point est \'egale \`a 1 en coordonn\'ee radiale polaire (voir figure \ref{tra}). 
+Le \textit{Pseudo-UGens}  \textsl{Doppler4} consiste \`a appliquer l'effet Doppler \`a une source sonore monophonique d\'elib\'er\'ee se d\'epla\c{c}ant dans une \myuline{trajectoire rectiligne} de type $S(t)=m x +p$, \`a \myuline{vitesse constante} et dans le champ audible de l'auditeur. Ainsi, le point d'\'emergence susceptible d'\^etre per\c{c}u ou autrement dit la distance seuil de perception est fonction de l'amplitude de la source, donc relative. Pr\'esentement, ce point est \'egale \`a 1 en coordonn\'ee radiale polaire (voir figure \ref{tra}). 
 
 \newpage
 
@@ -83,7 +83,7 @@ Le synth\'etiseur  \textsl{dop4D4sample} consiste \`a appliquer l'effet Doppler 
 
 \bigskip
 
-{\large \textbf{dop4D4sample}}
+{\large \textbf{Doppler4}}
 
 \hrulefill
 
@@ -92,14 +92,13 @@ Le synth\'etiseur  \textsl{dop4D4sample} consiste \`a appliquer l'effet Doppler 
 \bigskip
 
 \begin{tabular}{l c p{7.5cm}}
-\textbf{bus} & 0 & The index of the bus to write out to. The lowest numbers are written to the audio hardware.\\
-\textbf{bufnum} &  & The index of the buffer to use.\\
-\textbf{xIn} & 1 &  -1 to 1, position of the emergent point in x-axis.\\
-\textbf{bf} & 1 &  -1 or 1, localisation of the emergent point in y-axis (respectively back or front).\\
-\textbf{dist} & 0 & -1 to 1, relative distance from the listener. Negative value means the source passes in back of the listener and positive value in front of the listener. \\
+\textbf{buf} &  & The index of the buffer to use.\\
+\textbf{xIn} & 1 &  -1 to 1, position of the emergent point in x-axis. \myuline{The value zero is forbidden}.\\
+\textbf{yIn} & 1 &  -1 or 1, position of the emergent point in y-axis (respectively back or front).\\
+\textbf{dist} & 0.1 & -1 to 1, relative distance from the listener. Negative value means the source passes in back of the listener and positive value in front of the listener. \myuline{The value zero is forbidden}.\\
 \textbf{zenith} & 0 & 0 to 1, elevation of the source according an angle $\theta$ from the horizontal such as $z=sin \theta$. \\
 \textbf{lap} & 10 &  Time in second to cross the audible space.\\
-\textbf{amp} & 1 & 0 to 1, amount of signal.
+\textbf{ring} & false & depending of the quadraphonic configuration. If outputs are a ring of channels, swap channels 2 and 3 is required.
 \end{tabular}
 
 \bigskip
@@ -109,7 +108,7 @@ Le synth\'etiseur  \textsl{dop4D4sample} consiste \`a appliquer l'effet Doppler 
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.33]{img/4782}
+\includegraphics[scale=0.31]{img/4782}
 \caption{Trajectoire de l'objet sonore $S(t)$ par rapport au r\'ecepteur $r$. }
 \label{tra}
 \end{center}
@@ -215,7 +214,7 @@ Le rapport vitesse de la source par la vitesse du son dans l'atmosph\`ere sera p
 \end{figure}
 
 \subsection*{Distribution des amplitudes dans l'espace quadriphonique}
-
+\label{pandist}
 \bigskip
 \bigskip
 

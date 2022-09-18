@@ -2,7 +2,7 @@
 GSA
 <https://www.overleaf.com/read/sjhfhthgkgdj>
 Sound design studies
-version 1.0.4
+version 1.0.6
 ------------------------------------------------------------------
 To install: clone or copy this folder to Platform.userExtensionDir
 ==================================================================
@@ -13,8 +13,8 @@ To install: clone or copy this folder to Platform.userExtensionDir
  Sow        | buf, ser, sym ..
  Distance   | in, rdist, abs ..
  InH2O      | in, rdepth, turbulance, abs ..
--------- [ TODO ] ------------------------------------------------
- Doppler4   | bufnum, xIn, bf, dist, zenith, lap ..
+ Doppler4   | bufnum, xIn, yIn, dist, zenith, lap, ring ..
+ Pan4MSXY   | bufMS, bufXY, dist, rate, mid, side, xy, xpos, ypos, ring ..
 ==================================================================
    method   |   class   |   args
 ------------|-----------|-----------------------------------------
@@ -23,6 +23,7 @@ To install: clone or copy this folder to Platform.userExtensionDir
  harmRatio  | Array     | sym, ind, sr, del
  detune     | Array     | n, len
  select     | Buffer    | maxDur, minDur, server
+ [xpos, ypos].convertPan4toArray
 ==================================================================
 <by.cmsc@gmail.com>
 */
@@ -105,6 +106,62 @@ InH2O {
 	}
 }
 
+Doppler4 {
+	*ar { |buf, xIn=1, yIn=1, dist=0.1, zenith=0, lap=1, ring=false, mul=1, add=0|
+		// Note: <xIn> and <dist> should not be equal to zero;
+		var alpha, bf, beta, xd, gamma, yd, m, p, as, bs, cs, delta, xOut, xSt, ySt, dur, r, dl, freqLPF, azimut, amplitude, out;
+		// here compute the trajectory
+		alpha = acos(xIn);
+		bf = yIn.sign*sin(alpha);
+		beta = acos(dist*(1-zenith));
+		xd = dist*cos(alpha+(xIn.sign*beta));
+		gamma = acos(xd/dist);
+		yd = yIn.sign*(dist*(1-zenith))*sin(gamma);
+		m = (bf-yd)/(xIn-xd);
+		p = bf-(m*xIn);
+		as = m.squared+1;
+		bs = 2*m*p;
+		cs = p.squared-1;
+		delta = bs.squared-(4*as*cs);
+		xOut = (bs.neg-((xIn/xIn.abs)*delta.sqrt))/(2*as);
+		dur = lap.clip2(buf.duration);
+		xSt = Line.kr(xIn, xOut, dur, doneAction: 2);
+		ySt = p+(m*xSt);
+		// here is the distance from the source to the receiver
+		r = Complex(xSt, ySt);
+		dl = r.rho;
+		freqLPF = 20000*(exp(-1*dl*(log(1/1000)).abs));
+		azimut = 1/(1-(cos(r.angle+((xIn.ceil-1)*pi))/dur));
+		amplitude = ((-20)*log10(dl*(2**6))).dbamp.clip2(1);
+		out = Pan4.ar(PlayBuf.ar(1, buf, BufRateScale.kr(buf)*azimut), xSt, ySt).swap(2,ring.asBoolean.binaryValue+2);
+		out = LPF.ar(out, freqLPF, amplitude);
+		out = out * mul + add;
+		^out
+	}
+}
+
+Pan4MSXY {
+	*ar { | bufMS, bufXY, dist=0, rate=1, mid=1, side=1, xy=1, xpos=0, ypos=0, ring=false, loop=false, mul=1, add=0 |
+		var freqLPF = 20000*(exp(-1*dist*(log(20/20000)).abs));
+		var sigXY = PlayBuf.ar(
+			2,
+			bufXY,
+			BufRateScale.kr(bufXY)*rate,
+			loop: loop.asBoolean.binaryValue) * xy;
+		var sigMS = PlayBuf.ar(
+			2,
+			bufMS,
+			BufRateScale.kr(bufMS)*rate,
+			loop: loop.asBoolean.binaryValue) * [mid, side];
+		var pan4 = [xpos, ypos].convertPan4toArray;
+		var out = LPF.ar(
+			[sigXY[0], sigXY[1], sigMS[0]+sigMS[1], sigMS[0]-sigMS[1]],
+			freqLPF) * pan4.swap(2,ring.asBoolean.binaryValue+2);
+		out = out * mul + add;
+		^out
+	}
+}
+
 + Number {
 	dist2db {
 		^(-20*(1-this).reciprocal.log10)
@@ -154,17 +211,18 @@ InH2O {
 		}
 	}
 
-	reorder {
-		|ar|
-		var ac = Array.newFrom(ar);
-		if((this.size==ar.size) && ac.sort.isSeries && (ac.sort[0]==0))
-		{
-			if(this[0].isArray && this.any{|it|it != ar.size})
-			{ ^this.collect{|it| ar.collect{|i| it[i] }} }
-			{ ^ar.collect{|it| this[it]} }
+	convertPan4toArray {
+			var xpos = this[0];
+			var ypos = this[1];
+			var a = Complex(xpos, 1), b = Complex(ypos, 1), leftright, frontback;
+			leftright = Array.with(((2.sqrt/2)*((a.angle-(pi/2)).cos + (a.angle-(pi/2)).sin)),((2.sqrt/2)*((a.angle-(pi/2)).cos - (a.angle-(pi/2)).sin)));
+			frontback = Array.with(((2.sqrt/2)*((b.angle-(pi/2)).cos - (b.angle-(pi/2)).sin)),((2.sqrt/2)*((b.angle-(pi/2)).cos + (b.angle-(pi/2)).sin)));
+			^Array.with(
+				(leftright[0]*frontback[0]),
+				(leftright[1]*frontback[0]),
+				(leftright[0]*frontback[1]),
+				(leftright[1]*frontback[1]))
 		}
-		{ "reorder argument requires an array built with a series from 0 to the size minus one of the array (or sub-array) to reorder.".error; ^nil }
-	}
 }
 
 + Buffer {
