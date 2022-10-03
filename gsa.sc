@@ -162,6 +162,42 @@ Pan4MSXY {
 	}
 }
 
++ Integer {
+	ocwr {
+		| res, dec = 0, ind=false |
+		var	sortAr = {
+			| a, b |
+			if(a.isEmpty,
+				{b.isEmpty.not},
+				{if(b.isEmpty,
+					{false},
+					{if(a.first == b.first ,
+						{sortAr.value(a.copyToEnd(1), b.copyToEnd(1))},
+						{a.first < b.first})
+				})
+			})
+		};
+		if(dec == 1,
+			{ res=res.asArray.sort({|a, b| sortAr.value(a, b)}).reverse.sort({|a, b| a.size < b.size});
+				if (ind) { ^res } { ^res.collect(_+1) }},
+			{
+				if(res.isNil)
+				{
+					res = [Array.series(this)];
+					dec = this
+				};
+				res = res.collect({|it|
+					it.collect({|item, i|
+						var tmp=it.copyToEnd(0);
+						if(dec == tmp.size,
+							{tmp.removeAt(i); tmp}
+					)})
+				}).asArray.flatten(1) ++ res;
+				^this.ocwr(res.replace([nil],).asSet, dec-1, ind)
+		})
+	}
+}
+
 + Number {
 	dist2db {
 		^(-20*(1-this).reciprocal.log10)
@@ -173,6 +209,12 @@ Pan4MSXY {
 }
 
 + Array  {
+	ocwr {
+		var res = this.size.ocwr(ind:true);
+		var dict = Dictionary.newFrom(this.collect{|it,i| [i,it]}.flatten(1));
+		^res.deepCollect(2, {|it| dict.matchAt(it)})
+	}
+
 	harmRatio {
 		| sym=\sup, ind=1, sr=1, del=0 |
 		var res, i;
