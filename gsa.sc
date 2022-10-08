@@ -107,7 +107,7 @@ InH2O {
 }
 
 Doppler4 {
-	*ar { |buf, xIn=1, yIn=1, dist=0.1, zenith=0, lap=1, ring=false, mul=1, add=0|
+	*ar { |buf, xIn=1, yIn=1, dist=0.1, zenith=0, lap=1, mul=1, add=0|
 		// Note: <xIn> and <dist> should not be equal to zero;
 		var alpha, bf, beta, xd, gamma, yd, m, p, as, bs, cs, delta, xOut, xSt, ySt, dur, r, dl, freqLPF, azimut, amplitude, out;
 		// here compute the trajectory
@@ -133,7 +133,7 @@ Doppler4 {
 		freqLPF = 20000*(exp(-1*dl*(log(1/1000)).abs));
 		azimut = 1/(1-(cos(r.angle+((xIn.ceil-1)*pi))/dur));
 		amplitude = ((-20)*log10(dl*(2**6))).dbamp.clip2(1);
-		out = Pan4.ar(PlayBuf.ar(1, buf, BufRateScale.kr(buf)*azimut), xSt, ySt).swap(2,ring.asBoolean.binaryValue+2);
+		out = Pan4.ar(PlayBuf.ar(1, buf, BufRateScale.kr(buf)*azimut), xSt, ySt);
 		out = LPF.ar(out, freqLPF, amplitude);
 		out = out * mul + add;
 		^out
