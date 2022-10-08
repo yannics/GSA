@@ -141,7 +141,7 @@ Doppler4 {
 }
 
 Pan4MSXY {
-	*ar { | bufMS, bufXY, dist=0, rate=1, mid=1, side=1, xy=1, xpos=0, ypos=0, ring=false, loop=false, mul=1, add=0 |
+	*ar { | bufMS, bufXY, dist=0, rate=1, mid=1, side=1, xy=1, xpos=0, ypos=0, loop=false, mul=1, add=0 |
 		var freqLPF = 20000*(exp(-1*dist*(log(20/20000)).abs));
 		var sigXY = PlayBuf.ar(
 			2,
@@ -156,7 +156,7 @@ Pan4MSXY {
 		var pan4 = [xpos, ypos].convertPan4toArray;
 		var out = LPF.ar(
 			[sigXY[0], sigXY[1], sigMS[0]+sigMS[1], sigMS[0]-sigMS[1]],
-			freqLPF) * pan4.swap(2,ring.asBoolean.binaryValue+2);
+			freqLPF) * pan4;
 		out = out * mul + add;
 		^out
 	}
@@ -254,17 +254,17 @@ Pan4MSXY {
 	}
 
 	convertPan4toArray {
-			var xpos = this[0];
-			var ypos = this[1];
-			var a = Complex(xpos, 1), b = Complex(ypos, 1), leftright, frontback;
-			leftright = Array.with(((2.sqrt/2)*((a.angle-(pi/2)).cos + (a.angle-(pi/2)).sin)),((2.sqrt/2)*((a.angle-(pi/2)).cos - (a.angle-(pi/2)).sin)));
-			frontback = Array.with(((2.sqrt/2)*((b.angle-(pi/2)).cos - (b.angle-(pi/2)).sin)),((2.sqrt/2)*((b.angle-(pi/2)).cos + (b.angle-(pi/2)).sin)));
-			^Array.with(
-				(leftright[0]*frontback[0]),
-				(leftright[1]*frontback[0]),
-				(leftright[0]*frontback[1]),
-				(leftright[1]*frontback[1]))
-		}
+		var xpos = this[0];
+		var ypos = this[1];
+		var a = Complex(xpos, 1), b = Complex(ypos, 1), leftright, frontback;
+		leftright = Array.with(((2.sqrt/2)*((a.angle-(pi/2)).cos + (a.angle-(pi/2)).sin)),((2.sqrt/2)*((a.angle-(pi/2)).cos - (a.angle-(pi/2)).sin)));
+		frontback = Array.with(((2.sqrt/2)*((b.angle-(pi/2)).cos - (b.angle-(pi/2)).sin)),((2.sqrt/2)*((b.angle-(pi/2)).cos + (b.angle-(pi/2)).sin)));
+		^Array.with(
+			(leftright[0]*frontback[0]),
+			(leftright[1]*frontback[0]),
+			(leftright[0]*frontback[1]),
+			(leftright[1]*frontback[1]))
+	}
 }
 
 + Buffer {
