@@ -1,10 +1,10 @@
 (
   name: "GSA",
   summary: "Generative Sonic Art <https://www.overleaf.com/read/sjhfhthgkgdj>",
-  version: "1.0.6",
+  version: "1.0.7",
   schelp: "",
   url: "https://github.com/yannics/GSA",
   dependencies: ["cycle"],
   license: "GPL",
-  copyleft: "Yann Ics, 2022"
+  copyleft: "Yann Ics, 2023"
   )

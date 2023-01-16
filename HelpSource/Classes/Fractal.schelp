@@ -1,0 +1,47 @@
+TITLE:: Fractal
+summary:: Kind of a fractal canon
+categories:: Open Composition
+related:: Classes/Canon
+
+DESCRIPTION::
+See strong::Section 6.3:: in: Yann Ics [2014/2022]. EMPHASIS::Journal of Generative Sonic Art.:: [online] Available at: https://www.overleaf.com/read/sjhfhthgkgdj [Accessed October 8, 2022].
+
+
+CLASSMETHODS::
+
+METHOD:: newFrom
+Generates the object Fractal
+
+ARGUMENT:: aCollection
+An array of rhythm as absolute or relative durations.
+
+ARGUMENT:: duration
+Duration of the result in second unit. CODE::aCollection.sum{|it| it.asArray[0]}:: by default.
+
+ARGUMENT:: minVal
+Minimal duration accepted in second unit.
+
+ARGUMENT:: rec
+Number of recursivity, also called dimensions. Note CODE::minVal:: outweights CODE::rec::.
+
+INSTANCEMETHODS::
+
+PRIVATE:: res, reset, alist
+
+METHOD:: depth
+Get the number of dimensions or the number of recursivity plus one. When CODE::rec:: is provided, it returns the fractality at this level.
+
+METHOD:: duration
+Get or reset the duration of CODE::this:: Fractal
+
+METHOD:: onsets
+returns an array of CODE::[ onset, duration, Set[ [ fractality_level, index_of_aCollection ] ... ] ]::
+
+EXAMPLES::
+
+code::
+a = Fractal.newFrom([ 2, 1, 1 ]);
+a.duration;
+a.depth;
+a.onsets;
+::

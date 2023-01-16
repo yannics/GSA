@@ -2,7 +2,7 @@
 GSA
 <https://www.overleaf.com/read/sjhfhthgkgdj>
 Sound design studies
-version 1.0.6
+version 1.0.7
 ------------------------------------------------------------------
 To install: clone or copy this folder to Platform.userExtensionDir
 ==================================================================
@@ -13,13 +13,14 @@ To install: clone or copy this folder to Platform.userExtensionDir
  Sow        | buf, ser, sym ..
  Distance   | in, rdist, abs ..
  InH2O      | in, rdepth, turbulance, abs ..
- Doppler4   | bufnum, xIn, yIn, dist, zenith, lap, ring ..
- Pan4MSXY   | bufMS, bufXY, dist, rate, mid, side, xy, xpos, ypos, ring ..
+ Doppler4   | bufnum, xIn, yIn, dist, zenith, lap ..
+ Pan4MSXY   | bufMS, bufXY, dist, rate, mid, side, xy, xpos, ypos ..
 ==================================================================
    method   |   class   |   args
 ------------|-----------|-----------------------------------------
  dist2db    | Number    | --
  db2dist    | Number    | --
+ brownmotion| Number    | step, hi, lo
  harmRatio  | Array     | sym, ind, sr, del
  detune     | Array     | n, len
  select     | Buffer    | maxDur, minDur, server
@@ -157,7 +158,7 @@ Pan4MSXY {
 		var out = LPF.ar(
 			[sigXY[0], sigXY[1], sigMS[0]+sigMS[1], sigMS[0]-sigMS[1]],
 			freqLPF) * pan4;
-		out = out * mul + add;
+		out = LeakDC.ar(out) * mul + add;
 		^out
 	}
 }
@@ -205,6 +206,11 @@ Pan4MSXY {
 
 	db2dist {
 		^1-(10**(this/20))
+	}
+
+	brownMotion {
+		|step=0.125, lo=0, hi=1|
+		(this + step.xrand2).fold(lo, hi)
 	}
 }
 
@@ -427,3 +433,27 @@ gmn score syntax
 	}
 }
 //-----------------------------------------------------
+// https://scsynth.org/t/function-chaining-operators-opinions-thoughts-do-you-like-this-a-big-hopefully-discursive-post/6627
++ Object {
+	|> { |f| ^f.(this) }
+	<| { |f|
+		^if(f.isKindOf(Function),
+			{ {|i| this.( f.(i) )} },
+			{ this.(f) })
+	}
+}
+/*
+{ Saw.ar(400) |> LPF.ar(_,900) * 0.1 |> Out.ar(0,_) }.play
+
+{ Line.kr(200,2000,5) |> LFSaw.ar(_) |> SinOsc.ar(_) |> FreeVerb.ar(_,1,0.1!2)*4 |> Out.ar(0,_) }.play
+
+{ Out.ar(\out.kr(0), _) <| HPF.ar(_, \hpf.kr(20)) <| LPF.ar(_, \lpf.kr(100)) <| SinOsc.ar(440) }.play
+
+{
+	SinOsc.ar(_) <| ( _.range(200,400) ) <| LFSaw.ar(_) <| Line.kr(20,200,5)
+	* 0.2
+	|> FreeVerb.ar(_,1,0.1!2)
+}.play
+*/
+
+
