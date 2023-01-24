@@ -1,8 +1,8 @@
 /*
 GSA
+version 1.0.8
 <https://www.overleaf.com/read/sjhfhthgkgdj>
 Sound design studies
-version 1.0.7
 ------------------------------------------------------------------
 To install: clone or copy this folder to Platform.userExtensionDir
 ==================================================================
@@ -23,7 +23,6 @@ To install: clone or copy this folder to Platform.userExtensionDir
  brownmotion| Number    | step, hi, lo
  harmRatio  | Array     | sym, ind, sr, del
  detune     | Array     | n, len
- select     | Buffer    | maxDur, minDur, server
  [xpos, ypos].convertPan4toArray
 ==================================================================
 <by.cmsc@gmail.com>
@@ -273,65 +272,6 @@ Pan4MSXY {
 	}
 }
 
-+ Buffer {
-	select {
-		//   rnd*sr   [cd]=selection area   rnd*sr
-		// |--------|---------------------|--------|
-		// a        c                     d        b
-		| maxDur, minDur, server |
-		// minDur & maxDur in second unit
-		var rnd, ac, ab, cd;
-		server = server ? Server.default;
-		rnd = (rrand(minDur, maxDur)/2).round;
-		ac = rnd * server.sampleRate;
-		ab = this.numFrames;
-		cd = rrand(ac, ab-ac);
-		(ab > (2 * ac)).if (
-			{ ^Buffer.read(server, this.path, cd-ac, ac*2-1) },
-			{ ^this })
-	}
-}
-
-+ Platform {
-	*gsa {
-		var dirs =
-		(Platform.userExtensionDir +/+ "GSA*").pathMatch ++
-		(Platform.systemExtensionDir +/+ "GSA*").pathMatch ++
-		(Platform.userAppSupportDir +/+ "quarks" +/+ "GSA*").pathMatch ++
-		(Platform.systemAppSupportDir +/+ "quarks" +/+ "GSA*").pathMatch ++
-		(Platform.userAppSupportDir +/+ "downloaded-quarks" +/+ "GSA*").pathMatch ++
-		(Platform.systemAppSupportDir +/+ "downloaded-quarks" +/+ "GSA*").pathMatch;
-		dirs = dirs.select { |p| PathName(p).isFolder
-			//and: { PathName(p +/+ "oc").isFolder }
-		};
-		if (dirs.size == 0)
-		{
-			"\nWARNING: no directory beginning with name 'GSA' found within extension directories\n".postln;
-		}
-		{
-			^dirs
-		}
-	}
-
-	*cycle {
-		var dirs =
-		(Platform.userExtensionDir +/+ "cycle*").pathMatch ++
-		(Platform.systemExtensionDir +/+ "cycle*").pathMatch ++
-		(Platform.userAppSupportDir +/+ "quarks" +/+ "cycle*").pathMatch ++
-		(Platform.systemAppSupportDir +/+ "quarks" +/+ "cycle*").pathMatch ++
-		(Platform.userAppSupportDir +/+ "downloaded-quarks" +/+ "cycle*").pathMatch ++
-		(Platform.systemAppSupportDir +/+ "downloaded-quarks" +/+ "cycle*").pathMatch;
-		dirs = dirs.select { |p| PathName(p).isFolder and: { PathName(p +/+ "SystemOverwrites").isFolder } };
-		if (dirs.size == 0)
-		{
-			"\nWARNING: 'GSA' extension requires 'cycle' extension\n---> https://github.com/yannics/cycle\n".postln;
-		}
-		{
-			^dirs
-		}
-	}
-}
-
 //-----------------------------------------------------
 // SuperCollider conversion tools to Guido syntax
 // [ https://guidodoc.grame.fr/ ]
@@ -432,28 +372,151 @@ gmn score syntax
 		}
 	}
 }
-//-----------------------------------------------------
-// https://scsynth.org/t/function-chaining-operators-opinions-thoughts-do-you-like-this-a-big-hopefully-discursive-post/6627
-+ Object {
-	|> { |f| ^f.(this) }
-	<| { |f|
-		^if(f.isKindOf(Function),
-			{ {|i| this.( f.(i) )} },
-			{ this.(f) })
-	}
-}
+//----------------------------------------------------------------
 /*
-{ Saw.ar(400) |> LPF.ar(_,900) * 0.1 |> Out.ar(0,_) }.play
+<https://www.overleaf.com/read/sjhfhthgkgdj>
+Perspectives
+==================================================================
+   method           |   class   |   args
+--------------------|-----------|---------------------------------
+ loadFilesToArray   | PathName  | ext, type, as, split
+ select             | Buffer    | maxDur, minDur, server
+ selectSubStructure | Buffer    | score, structure, iSub, server
+==================================================================
+   Class    |   method   |   args
+------------|------------|----------------------------------------
+ RTM        | select     | score, structure, diffarg, n, limit, r
+==================================================================
+// /!\ IMPORTANT -------------------------------------------------
+// rewrite split method in String class in String.sc (line 194) like so:
+String
+	split { arg separator=$/;
+		var word="";
+		var array=[];
 
-{ Line.kr(200,2000,5) |> LFSaw.ar(_) |> SinOsc.ar(_) |> FreeVerb.ar(_,1,0.1!2)*4 |> Out.ar(0,_) }.play
+		if (separator.isNil)
+		{
+			^this.size.collect{|i| this[i]};
+		}
+		{
+			separator=separator.ascii;
 
-{ Out.ar(\out.kr(0), _) <| HPF.ar(_, \hpf.kr(20)) <| LPF.ar(_, \lpf.kr(100)) <| SinOsc.ar(440) }.play
-
-{
-	SinOsc.ar(_) <| ( _.range(200,400) ) <| LFSaw.ar(_) <| Line.kr(20,200,5)
-	* 0.2
-	|> FreeVerb.ar(_,1,0.1!2)
-}.play
+			this.do({arg let,i;
+				if(let.ascii != separator ,{
+					word=word++let;
+				},{
+					array=array.add(word);
+					word="";
+				});
+			});
+			^array.add(word);
+		}
+	}
 */
 
++ PathName {
+	loadFilesToArray {
+		/*
+		ext [ nameOfTheExtensionToLoad ] = extension of the files to load
+        type [ \dat ] = datafile (FileReader) or ServerName (Buffer) [default is soundfile (Buffer) with Server.default ]
+          only for datafile :
+        as [ \float, \integer ] = float or integer (default is string)
+          only for string
+        split [ Boolean ] (default is false)
+		*/
+		|ext, type, as, split|
+		var path = this +/+ format("*.%", ext);
+		^path.pathMatch.collect{|file|
+			if (type == 'dat')
+			{
+				case
+				{ as == \float } { FileReader.read(file, true, true).asFloat }
+				{ as == \integer } { FileReader.read(file, true, true).asInteger }
+				{ as == \collectFloat } { FileReader.read(file, true, true).collect(_.asFloat) }
+				{ as == \collectInteger } { FileReader.read(file, true, true).collect(_.asInteger) }
 
+				{ as.isNil && split.asBoolean } { FileReader.read(file, true, true).collect{|i| i[0].split(nil)} }
+			}
+			{ Buffer.read(type ? Server.default, file) }
+		}
+	}
+}
+
++ Buffer {
+	select {
+		//   rnd*sr   [cd]=selection area   rnd*sr
+		// |--------|---------------------|--------|
+		// a        c                     d        b
+		| maxDur, minDur, server |
+		// minDur & maxDur in second unit
+		var rnd, ac, ab, cd;
+		server = server ? Server.default;
+		rnd = (rrand(minDur, maxDur)/2).round;
+		ac = rnd * server.sampleRate;
+		ab = this.numFrames;
+		cd = rrand(ac, ab-ac);
+		(ab > (2 * ac)).if (
+			{ ^Buffer.read(server, this.path, cd-ac, ac*2-1) },
+			{ ^this })
+	}
+
+	selectSubStructure {
+		|score, structure, iSub, server|
+		// get duration by subs
+		var arDurSubs = score.flop.first.clumps(structure.collect({|subs| subs.size})).collect({|a| a.sum});
+		// get frames number by subs
+		var arNumFrames = arDurSubs.normalizeSum * this.numFrames;
+		// integrate from 0 to get starting frames list
+		var arStartFrame = arDurSubs.integrate.insert(0, 0).normalize(0, this.numFrames).round;
+		// select sub
+		var ind = if (iSub.isInteger) { iSub } { arDurSubs.size.rand };
+		^Buffer.read(
+			server ? Server.default,
+			this.path,
+			arStartFrame[ind],
+			arNumFrames[ind].round
+			);
+	}
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Platform {
+	*gsa {
+		var dirs =
+		(Platform.userExtensionDir +/+ "GSA*").pathMatch ++
+		(Platform.systemExtensionDir +/+ "GSA*").pathMatch ++
+		(Platform.userAppSupportDir +/+ "quarks" +/+ "GSA*").pathMatch ++
+		(Platform.systemAppSupportDir +/+ "quarks" +/+ "GSA*").pathMatch ++
+		(Platform.userAppSupportDir +/+ "downloaded-quarks" +/+ "GSA*").pathMatch ++
+		(Platform.systemAppSupportDir +/+ "downloaded-quarks" +/+ "GSA*").pathMatch;
+		dirs = dirs.select { |p| PathName(p).isFolder
+			//and: { PathName(p +/+ "oc").isFolder }
+		};
+		if (dirs.size == 0)
+		{
+			"\nWARNING: no directory beginning with name 'GSA' found within extension directories\n".postln;
+		}
+		{
+			^dirs
+		}
+	}
+
+	*cycle {
+		var dirs =
+		(Platform.userExtensionDir +/+ "cycle*").pathMatch ++
+		(Platform.systemExtensionDir +/+ "cycle*").pathMatch ++
+		(Platform.userAppSupportDir +/+ "quarks" +/+ "cycle*").pathMatch ++
+		(Platform.systemAppSupportDir +/+ "quarks" +/+ "cycle*").pathMatch ++
+		(Platform.userAppSupportDir +/+ "downloaded-quarks" +/+ "cycle*").pathMatch ++
+		(Platform.systemAppSupportDir +/+ "downloaded-quarks" +/+ "cycle*").pathMatch;
+		dirs = dirs.select { |p| PathName(p).isFolder and: { PathName(p +/+ "SystemOverwrites").isFolder } };
+		if (dirs.size == 0)
+		{
+			"\nWARNING: 'GSA' extension requires 'cycle' extension\n---> https://github.com/yannics/cycle\n".postln;
+		}
+		{
+			^dirs
+		}
+	}
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
