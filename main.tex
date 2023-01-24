@@ -367,10 +367,8 @@ To finish, in the SuperCollider context:
 
  \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
 // read and write M2T files in an array
- ~profiles = (PathName("".resolveRelative) +/+ 
-   PathName("/src/*.m2t")).pathMatch.collect {|file| 
-      FileReader.read(file).collect({|line| 
-         line.collect(_.asFloat)})};
+ ~profiles = PathName("".resolveRelative) +/+ "src")
+ .loadFilesToArray("m2t", \dat, \collectFloat); 
 // get the n first items until 5000 hz
 ~profiles = ~profiles.collect{|mt| mt.copyRange(0, 
                mt.asList.detectIndex{|item| item[0]==5000}-1)};

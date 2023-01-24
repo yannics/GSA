@@ -31,27 +31,24 @@ N3> (write-file (structure-s (list (alpha-seq <somName> <treeName> <classesNumbe
 \label{rdf}
 %\addcontentsline{toc}{section}{Reading data files}
 
-From this point, all is managed in the SuperCollider context.
-First, we collect all data in their respective array in order to correlate an indice according to the \texttt{$\sim$arraySamples} -- if needed--, the \texttt{$\sim$arrayScores} and the \texttt{$\sim$arrayStructures} as a sample plus its score plus its structure. Depending of the result of \textsl{enkode} -- that is to say as raw data or as number of classes -- the \texttt{$\sim$arrayScores} should be in a case number of classes associated with the values of the 5 first lines of \textsl{$<$fileName$>$.info}.
+From this point, the data can be collected by a third-part application, for example SuperCollider. Then, according to some analysis developed in this paper, all data can be collected into arrays in order to retrieve them by their respectives indices.
+
+Note in the case of using \textsl{enkode}, if the result is about classes, these numbers should be associated with the values of the 5 first lines of \textsl{$<$fileName$>$.info}.
 
 \smallskip
 
  \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java] 
  // if needed ------------
-~arraySamples = (PathName(<dataFolderPath> +/+ "*.wav"))
-   .pathMatch.collect{|file| Buffer.read(s, file)};
+~arraySamples = PathName(<dataFolderPath>).loadFilesToArray
+(ext: "wav");
  // ----------------------
- 
-~arrayScores = (PathName(<dataFolderPath> +/+ "*.score"))
-   // or *.raw for raw data score
-      .pathMatch.collect{|file| 
-         FileReader.read(file)}.asInteger; 
-            // or .asFloat for raw data score
+~arrayScores = PathName(<dataFolderPath>).loadFilesToArray
+(ext: "score", type: \dat, as: \integer);
 
-~arrayStructures = (PathName(<dataFolderPath> +/+ "*.dat"))
-   .pathMatch.collect{|file| 
-      FileReader.read(file, true, true).collect({|i| 
-         Array.fill(i[0].size,{arg at; i[0][at]})})};
+~arrayStructures = PathName(<dataFolderPath>).loadFilesToArray
+(ext: "dat", type: \dat, split: true);
+ // ----------------------
+ //  ~arraySamples[n] ---> ~arrayScores[n].size = number of events = ~arrayStructures[n].sum{|subAr| subAr.size}
 \end{lstlisting}  
 
 \subsection{Interpreting data files}
@@ -61,88 +58,23 @@ First, we collect all data in their respective array in order to correlate an in
 The algorithmic interpretation of the data in SuperCollider context may require some preliminary function to select sub-sequence according to the segmentation of the contrastive analysis. 
 
 \begin{enumerate}
-    \item Select randomly a rhythm pattern for the algorithms such as \textsl{fractal} or \textsl{proportional canon} with at least \texttt{diffarg} different durations and according to the test function \texttt{n} as string applied to the length of the pattern as \texttt{"odd"}, \texttt{"even"} or \texttt{"isInteger"}:
+    \item Select randomly a rhythm pattern for the algorithms such as \textsl{fractal} or \textsl{proportional canon} with at least \texttt{diffarg} different durations and according to the \texttt{test} function as string or symbol applied to the length of the pattern such as \texttt{"odd"} or \texttt{"even"}:
     
     \smallskip
     
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
-~setr = { | it, r, n |
-	var x;
-	x=case
-	{r.isNil} {it}
-	{(it.size > r.size) 
-           && (format("%.%", it.size, n).interpret)} {it}
-	{(format("%.%", it.size, n).interpret) 
-           && (format("%.%.not", r.size, n).interpret)} {it}
-	{(format("%.%.not", it.size, n).interpret) 
-           && (format("%.%.not", r.size, n).interpret) 
-           && (it.size > r.size)} {it};
-	if(x.isNil, {r}, {x}) 
-};
+~rtm = RTM.new
+(score: ~arrayScores[n], structure: ~arrayStructures[n], diffarg: 3, test: \odd, limit: 10);	
 \end{lstlisting}  
-%\newpage
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]	
-~select_rtm = { | index, diffarg=3, n="odd", limit=10, r |
-	var arDurSubs=~arrayScores[index]
-	    .clumps(~arrayStructures[index]
-            .collect({|subs| subs.size}));
-	var rndp=arDurSubs.choose;
-	var res=~setr.value(rndp, r, n);
-	if ((res.flop[0].asSet.size >= diffarg) 
-	 && (format("%.%", res.size, n).interpret) 
-	 || (limit == 0), {res}, 
-       {~select_rtm.value(index, diffarg, n, limit-1, res)})};
-\end{lstlisting}  
- \item Select a sub-sequence from a sound file, randomly or depending on a given sub-sequence indice and according to a minimal and a maximal values if set (which can be used to adjust the fade in and the fade out, for a Doppler effect for instance):
+ \item Select a sub-sequence from a sound file, randomly according to a minimal and a maximal values (which can be used to adjust the fade in and the fade out, for a Doppler effect for instance), or depending on a given structure,  randomly or according to a sub-sequence indice:
  
  \smallskip
  
  \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
-~select_part = {
-        | index=0, minDur, maxDur, isubs |
-        var arDurSubs, arStartFrame, arNumFrames, 
-           theSubs, theDur, mind, maxd;
-        // for index get durations by subs
-        arDurSubs = ~arrayScores[index].flop.first
-           .clumps(~arrayStructures[index]
-           .collect({|subs| subs.size}));
-        // get duration by subs
-        arDurSubs = arDurSubs.collect({|a| a.sum});
-        // get frames number by subs
-        arNumFrames = arDurSubs.normalizeSum 
-	     * ~arraySamples[0].numFrames;
-        // round it as integer
-        arNumFrames = arNumFrames.round;
-        // integrate from 0 to get starting frames list
-        arStartFrame = arDurSubs.integrate.insert(0,0)
-           .normalize(0,~arraySamples[index].numFrames)
-           .round;
-        //-----------------------------------
-        if(isubs.isNil, 
-           {theSubs=arStartFrame.size.rand},
-           {theSubs=isubs});
-        theDur = rrand(
-            if(minDur.isNil, 
-                    {mind=arDurSubs[theSubs]},
-                    {
-                        if(arDurSubs[theSubs]>minDur, 
-                           {mind=arDurSubs[theSubs]}, 
-                           {mind=minDur})
-                    }),
-            if(maxDur.isNil, 
-                    {maxd=arDurSubs[theSubs]},
-                    {
-                        if(arDurSubs[theSubs]>maxDur,
-                           {maxd=arDurSubs[theSubs]}, 
-                           {maxd=maxDur})
-                    }))
-          * ~arraySamples[index].sampleRate.round;
-        //-----------------------------------
-        Buffer.read(s, ~arraySamples[index].path, 
-           arNumFrames[theSubs]/2 
-           + arStartFrame[theSubs]
-           - (theDur/2).round, theDur);
-};
+~rndSample = ~arraySamples[n].select(maxDur: 10, minDur: 5);
+
+~subSample = ~arraySamples[n].selectSubStructure
+(~arrayScores[n], ~arrayStructures[n])
 \end{lstlisting}  
 \end{enumerate}
 
