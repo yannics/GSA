@@ -37,5 +37,4 @@ EXAMPLES::
 
 code::
 a = Canon.newFrom([ 2, 1, 1 ], 10, nVoices: 4, ratio: 0.618, xVoice: 1);
-a.res;
 ::

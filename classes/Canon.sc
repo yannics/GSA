@@ -30,7 +30,8 @@ Canon {
 				Array.with(dur, del).flop;
 			});
 		};
-		res = canon.(nVoices, duration, ratio, xVoice)
+		res = canon.(nVoices, duration, ratio, xVoice);
+		^res
 	}
 }
 

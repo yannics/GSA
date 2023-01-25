@@ -420,7 +420,7 @@ String
 		ext [ nameOfTheExtensionToLoad ] = extension of the files to load
         type [ \dat ] = datafile (FileReader) or ServerName (Buffer) [default is soundfile (Buffer) with Server.default ]
           only for datafile :
-        as [ \float, \integer ] = float or integer (default is string)
+        as [ \float, \integer, \collectFloat, \collectInteger ] = float or integer (default is string)
           only for string
         split [ Boolean ] (default is false)
 		*/
@@ -451,7 +451,7 @@ String
 		// minDur & maxDur in second unit
 		var rnd, ac, ab, cd;
 		server = server ? Server.default;
-		rnd = (rrand(minDur, maxDur)/2).round;
+		rnd = rrand(minDur.asFloat, maxDur)/2;
 		ac = rnd * server.sampleRate;
 		ab = this.numFrames;
 		cd = rrand(ac, ab-ac);
