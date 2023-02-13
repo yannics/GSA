@@ -18,7 +18,7 @@ RTM {
 			var res=setr.(score.clumps(structure.collect({|subs| subs.size})).choose, r, n);
 			if ((res.flop[0].asSet.size >= diffarg) && (format("%.%", res.size, n).interpret) || (limit == 0), { res }, { select_rtm.(score, structure, diffarg, n, limit-1, res) })
 		};
-		res = select_rtm.(score, structure, diffarg, n, limit)
+		res = select_rtm.(score, structure, diffarg, n, limit);
 		^res.flop[0];
 	}
 }

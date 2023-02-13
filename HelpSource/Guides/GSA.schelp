@@ -1,0 +1,111 @@
+TITLE:: GSA
+categories:: Open Composition
+summary:: Generative Sonic Art
+
+Some convenient tools described in: Yann Ics [2014/2023]. EMPHASIS::Journal of Generative Sonic Art.:: [online] Available at: https://www.overleaf.com/read/sjhfhthgkgdj [Accessed January 24, 2023].
+
+SECTION:: Reading Data Files
+
+EMPHASIS::Ibid.:: in Sections STRONG::6.5.2:: and STRONG::8.5::
+
+TELETYPE::PathName("directoryPath").loadFilesToArray(ext, type, as, split)::
+
+TREE::
+## STRONG::ext::
+TREE::## File extension name::
+## STRONG::type::
+TREE::## Keyword 'dat' call FileReader, call Buffer by default.::
+## STRONG::as::
+TREE::## Convert string as 'float', 'integer', 'collectFloat' or 'collectInteger'::
+## STRONG::split::
+TREE::## If arg STRONG::as:: is Nil and STRONG::split:: is not Nil, each string is returned as an array of Char as String.::
+::
+
+See EMPHASIS::Ibid.:: in Chapter STRONG::3::
+
+code::
+~score = PathName("...").loadFilesToArray(ext: "raw", type: \dat, as: \float)[0];
+::
+
+See EMPHASIS::Ibid.:: in Section STRONG::4.4::
+
+code::
+~structure = PathName("...").loadFilesToArray(ext: "dat", type: \dat, split: true)[0];
+::
+
+SECTION:: Interpreting Data Files
+
+EMPHASIS::Ibid.:: in Section STRONG::6.5.3::
+
+STRONG::Select Rhythm Pattern::
+
+TELETYPE::RTM.new(score, structure, diffarg, test, limit)::
+
+TREE::
+## STRONG::score::
+TREE::## Array of durations::
+## STRONG::structure::
+TREE::## Array of Symbols::
+## STRONG::diffarg::
+TREE::## Number of different durations::
+## STRONG::test::
+TREE::## Method (set as Symbol) to test the result as even or odd size for instance::
+## STRONG::limit::
+TREE::## Maximal number of iterations (keep the best result if reached)::
+::
+
+code::
+RTM.new(~score, ~structure, diffarg:3, test:\odd, limit:10);
+::
+
+STRONG::Select Sample from Buffer::
+
+TELETYPE::Buffer.select(minDur, maxDur, server)::
+
+Select randomly a part of one sample with a duration between a maximal and a minimal given values.
+
+TREE::
+## STRONG::minDur::
+TREE:: ## Minimal duration in second.::
+## STRONG::maxDur::
+TREE:: ## Maximal duration in second.::
+## STRONG::server::
+TREE:: ## The server on which to allocate the buffer.::
+::
+
+code::
+b = Buffer.read(s, Platform.resourceDir +/+ "sounds/a11wlk01.wav");
+b.duration;
+
+(
+Routine
+{
+	c = b.select(0.2, 1);
+	s.sync;
+	c.duration.postln;
+	c.play;
+}.play
+)
+::
+
+STRONG::Select Substructure from Buffer::
+
+TELETYPE::Buffer.selectSubStructure(score, structure, iSub, server)::
+
+Select randomly a substructure of one sample or according to a given indice of its structure.
+
+TREE::
+## STRONG::score::
+TREE::## Array of durations::
+## STRONG::structure::
+TREE::## Array of Symbols::
+## STRONG::isub::
+TREE::## Optionally a given indice::
+## STRONG::server::
+TREE:: ## The server on which to allocate the buffer.::
+::
+
+code::
+~buffer = PathName("...").loadFilesToArray(ext: "wav")[0];
+~buffer.selectSubStructure(~score, ~structure);
+::

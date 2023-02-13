@@ -447,7 +447,7 @@ String
 		//   rnd*sr   [cd]=selection area   rnd*sr
 		// |--------|---------------------|--------|
 		// a        c                     d        b
-		| maxDur, minDur, server |
+		| minDur, maxDur, server |
 		// minDur & maxDur in second unit
 		var rnd, ac, ab, cd;
 		server = server ? Server.default;
