@@ -389,13 +389,46 @@ To finish, in the SuperCollider context:
 %#############################################################################
 \backmatter
 
-\include{src/ref}
+%\include{src/ref}
 
 %#############################################################################
-\appendix
+
+
+
+%++++++++++++++++++++++++++++++++++++++++++++++
+%++++++++++++++++++++++++++++++++++++++++++++++
+\part[Music Programming ... about music vestiges]{MUSIC PROGRAMMING ... ABOUT MUSIC VESTIGES}
+
+\markboth{... about music vestiges -- Works}{Generative Sonic Art}
+\thispagestyle{empty}
+
+\include{mp/mp}
+
+%\markboth{... about music vestiges -- Annexes}{Generative Sonic Art}
+%\thispagestyle{empty}
+%
+%\include{mp/ntube}
+%
+%\include{mp/sh}
+\markboth{... about music vestiges -- Open Composition}{Generative Sonic Art}
+\thispagestyle{empty}
+
+\include{mp/oc}
+
+%++++++++++++++++++++++++++++++++++++++++++++++
+%++++++++++++++++++++++++++++++++++++++++++++++
+\backmatter
+\parttitlefont{\bfseries\rmfamily\Huge} 
+\markboth{Appendices}{Generative Sonic Art}
+\thispagestyle{empty}
+
+\part*{Appendices}
+\addcontentsline{toc}{part}{Appendices}
+ 
+ \appendix
 \renewcommand\thefigure{\thesection.\arabic{figure}}    
 \setcounter{figure}{0}    
-\chapter{Appendices}
+%\chapter{Codes}
 \thispagestyle{empty}
 %#############################################################################
 \makeatletter
@@ -403,7 +436,12 @@ To finish, in the SuperCollider context:
 \makeatother
 %#############################################################################
 %\addcontentsline{toc}{chapter}{Appendices}
-\renewcommand{\thesection}{\Alph{section}}
+%\renewcommand{\thesection}{\Alph{section}}
+\makeatletter
+\renewcommand\thesection{}
+\renewcommand\thesubsection{\@Alph\c@section.\@arabic\c@subsection}
+\makeatother
+
 \section{Codes}
 
 \subsection{Figures}
@@ -541,9 +579,9 @@ rm 1.pl 1.dat 2.dat 3.dat 4.dat 5.dat 1.wav 2.wav
 %Remove
 %\end{lstlisting}
 
-\makeatletter
-\setlength{\@fptop}{0pt}
-\makeatother
+%\makeatletter
+%\setlength{\@fptop}{0pt}
+%\makeatother
 
 %\begin{figure}[!hbt]
 %	\begin{center}
@@ -595,9 +633,6 @@ fi
 # convert praat.formant in coll file for SuperCollider
 # coded by Fred Voisin - January 2012 
 # modified 21022012/18102015
-\end{lstlisting}
-
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Bash]
 convert(){
 praatfile=$1
 l=`cat $praatfile |wc -l`
@@ -673,6 +708,10 @@ nw_display -s -w 1000 -u '' -t -W 20 -b 'opacity:0' in.nw
 %#############################################################################
 \section{Distance}
 \label{dist}
+\makeatletter 
+\renewcommand{\thefigure}{\@arabic\c@figure}
+\makeatother
+
 \setcounter{figure}{0} 
 The perception of a sonic object in relation to its distance implied a substantial amount of parameters more or less subtle such as the nature of the source itself (mainly power level, directivity of the source, frequencies composing the sound and the mode of propagation), the environment in terms of reverberation, and more specifically in terms of absorption, diffusion, reflection and diffraction, which are dependant of the environment as the density (e.g. air humidity), the temperature, the pressure and perhaps the flux of the milieu (e.g. the wind in the air or the current in water). 
 
@@ -683,7 +722,7 @@ On this extreme simplified model, I consider a given relative distance from the 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=\textwidth]{img/6355}
-\caption{The sound level decreases of 6 dB for each doubling of the distance such as $-20\,log_{10}\: distance$.
+\caption[]{The sound level decreases of 6 dB for each doubling of the distance such as $-20\,log_{10}\: distance$.
 }
 \label{fig:dist}
 \end{center}
@@ -723,7 +762,7 @@ The further is the source, less we perceive the high frequencies which are absor
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=\textwidth]{img/6785}
-\caption{(a) \citep{bk} Approximate correction for air attenuation including the inversesquare law. (b) The SuperCollider method \texttt{lincurve} determines the cutoff frequency of the low pass filter such as for a given relative distance \texttt{rdist}, the cutoff frequency is equal to \texttt{rdist.lincurve(0, 1, 20000, 20, abs)}. Thus, the parameter \texttt{abs} setting the curvature of the curve allows adjusting the rate of the absorption -- $-7$ by default. 
+\caption[]{(a) \citep{bk} Approximate correction for air attenuation including the inversesquare law. (b) The SuperCollider method \texttt{lincurve} determines the cutoff frequency of the low pass filter such as for a given relative distance \texttt{rdist}, the cutoff frequency is equal to \texttt{rdist.lincurve(0, 1, 20000, 20, abs)}. Thus, the parameter \texttt{abs} setting the curvature of the curve allows adjusting the rate of the absorption -- $-7$ by default. 
 }
 \label{fig:fcut}
 \end{center}
@@ -731,14 +770,14 @@ The further is the source, less we perceive the high frequencies which are absor
 
 %#############################################################################
 
-\newpage
-\section{Kj{\o}lhiea -- \textsl{eller hvor du er}}
-\label{kj}
-\begin{figure}[H]
-\begin{center}
-\includegraphics[scale=0.31]{img/5572}
-\end{center}
-\end{figure}
+%\newpage
+%\section{Kj{\o}lhiea -- \textsl{eller hvor du er}}
+%\label{kj}
+%\begin{figure}[H]
+%\begin{center}
+%\includegraphics[scale=0.31]{img/5572}
+%\end{center}
+%\end{figure}
 
 \newpage
 %\begin{mdframed}[style=stylesec]
@@ -766,23 +805,24 @@ The further is the source, less we perceive the high frequencies which are absor
 %\smallskip
 %\end{mdframed}
 \input{src/roughness}
-
-
 %++++++++++++++++++++++++++++++++++++++++++++++
 %++++++++++++++++++++++++++++++++++++++++++++++
-\part[Music Programming ... about music vestiges]{MUSIC PROGRAMMING ... ABOUT MUSIC VESTIGES}
-
-\markboth{... about music vestiges -- Works}{Generative Sonic Art}
-\thispagestyle{empty}
-
-\include{mp/mp}
-
-\markboth{... about music vestiges -- Annexes}{Generative Sonic Art}
-\thispagestyle{empty}
-
 \include{mp/ntube}
 
 \include{mp/sh}
+
+\include{mp/dlc}
+
+\include{mp/nord}
+
+\include{mp/kjcc}
+
+\include{mp/inscore}
+
+\include{src/ref}
+
+%++++++++++++++++++++++++++++++++++++++++++++++
+%++++++++++++++++++++++++++++++++++++++++++++++
 
 \begin{titlepage} 
 \clearpage
