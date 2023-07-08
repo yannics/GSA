@@ -44,4 +44,6 @@ a = Fractal.newFrom([ 2, 1, 1 ]);
 a.duration;
 a.depth;
 a.onsets;
+// TODO methods to access the result defined by:
+a.res;
 ::

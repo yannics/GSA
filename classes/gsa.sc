@@ -1,6 +1,6 @@
 /*
 GSA
-version 1.0.8
+version 1.0.9
 <https://www.overleaf.com/read/sjhfhthgkgdj>
 Sound design studies
 ------------------------------------------------------------------
@@ -12,8 +12,8 @@ To install: clone or copy this folder to Platform.userExtensionDir
  Delbuf     | buf, del, rate, da ..
  Sow        | buf, ser, sym ..
  Distance   | in, rdist, abs ..
- InH2O      | in, rdepth, turbulance, abs ..
- Doppler4   | bufnum, xIn, yIn, dist, zenith, lap ..
+ InH2O      | in, rdepth, turbulance, abs, server ..
+ Doppler4   | bufnum, xIn, yIn, dist, zenith, rate ..
  Pan4MSXY   | bufMS, bufXY, dist, rate, mid, side, xy, xpos, ypos ..
 ==================================================================
    method   |   class   |   args
@@ -86,28 +86,30 @@ Distance {
 	*ar { |in, rdist=0, abs=(-7), mul=1, add=0|
 		var signal, fcut;
 		fcut = rdist.lincurve(0, 1, 20000, 20, abs);
-		signal = LPF.ar(in*(1-rdist), fcut);
+		signal = LPF.ar(in * (1-rdist), fcut);
 		signal = signal * mul + add;
 		^signal
 	}
 }
 
 InH2O {
-	*ar { |in, rdepth=0.5, turbulance=#[0.1, 20], abs=(-7), mul=1, add=0|
-		var fcut, noise, chainA, chainB, chain, out;
+	*ar { |in, rdepth=0.5, turbulance=#[0.1, 20], abs=(-7), server, mul=1, add=0|
+		var bus, fcut, noise, chainA, chainB, chain, out;
+		server = server ? Server.default;
+		bus = server.options.numOutputBusChannels;
 		fcut = rdepth.lincurve(0, 1, 20000, 20, abs);
-		noise = LPF.ar(WhiteNoise.ar*(1-rdepth), fcut+LFNoise2.kr(turbulance[0], turbulance[1]));
-		chainA = FFT(LocalBuf(2048), noise);
-		chainB = FFT(LocalBuf(2048), in*(1-rdepth)*2);
+		noise = LPF.ar(WhiteNoise.ar * (1-rdepth), fcut + LFNoise2.kr(turbulance[0], turbulance[1]));
+		chainA = FFT(LocalBuf(2048!bus), noise);
+		chainB = FFT(LocalBuf(2048!bus), in * (1-rdepth) * 2);
 		chain = PV_MagMul(chainA, chainB);
-		out = IFFT(chain)*0.05;
+		out = IFFT(chain) * 0.05;
 		out = out * mul + add;
 		^out
 	}
 }
 
 Doppler4 {
-	*ar { |buf, xIn=1, yIn=1, dist=0.1, zenith=0, lap=1, mul=1, add=0|
+	*ar { |buf, xIn=1, yIn=1, dist=0.1, zenith=0, rate=1, mul=1, add=0|
 		// Note: <xIn> and <dist> should not be equal to zero;
 		var alpha, bf, beta, xd, gamma, yd, m, p, as, bs, cs, delta, xOut, xSt, ySt, dur, r, dl, freqLPF, azimut, amplitude, out;
 		// here compute the trajectory
@@ -124,7 +126,7 @@ Doppler4 {
 		cs = p.squared-1;
 		delta = bs.squared-(4*as*cs);
 		xOut = (bs.neg-((xIn/xIn.abs)*delta.sqrt))/(2*as);
-		dur = lap.clip2(buf.duration);
+		dur = BufDur.kr(buf)*rate.reciprocal;
 		xSt = Line.kr(xIn, xOut, dur, doneAction: 2);
 		ySt = p+(m*xSt);
 		// here is the distance from the source to the receiver
@@ -133,7 +135,7 @@ Doppler4 {
 		freqLPF = 20000*(exp(-1*dl*(log(1/1000)).abs));
 		azimut = 1/(1-(cos(r.angle+((xIn.ceil-1)*pi))/dur));
 		amplitude = ((-20)*log10(dl*(2**6))).dbamp.clip2(1);
-		out = Pan4.ar(PlayBuf.ar(1, buf, BufRateScale.kr(buf)*azimut), xSt, ySt);
+		out = Pan4.ar(PlayBuf.ar(1, buf, BufRateScale.kr(buf)*azimut*rate), xSt, ySt);
 		out = LPF.ar(out, freqLPF, amplitude);
 		out = out * mul + add;
 		^out
@@ -142,22 +144,36 @@ Doppler4 {
 
 Pan4MSXY {
 	*ar { | bufMS, bufXY, dist=0, rate=1, mid=1, side=1, xy=1, xpos=0, ypos=0, loop=false, mul=1, add=0 |
-		var freqLPF = 20000*(exp(-1*dist*(log(20/20000)).abs));
+		var freqLPF = 20000*(exp(-1 * dist * (log(20/20000)).abs));
 		var sigXY = PlayBuf.ar(
 			2,
 			bufXY,
-			BufRateScale.kr(bufXY)*rate,
+			BufRateScale.kr(bufXY) * rate,
 			loop: loop.asBoolean.binaryValue) * xy;
 		var sigMS = PlayBuf.ar(
 			2,
 			bufMS,
-			BufRateScale.kr(bufMS)*rate,
+			BufRateScale.kr(bufMS) * rate,
 			loop: loop.asBoolean.binaryValue) * [mid, side];
 		var pan4 = [xpos, ypos].convertPan4toArray;
 		var out = LPF.ar(
-			[sigXY[0], sigXY[1], sigMS[0]+sigMS[1], sigMS[0]-sigMS[1]],
+			[sigXY[0], sigXY[1], sigMS[0] + sigMS[1], sigMS[0] - sigMS[1]],
 			freqLPF) * pan4;
 		out = LeakDC.ar(out) * mul + add;
+		^out
+	}
+}
+
+// experimental ...
+Bal2Quad {
+	*ar {
+		| left, right, xpos=0, ypos=0, mul=1, add=0 |
+		var chain1, chain2, chainLeft, chainRight, out;
+		chain1 = FFT(LocalBuf(2048), left);
+		chain2 = FFT(LocalBuf(2048), right);
+		chainLeft = chain1.pvcalc2(chain2, 2048, { | magnitudes1, phases1, magnitudes2, phases2 | [magnitudes1, phases2] });
+		chainRight = chain1.pvcalc2(chain2, 2048, { | magnitudes1, phases1, magnitudes2, phases2 | [magnitudes2, phases1] });
+		out = [ left, right, IFFT(chainLeft), IFFT(chainRight) ]
 		^out
 	}
 }
@@ -200,7 +216,7 @@ Pan4MSXY {
 
 + Number {
 	dist2db {
-		^(-20*(1-this).reciprocal.log10)
+		^(-20 * (1-this).reciprocal.log10)
 	}
 
 	db2dist {
@@ -216,7 +232,7 @@ Pan4MSXY {
 + Array  {
 	ocwr {
 		var res = this.size.ocwr(ind:true);
-		var dict = Dictionary.newFrom(this.collect{|it,i| [i,it]}.flatten(1));
+		var dict = Dictionary.newFrom(this.collect{|it, i| [i, it]}.flatten(1));
 		^res.deepCollect(2, {|it| dict.matchAt(it)})
 	}
 
@@ -230,15 +246,15 @@ Pan4MSXY {
 		};
 		if (sym == \inf)
 		{
-			res=(arr/this.minItem)*this.maxItem.reciprocal
+			res=(arr/this.minItem) * this.maxItem.reciprocal
 		};
-		res=res.collect{|it| [it, res.minItem.reciprocal-it.reciprocal*(ind/sr)]};
+		res=res.collect{|it| [it, res.minItem.reciprocal-it.reciprocal * (ind/sr)]};
 		if (del.asBoolean)
 		{
 			i = 0;
 			while({i < res.last[1]}, {i = del + i});
-			i=i-res.last[1];
-			res = res.collect{|it| [it[0], it[1]+i]};
+			i = i - res.last[1];
+			res = res.collect{|it| [it[0], it[1] + i]};
 		}
 		// this.harmRatio.flop[0] = ratio
 		// this.harmRatio.flop[1] = delay
@@ -248,7 +264,7 @@ Pan4MSXY {
 	detune  {
 		|n=3, len=1000|
 		var tmp;
-		tmp= this.collect{|it| it+n.rand2};
+		tmp= this.collect{|it| it + n.rand2};
 		if((len < this.size) && (len > 0))
 		{
 			^tmp.scramble[0..len-1]
@@ -262,13 +278,13 @@ Pan4MSXY {
 		var xpos = this[0];
 		var ypos = this[1];
 		var a = Complex(xpos, 1), b = Complex(ypos, 1), leftright, frontback;
-		leftright = Array.with(((2.sqrt/2)*((a.angle-(pi/2)).cos + (a.angle-(pi/2)).sin)),((2.sqrt/2)*((a.angle-(pi/2)).cos - (a.angle-(pi/2)).sin)));
-		frontback = Array.with(((2.sqrt/2)*((b.angle-(pi/2)).cos - (b.angle-(pi/2)).sin)),((2.sqrt/2)*((b.angle-(pi/2)).cos + (b.angle-(pi/2)).sin)));
+		leftright = Array.with(((2.sqrt/2) * ((a.angle - (pi/2)).cos + (a.angle - (pi/2)).sin)), ((2.sqrt/2) * ((a.angle - (pi/2)).cos - (a.angle - (pi/2)).sin)));
+		frontback = Array.with(((2.sqrt/2) * ((b.angle - (pi/2)).cos - (b.angle - (pi/2)).sin)), ((2.sqrt/2) * ((b.angle - (pi/2)).cos + (b.angle - (pi/2)).sin)));
 		^Array.with(
-			(leftright[0]*frontback[0]),
-			(leftright[1]*frontback[0]),
-			(leftright[0]*frontback[1]),
-			(leftright[1]*frontback[1]))
+			(leftright[0] * frontback[0]),
+			(leftright[1] * frontback[0]),
+			(leftright[0] * frontback[1]),
+			(leftright[1] * frontback[1]))
 	}
 }
 
@@ -310,7 +326,7 @@ gmn score syntax
 		arg dur = 0.25; // dur is a fraction of the whole note
 		var notes = ["c", "c#", "d", "e&", "e", "f", "f#", "g", "g#", "a", "b&", "b"]; // my own chromatic scale ...
 		var rat = dur.asFraction;
-		^(notes[this%12] ++ (this.div(12)-4).asString ++ format("*%/%", rat[0], rat[1]))
+		^(notes[this%12] ++ (this.div(12) - 4).asString ++ format("*%/%", rat[0], rat[1]))
 	}
 
 	degguido {
@@ -452,11 +468,12 @@ String
 		var rnd, ac, ab, cd;
 		server = server ? Server.default;
 		rnd = rrand(minDur.asFloat, maxDur)/2;
-		ac = rnd * server.sampleRate;
+		if (server.sampleRate != this.sampleRate) {"this.sampleRate does not match the server.sampleRate!".warn};
+		ac = rnd * this.sampleRate;
 		ab = this.numFrames;
-		cd = rrand(ac, ab-ac);
+		cd = rrand(ac, ab - ac);
 		(ab > (2 * ac)).if (
-			{ ^Buffer.read(server, this.path, cd-ac, ac*2-1) },
+			{ ^Buffer.readChannel(server, this.path, cd - ac, ac * 2 - 1, Array.series(this.numChannels)) },
 			{ ^this })
 	}
 

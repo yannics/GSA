@@ -52,7 +52,7 @@ Fractal {
 
 		alist = al;
 		res = fractal.(rtm, duration, minVal, rec, al);
-		^res
+		^this
 	}
 
 	reset {

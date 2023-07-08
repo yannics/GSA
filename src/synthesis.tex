@@ -5,7 +5,9 @@
 
 \bigskip
 
-See description appendice\fullref{dist}.
+See description appendice\fullref{dist}. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\texttt{Doppler4}}
 \label{ugdop}
@@ -25,7 +27,7 @@ See description on page \pageref{dop}.
 
 \bigskip
 
-This  \textit{Pseudo-UGens} convert quadraphonic recording MS/XY (using the re- corder Zoom H2N for instance, see page \pageref{mp:msxy} for details) to a four channels equal power panner, with outputs in order LeftFront, RightFront, LeftBack, RightBack.
+This  \textit{Pseudo-UGen} convert quadraphonic recording MS/XY (using the re- corder Zoom H2N for instance, see page \pageref{mp:msxy} for details) to a four channels equal power panner, with outputs in order LeftFront, RightFront, LeftBack, RightBack.
 
 Note the method \texttt{convertPan4toArray}, which distributes amplitudes in the quadraphonic space according to the panoramic positions (see description on page \pageref{pandist}).
 
@@ -141,4 +143,44 @@ For a given positive integer $n$, the Collatz algorithm generate a finite series
 
 Each profile as an envelope is multiplied by its respective \textit{Ugen} taking into account the value $n$ as the frequency argument. This is done recursively through a given array of frequencies as integers.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{\texttt{InH2O}}
+\label{inh2o}
+
+\texttt{UGens>Filters}
+
+\bigskip
+
+Simple underwater filter.
+
+\myuline{The multichannel expansion is limited to 4 channels.}
+
+\bigskip
+\begin{addmargin}[1em]{0em}%
+\mdfdefinestyle{mystyle}{backgroundcolor=gray!5,linecolor=gray!25,roundcorner=3pt}
+\begin{mdframed}[style=mystyle]
+
+\bigskip
+
+{\large \textbf{InH2O}}
+
+\hrulefill
+
+\color{gray!80}Arguments:\color{black} 
+
+\bigskip
+
+\begin{tabular}{l c p{6cm}}
+\textbf{in} &  & The input signal.\\
+\textbf{rdepth} & 0.5 & The relative depth, from 0 the surface to 1 (excluded) the deepest point (inaudible).\\
+\textbf{turbulance} & \#[0.1, 20] &  Literal array setting the frequency and the level of the modulation noise applied to the cutoff frequency of the low pass filter.\\
+\textbf{abs} & -7 & The curvature of the decreasing relative depth.
+\end{tabular}
+
+\bigskip
+
+\end{mdframed}
+\end{addmargin}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

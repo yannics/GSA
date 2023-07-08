@@ -73,7 +73,7 @@ De plus, la pr\'{e}cipitation \'{e}v\'{e}nementielle induit une contraction temp
 
   \bigskip
 
-Le \textit{Pseudo-UGens}  \textsl{Doppler4} consiste \`a appliquer l'effet Doppler \`a une source sonore monophonique d\'elib\'er\'ee se d\'epla\c{c}ant dans une \myuline{trajectoire rectiligne} de type $S(t)=m x +p$, \`a \myuline{vitesse constante} et dans le champ audible de l'auditeur. Ainsi, le point d'\'emergence susceptible d'\^etre per\c{c}u ou autrement dit la distance seuil de perception est fonction de l'amplitude de la source, donc relative. Pr\'esentement, ce point est \'egale \`a 1 en coordonn\'ee radiale polaire (voir figure \ref{tra}). 
+Le \textit{Pseudo-UGen}  \textsl{Doppler4} consiste \`a appliquer l'effet Doppler \`a une source sonore monophonique d\'elib\'er\'ee se d\'epla\c{c}ant dans une \myuline{trajectoire rectiligne} de type $S(t)=m x +p$, \`a \myuline{vitesse constante} et dans le champ audible de l'auditeur. Ainsi, le point d'\'emergence susceptible d'\^etre per\c{c}u ou autrement dit la distance seuil de perception est fonction de l'amplitude de la source, donc relative. Pr\'esentement, ce point est \'egale \`a 1 en coordonn\'ee radiale polaire (voir figure \ref{tra}). 
 
 \newpage
 
@@ -97,9 +97,8 @@ Le \textit{Pseudo-UGens}  \textsl{Doppler4} consiste \`a appliquer l'effet Doppl
 \textbf{yIn} & 1 &  -1 or 1, position of the emergent point in y-axis (respectively back or front).\\
 \textbf{dist} & 0.1 & -1 to 1, relative distance from the listener. Negative value means the source passes in back of the listener and positive value in front of the listener. \myuline{The value zero is forbidden}.\\
 \textbf{zenith} & 0 & 0 to 1, elevation of the source according an angle $\theta$ from the horizontal such as $z=sin \theta$. \\
-\textbf{lap} & 10 &  Time in second to cross the audible space.\end{tabular}
+\textbf{rate} & 1 &  Ratio to scale the playback speed of the input buffer in relation with the duration in second to cross the audible space. The latest is equal to \texttt{BufDur.kr(buf) * rate.reciprocal}. \end{tabular}
 
-\bigskip
 
 \end{mdframed}
 \end{addmargin}
