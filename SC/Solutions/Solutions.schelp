@@ -1,0 +1,192 @@
+TITLE:: Solutions
+categories:: Open Composition
+summary:: Collaborative work
+
+This is one proposition from my own work with the Themis' recording using SuperCollider.
+
+Initially, we composed without consulting each other with the idea to use our respective composition as materials to re-compose.
+
+This work requires the TELETYPE::GSA:: and TELETYPE::cycle:: extensions on https://github.com/yannics/
+
+code::
+Document.open(Platform.gsa[0] ++ "oc" +/+ "xy.scd");
+::
+
+SECTION::Initial works
+
+SUBSECTION::Themis
+
+https://thetasounds.org/
+
+code::
+Platform.gsa[0] ++ "audio" +/+ "themis.wav";
+::
+
+SUBSECTION::Yann Ics
+
+https://yannics.github.io/
+
+Set some initial data :
+
+code::
+(
+/*
+~frequencies = [ ... ]; // timbre profile
+~melody = [ ... ];
+~rhythm = [ ... ];
+For a 'live' performance, this can be controlled via midi keyboard
+*/
+~rtmfactor = 8;
+~delIn = 1;
+~sustainRatio = 1.618;
+~detune = 5;
+~rndAmp = 0.1;
+~ampRatio = 0.1;
+// set the generator type, 0 -> reson, 1 -> sin
+~sw = 0;
+// adjust volume with relative distance
+~ddist = 0;
+// output buses
+~xyBus1 = Bus.audio(s, 1);
+~xyBus2 = Bus.audio(s, 1);
+)
+::
+
+Prepare a routine on two channels with a distance parameter according to the pitch :
+
+code::
+(
+~xy = Routine {
+	~delIn.wait;
+	~melody.do({ arg midinote, i;
+		var ser = ((~frequencies/~frequencies.minItem)*(midinote.midicps)).asInteger;
+		var dist = midinote.linlin(~melody.minItem, ~melody.maxItem, 0, 0.5) + ~ddist;
+		{
+			[
+				Out.ar(~xyBus1, Distance.ar(Ulam.ar(ser, ~sw, ~rtmfactor*~sustainRatio*~rhythm[i], detune:~detune, rndAmp:~rndAmp), dist) * ~ampRatio),
+				Out.ar(~xyBus2, Distance.ar(Ulam.ar(ser, ~sw, ~rtmfactor*~sustainRatio*~rhythm[i], detune:~detune, rndAmp:~rndAmp), dist) * ~ampRatio)
+			]
+		}.play;
+		(~rtmfactor*~rhythm[i]).wait;
+	});
+	"Routine completed.".postln;
+};
+)
+::
+
+RESON :
+
+code::
+// instance
+Platform.gsa[0] ++ "audio" +/+ "reson.wav";
+::
+
+SIN :
+code::
+~sw = 1;
+~ddist = 0.3;
+
+// instance
+Platform.gsa[0] ++ "audio" +/+ "sin.wav";
+::
+
+
+SECTION::The proposition
+
+Add convolution reverb by booting SC as done on section STRONG::Examples:: in link::Classes/PartConv:: with the SOFT::Dan Stowell:: impulse response.
+
+Set some initial data :
+
+code::
+// output buses
+~busXY1 = Bus.audio(s, 1);
+~busXY2 = Bus.audio(s, 1);
+// Themis' work busses, path and buffers
+~themisBus1 = Bus.audio(s, 1);
+~themisBus2 = Bus.audio(s, 1);
+~themis = "/full/path/of/themis.aiff";
+~bufT1 = Buffer.readChannel(s, PathName(~themis), channels: [0]);
+~bufT2 = Buffer.readChannel(s, PathName(~themis), channels: [1]);
+::
+
+Re-evaluate the rhythm factor to fit a given duration including some delay at the beginning and at the end of the routine :
+
+code::
+//  according to the Themis' work duration:
+// |----------- ~bufT1.duration -----------|
+// |-------|-------...-------|-----|-------|
+//  ~delIn     ~rhythm.sum    ~rel  ~delOut
+~delIn = 10;
+~delOut = 30;
+~rel = ~rhythm.last * ~sustainRatio - ~rhythm.last;
+~rtmfactor = (~bufT1.duration - ~delIn - ~delOut) / (~rhythm.sum + ~rel.amclip(~rel.clip2))
+::
+
+SUBSECTION::Vocoding
+
+Load the phase vocoder :
+
+code::
+SynthDef(\voc, {
+	arg busCar, busMod;
+	var car, mod, chainCar, chainMod, size=1024;
+	car = InFeedback.ar(busCar);
+	mod = InFeedback.ar(busMod);
+	chainCar = FFT(LocalBuf(size), car);
+	chainMod = FFT(LocalBuf(size), mod);
+	chainCar = chainCar.pvcalc2(chainMod, size, {
+		arg mag1, phs1, mag2, phs2;
+		[mag1, phs2];
+	});
+	mod = IFFT(chainCar) * \amp.kr(0.2);
+	Out.ar(\out.kr(0), mod);
+}).add;
+::
+
+Play it as VOC 1 or VOC 2 :
+
+code::
+(
+{ PlayBuf.ar(1, ~bufT1)}.play(outbus: ~themisBus1);
+{ PlayBuf.ar(1, ~bufT2)}.play(outbus: ~themisBus2);
+~xy.play;
+{
+	// convolution on ~xy
+    var input1 = In.ar(~xyBus1);
+	var input2 = In.ar(~xyBus2);
+	Out.ar(~busXY1, PartConv.ar(input1, ~fftsize, ~irspectrum.bufnum));
+	Out.ar(~busXY2, PartConv.ar(input1, ~fftsize, ~irspectrum.bufnum));
+}.play;
+
+// VOC 1
+a = Synth(\voc, [\out, 0, \amp, 1, \busCar, ~themisBus1, \busMod, ~busXY1]);
+b = Synth(\voc, [\out, 1, \amp, 1, \busCar, ~themisBus2, \busMod, ~busXY2]);
+
+// VOC 2
+//a = Synth(\voc, [\out, 0, \amp, 1, \busCar, ~busXY1, \busMod, ~themisBus1]);
+//b = Synth(\voc, [\out, 1, \amp, 1, \busCar, ~busXY2, \busMod, ~themisBus2]);
+)
+::
+
+VOC 1 :
+
+code::
+// instance
+Platform.gsa[0] ++ "audio" +/+ "voc1.wav";
+::
+
+VOC 2 :
+
+code::
+// instance
+Platform.gsa[0] ++ "audio" +/+ "voc2.wav";
+::
+
+SECTION::Discussion
+
+Obviously, the Ics' recordings remain some propositions which can be modulated, adapted or developed according to the context of diffusion.
+
+This basic material is destinated to be expended into a quadraphonic space.
+In that case, Themis' work would start solo for a deliberate duration, and 'adapted' to fit the quadraphonic space, according to a given directivity, either algorithmically or through sensor(s). The real time 'melody' wil be played on midi keyborad ...
+
+STRONG::WORK IN PROGRESS...::
