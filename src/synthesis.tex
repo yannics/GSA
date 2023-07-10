@@ -98,6 +98,46 @@ D = \bigcup_{i \in R} \frac{ind}{sr}  \left( \frac{1}{min(R)} - \frac{1}{R_i} \r
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{\texttt{InH2O}}
+\label{inh2o}
+
+\texttt{UGens>Filters}
+
+\bigskip
+
+Simple underwater filter.
+
+\myuline{The multichannel expansion is limited to 4 channels.}
+
+\bigskip
+\begin{addmargin}[1em]{0em}%
+\mdfdefinestyle{mystyle}{backgroundcolor=gray!5,linecolor=gray!25,roundcorner=3pt}
+\begin{mdframed}[style=mystyle]
+
+\bigskip
+
+{\large \textbf{InH2O}}
+
+\hrulefill
+
+\color{gray!80}Arguments:\color{black} 
+
+\bigskip
+
+\begin{tabular}{l c p{6cm}}
+\textbf{in} &  & The input signal.\\
+\textbf{rdepth} & 0.5 & The relative depth, from 0 the surface to 1 (excluded) the deepest point (inaudible).\\
+\textbf{turbulance} & \#[0.1, 20] &  Literal array setting the frequency and the level of the modulation noise applied to the cutoff frequency of the low pass filter.\\
+\textbf{abs} & -7 & The curvature of the decreasing relative depth.
+\end{tabular}
+
+\bigskip
+
+\end{mdframed}
+\end{addmargin}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{\texttt{Ulam}}
 \label{colz}
 
@@ -145,42 +185,3 @@ Each profile as an envelope is multiplied by its respective \textit{Ugen} taking
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{\texttt{InH2O}}
-\label{inh2o}
-
-\texttt{UGens>Filters}
-
-\bigskip
-
-Simple underwater filter.
-
-\myuline{The multichannel expansion is limited to 4 channels.}
-
-\bigskip
-\begin{addmargin}[1em]{0em}%
-\mdfdefinestyle{mystyle}{backgroundcolor=gray!5,linecolor=gray!25,roundcorner=3pt}
-\begin{mdframed}[style=mystyle]
-
-\bigskip
-
-{\large \textbf{InH2O}}
-
-\hrulefill
-
-\color{gray!80}Arguments:\color{black} 
-
-\bigskip
-
-\begin{tabular}{l c p{6cm}}
-\textbf{in} &  & The input signal.\\
-\textbf{rdepth} & 0.5 & The relative depth, from 0 the surface to 1 (excluded) the deepest point (inaudible).\\
-\textbf{turbulance} & \#[0.1, 20] &  Literal array setting the frequency and the level of the modulation noise applied to the cutoff frequency of the low pass filter.\\
-\textbf{abs} & -7 & The curvature of the decreasing relative depth.
-\end{tabular}
-
-\bigskip
-
-\end{mdframed}
-\end{addmargin}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
