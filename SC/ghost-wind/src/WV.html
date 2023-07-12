@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+   <head>
+       <title>Wind-from-sequence</title>
+       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+       <link rel="stylesheet" media="screen" type="text/css" title="by" href="../code.css" />
+   </head>
+<body>
+
+<p><img src="../img/clisp.png" width="250" alt="by" /></p>
+<pre>
+;; lisp code for ghostWind
+;; 24/04/12 - by.cmsc@gmail.com
+
+(defun mk-y (x lst) ; lst --> ((x1 y1) (x2 y2))
+  (let ((x1 (caar lst)) 
+	(y1 (cadar lst))
+	(x2 (caadr lst))
+	(y2 (cadadr lst)))
+    (if (= x1 x2) (/ (+ y1 y2) 2)
+	(let* ((b (/ (- (* x1 y2) (* x2 y1)) (- x1 x2)))
+	       (a (/ (- (if (zerop x1) y2 y1) b) (if (zerop x1) x2 x1))))
+	  (+ b (* x a))))))
+
+(defun mk-pair (lst)
+  (remove nil (maplist #'(lambda (x) (when (> (length x) 1) (list (car x) (cadr x)))) lst)))
+
+(defun sample-seq1 (seq n)
+  (remove nil
+          (let* ((ratio (/ (- (reduce #'max (mapcar #'car seq)) (reduce #'min (mapcar #'car seq))) (1- n)))
+                 (x-lst (let (r) (dotimes (i n (reverse r)) (push (+ (caar seq) (* ratio i)) r))))
+                 (pair-lst (mk-pair seq)))
+            (loop for i in x-lst
+                  collect (remove nil (mapcar #'(lambda (x) (when (and (>= (caadr x) i) (>= i (caar x))) (list i (mk-y i x)))) pair-lst))))))
+
+(defun sample-seq (seq n)
+  (mapcar #'car (sample-seq1 seq n)))
+
+(defun arithm-weight-mean (lst)
+  (let ((lst1 (mapcar #'car lst)) (lst2 (mapcar #'cadr lst)))
+    (list
+     (* 1.0 (/ (eval (cons '+ (mapcar #'* lst1 lst2))) (eval (cons '+ lst2))))
+     (* 1.0 (/ (eval (cons '+ (mapcar #'* lst2 lst1))) (eval (cons '+ lst1)))))))
+
+(defun streamline-wind (seq wind)  ; seq --> ((x1 y1) (x2 y2) ... (xn yn))
+  (remove nil (maplist #'(lambda (x) (if (> wind (length x)) nil (arithm-weight-mean (subseq x 0 wind)))) seq)))
+
+(defun range (list)
+  (loop for e in list
+        maximize e into max
+        minimize e into min
+        finally (return (- max min))))
+
+(defun scale-value (item low high min range)
+   (+ (/ (* (- item min)
+            (- high low))
+         range)
+      low))
+
+(defun scale-list (list low high)
+  (let ((min (reduce #'min list))
+        (range (range list)))
+    (labels ((scale-list-aux (list)
+               (when list
+                 (cons (scale-value (first list) low high min range)
+                       (scale-list-aux (rest list))))))
+      (scale-list-aux list))))
+
+(defun cut-above-seuil (lst seuil)
+  (mapcar #'(lambda (x) (if (> seuil x) x seuil)) lst))
+
+(defun mk-seq-from-seuil (lst seuil)
+  (let ((ll (cut-above-seuil lst seuil)) (r)) (dotimes (i (length lst) (reverse r)) (push (list i (nth i ll)) r))))
+
+(defun mat-trans-by (lst)
+  (loop for i from 0 to (1- (length (car lst)))
+       collect
+       (mapcar #'(lambda (x) (nth i x)) lst)))
+
+(defun mk-str-w (lst fr thres w)
+  (loop for i from 0 to (1- (length lst))
+       collect
+       (mapcar #'cadr (sample-seq (streamline-wind (mk-seq-from-seuil (nth i lst) thres) w) fr))))
+
+(defun mk-lst4SC (lst1 lst2 lst3)
+  (let (r)
+    (loop for i in lst1
+          for j in lst2
+          for k in lst3
+          do (push (cons i (cons j k)) r))
+    (reverse r)))
+
+(defun mk-SC-file (lst str-dir)
+  (with-open-file (stream (make-pathname :directory (pathname-directory str-dir)
+					 :name (pathname-name str-dir)
+					 :type (pathname-type str-dir))
+			  :direction :output
+			  :if-exists :overwrite
+			  :if-does-not-exist :create)
+    (loop for i in lst
+          do (format stream "~{~D ~}~&amp;" i))))
+
+</pre>
+
+</body>
+</html>

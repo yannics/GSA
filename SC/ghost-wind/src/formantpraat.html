@@ -1,0 +1,35 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+      <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta content="text/css" http-equiv="Content-Style-Type" />
+<title>Wind-from-sequence</title>
+<style type="text/css">
+a.hdp:link { color: #FFFFFF; text-decoration: none; }
+a.hdp:visited { color: #FFFFFF; text-decoration: none; }
+a.hdp:hover { color: #FFFFFF; text-decoration: underline; }</style>
+</head>
+<body>
+<pre>
+# This script does formants listing
+# writed by http://by.cmsc.pagesperso-orange.fr/
+# 7/1/12 modified 22/1/12
+# Praat version 5.3.03
+
+form Formants
+	sentence File ...
+endform
+	Read from file... 'file$'
+	current_sound$ = selected$("Sound")
+	select Sound 'current_sound$'
+	To Formant (burg)... 0.005 5 5000 0.025 50	
+	Write to short text file... temp.txt
+select all
+Remove
+
+</pre>
+
+</body>
+</html>

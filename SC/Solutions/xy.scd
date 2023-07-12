@@ -54,8 +54,8 @@ SynthDef(\voc, {
 	Out.ar(\out.kr(0), mod);
 }).add;
 
-~bufT1 = Buffer.readChannel(s, PathName(thisProcess.nowExecutingPath).parentPath ++ "themis.aiff", channels: [0]);
-~bufT2 = Buffer.readChannel(s, PathName(thisProcess.nowExecutingPath).parentPath ++ "themis.aiff", channels: [1]);
+~bufT1 = Buffer.readChannel(s, ..., channels: [0]);
+~bufT2 = Buffer.readChannel(s, ..., channels: [1]);
 )
 
 (

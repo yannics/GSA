@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+   <head>
+       <title>Wind-from-sequence</title>
+       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+       <link rel="stylesheet" media="screen" type="text/css" title="by" href="../code.css" />
+   </head>
+<body>
+
+<p><img src="../img/terminal.png" width="100" alt="by" /></p>
+<pre>
+#!/bin/bash
+# Created by by.cmsc@gmail.com on 16/03/12
+
+echo -n "Your sound (in working directory) : "
+read file
+echo -n "Window size for streamline : "
+read window
+echo -n "Minimal value (in Hz) for fcut : "
+read minscale
+echo -n "Maximal value (in Hz) for fcut : "
+read maxscale
+
+echo "running..."
+echo "--> exec praat4f0"
+/Applications/Praat.app/Contents/MacOS/Praat F02Text4sh.praat $file
+echo "--> exec convert2list-1"
+./F02list.sh tempF0.txt
+rm tempF0.txt
+echo "--> exec praat4formants"
+/Applications/Praat.app/Contents/MacOS/Praat Seq2Formants4sh.praat $file
+echo "--> exec convert2list-2"
+./Formant2list.sh temp.txt
+rm temp.txt
+
+echo "--> writing lisp file"
+cat 'WV.lisp' > init.lisp
+echo "(defvar *F0* '(("`cat x1.tmp`" 32.0) "`cat tempF0.txt.coll`" ("`cat xmax.tmp`" 32.0)))" >> init.lisp 
+rm tempF0.txt.coll
+rm x1.tmp
+rm xmax.tmp
+echo "(defvar *FRAMS* "`cat frames.tmp`")" >> init.lisp
+rm frames.tmp
+echo "(defvar *FORMANTS* '("`cat temp.txt.coll`"))" >> init.lisp
+rm temp.txt.coll 
+echo "(defvar *AMP* '("`cat temp.txt.pas1`"))" >> init.lisp
+rm temp.txt.pas1
+echo "(defvar *result1* (scale-list (mapcar #'cadr (sample-seq (streamline-wind (sample-seq *F0* *FRAMS*) "$window") *FRAMS*)) "$minscale $maxscale"))" >> init.lisp
+echo "(defvar *result2* (scale-list (mapcar #'cadr (sample-seq (streamline-wind (mk-seq-from-seuil *AMP* 0.025) "$window") *FRAMS*)) -1 0))" >> init.lisp
+echo "(defvar *result3* (mat-trans-by (mk-str-w (mat-trans-by *FORMANTS*) *FRAMS* 20000 "$window")))" >> init.lisp
+echo "(mk-SC-file (mk-lst4SC *result1* *result2* *result3*) "\"`pwd`"/"`echo $file |cut -d '.' -f1`"$window.txt\")" >> init.lisp
+echo "--> eval lisp file in sbcl"
+sbcl --script init.lisp
+
+rm init.lisp
+echo "done"
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <title>Wind-from-sequence</title>
+  <meta name="Generator" content="Cocoa HTML Writer" />
+  <meta name="CocoaVersion" content="1038.36" />
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Monaco; color: #cf0c0c}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Monaco; min-height: 17.0px}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Monaco}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Monaco; color: #737373}
+    p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Monaco; color: #162bc4}
+    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Monaco; color: #cf0c0c}
+    span.s1 {color: #162bc4}
+    span.s2 {color: #000000}
+    span.s3 {color: #737373}
+    span.s4 {font: 14.0px Monaco}
+    span.s6 {font: 13.0px Monaco}
+    span.s7 {color: #008323}
+    span.Apple-tab-span {white-space:pre}
+a.hdp:link { color: #FFFFFF; text-decoration: none; }
+a.hdp:visited { color: #FFFFFF; text-decoration: none; }
+a.hdp:hover { color: #FFFFFF; text-decoration: underline; }
+  </style>
+</head>
+<body>
+<p class="p1">// stereo ghostWind</p>
+<p class="p1">// 13/04/12 - by.cmsc@gmail.com</p>
+<p class="p2"><br /></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">Server</span>.default = s = <span class="s1">Server</span>.internal.boot;<span class="Apple-converted-space"> </span></p>
+<p class="p1">// s.recChannels_(2);</p>
+<p class="p1">// s.recHeaderFormat_("AIFF");</p>
+<p class="p1">// s.recSampleFormat_("int16");</p>
+<p class="p3">)</p>
+<p class="p2"><br /></p>
+<p class="p3">(</p>
+<p class="p4"><span class="s1">SynthDef</span><span class="s2">(</span>"BusWind"<span class="s2">, {</span></p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>arg</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>busN=0, amp=0.6, fcut=1000, dl=0;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> out;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>out = <span class="s1">FreeVerb</span>.ar(<span class="s1">PinkNoise</span>.ar(2),dl,mul:amp);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(busN, <span class="s1">RLPF</span>.ar(out, fcut))</p>
+<p class="p3">}).add;</p>
+<p class="p2"><br /></p>
+<p class="p4"><span class="s1">SynthDef</span><span class="s2">(</span>"filtForm"<span class="s2">, {</span></p>
+<p class="p5"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></span>arg</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>freq=440, bandwidth=100, amp=0.6;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> recip, pan, pres, out;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>pan=<span class="s1">LFNoise2</span>.ar(1)/2;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>pres=amp*((-0.000025)*squared(bandwidth-50)).exp;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>recip=bandwidth/freq;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>out = <span class="s1">Pan2</span>.ar(<span class="s1">BPF</span>.ar(<span class="s1">PinkNoise</span>.ar(2*pres), freq, recip), pan);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, out)</p>
+<p class="p3">}).add;</p>
+<p class="p3">)</p>
+<p class="p2"><br /></p>
+<p class="p2"><br /></p>
+<p class="p1">// txt = [ fcut dl f1 b1 f2 b2 f3 b3 ]</p>
+<p class="p2"><br /></p>
+<p class="p3">(</p>
+<p class="p3"><span class="s1">var</span> textfile, maxval;</p>
+<p class="p3">textfile = <span class="s1">FileReader</span>.read(<span class="s3">"/Users/path/file.txt"</span>, <span class="s1">true</span>, <span class="s1">true</span>);</p>
+<p class="p1"><span class="s4">// </span>Server.internal.prepareForRecord("/Users/path/file.aiff");</p>
+<p class="p3">maxval = textfile.asFloat.flatten(1).maxItem({ <span class="s1">arg</span> item, i; item + 10 });</p>
+<p class="p3">fork {<span class="Apple-converted-space"> </span></p>
+<p class="p6"><span class="s6">//<span class="Apple-tab-span">	</span></span>Server.internal.record;</p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span>a = </span><span class="s1">Synth</span><span class="s2">(</span>"filtForm"<span class="s2">);</span></p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span>b = </span><span class="s1">Synth</span><span class="s2">(</span>"filtForm"<span class="s2">);</span></p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span>c = </span><span class="s1">Synth</span><span class="s2">(</span>"filtForm"<span class="s2">);</span></p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span>x = </span><span class="s1">Synth</span><span class="s2">(</span>"BusWind"<span class="s2">);</span></p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span>y = </span><span class="s1">Synth</span><span class="s2">(</span>"BusWind"<span class="s2">);</span></p>
+<p class="p3"><span class="Apple-tab-span">	</span>textfile.size.do { <span class="s1">arg</span> val;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s1">var</span> tf=textfile.at(val.asInteger), fct, dl, a1, b1, a2, b2, a3, b3;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a1=tf.at(2).asInteger;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b1=tf.at(3).asInteger;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a.set(<span class="s7">\freq</span>, a1, <span class="s7">\bandwidth</span>, b1);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a2=tf.at(4).asInteger;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b2=tf.at(5).asInteger;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b.set(<span class="s7">\freq</span>, a2, <span class="s7">\bandwidth</span>, b2);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>a3=tf.at(6).asInteger;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>b3=tf.at(7).asInteger;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>c.set(<span class="s7">\freq</span>, a3, <span class="s7">\bandwidth</span>, b3);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>fct=tf.at(0).asInteger;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>dl=tf.at(1).asFloat;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>x.set(<span class="s7">\busN</span>, 0, <span class="s7">\fcut</span>, fct, <span class="s7">\dl</span>, dl.abs, <span class="s7">\amp</span>, 0.6);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>y.set(<span class="s7">\busN</span>, 1, <span class="s7">\fcut</span>, fct, <span class="s7">\dl</span>, 1-dl.abs, <span class="s7">\amp</span>, 0.6);</p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>// </span>(((val+1)*((0.005-0.05)/textfile.size))+0.05).wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>0.005.wait;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>};</p>
+<p class="p3"><span class="Apple-tab-span">	</span>a.free;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>b.free;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>c.free;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>x.free;</p>
+<p class="p3"><span class="Apple-tab-span">	</span>y.free;</p>
+<p class="p4"><span class="s2"><span class="Apple-tab-span">	</span></span>"this is the end"<span class="s2">.postln;</span></p>
+<p class="p6"><span class="s6">//<span class="Apple-tab-span">	</span></span>Server.internal.stopRecording;</p>
+<p class="p3">};</p>
+<p class="p3">)</p>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+   <head>
+       <title>Wind-from-sequence</title>
+       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+       <link rel="stylesheet" media="screen" type="text/css" title="by" href="../code.css" />
+   </head>
+<body>
+<p><img src="../img/terminal.png" width="100" alt="by" /></p>
+<pre>
+#!/bin/bash
+# convertir formants.praat list coll
+# FV janv. 2012 modified by 21022012
+
+praatfile=$1
+
+x1=`head -n 8 $praatfile |tail -n 1`
+echo $x1 > x1.tmp
+nx=`head -n 6 $praatfile |tail -n 1`
+dx=`head -n 7 $praatfile |tail -n 1`
+echo "scale=4; $nx * $dx + $x1" | bc > xmax.tmp
+l=`cat $praatfile |wc -l`
+ll=`expr $l - 9`
+tail -n $ll $praatfile > "$praatfile.tmp"
+coll="$praatfile.coll"
+pamp="$praatfile.pas1"
+
+i=1
+index=1
+while read LINE
+do
+	ii=$((i + 1))
+	amp=$LINE
+	echo $amp >> $pamp
+	read n
+	line="$amp "
+	k=1
+	n=`expr $n \* 2`
+	while [ $k -le $n ]
+		do
+		read p
+		line="$line $p"
+		k=$((k + 1))
+		done
+	v1=`echo -n "("`
+	v2=`echo -n "$line "|cut -d\  -f 2-8` 
+	v3=`echo ")"`
+	echo $v1$v2$v3 >> $coll
+	i=$((ii + n + 1))
+	index=`expr $index + 1`
+done &lt; $praatfile.tmp
+
+rm $praatfile.tmp
+echo "$index frames for this sequence" 
+echo `expr $index - 1` > frames.tmp
+
+</pre>
+
+</body>
+</html>

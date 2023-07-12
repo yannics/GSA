@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+   <head>
+       <title>Wind-from-sequence</title>
+       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+       <link rel="stylesheet" media="screen" type="text/css" title="by" href="../code.css" />
+   </head>
+<body>
+
+<p><img src="../img/terminal.png" width="100" alt="by" /></p>
+<pre>
+#!/bin/bash
+# convert PitchTier from praat to coll
+# Created by by.cmsc@gmail.com on 11/02/12
+
+praatfile=$1
+l=`cat $praatfile |wc -l`
+ll=`expr $l - 6`
+tail -n $ll $praatfile > "$praatfile.tmp"
+coll="$praatfile.coll"
+h=`cat $praatfile.tmp |wc -l`
+k=`expr $h / 2`
+
+while read line1
+do
+read line2
+echo "($line1 $line2)" >> $coll
+done &lt; $praatfile.tmp
+
+rm $praatfile.tmp
+
+</pre>
+
+</body>
+</html>
