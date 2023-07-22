@@ -125,8 +125,9 @@ Simple underwater filter.
 \begin{tabular}{l c p{6cm}}
 \textbf{in} &  & The input signal.\\
 \textbf{rdepth} & 0.5 & The relative depth, from 0 the surface to 1 (excluded) the deepest point (inaudible).\\
-\textbf{turbulance} & \#[0.1, 20] &  Literal array setting the frequency and the level of the modulation noise applied to the cutoff frequency of the low pass filter.\\
-\textbf{abs} & -7 & The curvature of the decreasing relative depth.
+\textbf{turbulance} & \#[0.1, 20] &  Literal array setting the frequency and the level of the modulation of noisy perturbation.\\
+\textbf{abs} & -7 & The curvature of the decreasing relative depth.\\
+\textbf{numChans} & 2 & The number of output channels. %Most of the time this value should be equal to \texttt{Server.default.options.numOutputBusChannels}.
 \end{tabular}
 
 \bigskip

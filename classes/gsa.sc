@@ -93,14 +93,12 @@ Distance {
 }
 
 InH2O {
-	*ar { |in, rdepth=0.5, turbulance=#[0.1, 20], abs=(-7), server, mul=1, add=0|
+	*ar { |in, rdepth=0.5, turbulance=#[0.1, 20], abs=(-7), numChans=2, mul=1, add=0|
 		var bus, fcut, noise, chainA, chainB, chain, out;
-		server = server ? Server.default;
-		bus = server.options.numOutputBusChannels;
 		fcut = rdepth.lincurve(0, 1, 20000, 20, abs);
 		noise = LPF.ar(WhiteNoise.ar * (1-rdepth), fcut + LFNoise2.kr(turbulance[0], turbulance[1]));
-		chainA = FFT(LocalBuf(2048!bus), noise);
-		chainB = FFT(LocalBuf(2048!bus), in * (1-rdepth) * 2);
+		chainA = FFT(LocalBuf(2048!numChans), noise);
+		chainB = FFT(LocalBuf(2048!numChans), in * (1-rdepth) * 2);
 		chain = PV_MagMul(chainA, chainB);
 		out = IFFT(chain) * 0.05;
 		out = out * mul + add;
