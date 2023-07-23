@@ -6,8 +6,8 @@ s.options.memSize = 2.pow(20)*2; // default is 8192
 Buffer.freeAll;
 s.freeAllBuffers;
 // DIRECTORIES
-~indrop = "~/Desktop/H2O/sound/dropwater/";
-~inmisc = "~/Desktop/H2O/sound/miscwater/";
+~indrop = "".resolveRelative +/+ "sound/dropwater/";
+~inmisc = "".resolveRelative +/+ "sound/miscwater/";
 s.waitForBoot{
 	// load a folder of sounds into mono buffer
 	~loader = FluidLoadFolder(~indrop);
@@ -94,7 +94,7 @@ s.waitForBoot{
 			wet = wet + temp;
 		};
 		sig = XFade2.ar(dry, wet, Lag.kr(mix,1)*2-1, amp);
-		sig = Select.ar(type,[Distance.ar(sig, Lag.kr(rd,1), abs), InH2O.ar(sig, Lag.kr(rd,1), tb, abs)]);
+		sig = Select.ar(type,[Distance.ar(sig, Lag.kr(rd,1), abs), InH2O.ar(sig, Lag.kr(rd,1), tb, abs, 4)]);
 		Out.ar(out, sig);
 	}).add;
 	// ...
@@ -178,25 +178,24 @@ s.waitForBoot{
 }
 )
 
-
-//+++++++++++++++++++++
+// Kind of live coding ...
+//+++++++++++++++++++++++++
 // reallocate arrays ...
 ~xposAr = []; ~rtm.do{|rtm| ~xposAr=~xposAr.add(rtm.size.collect{1.0.rand2})};
 ~yposAr = []; ~rtm.do{|rtm| ~yposAr=~yposAr.add(rtm.size.collect{1.0.rand2})};
-// reset reverb if needed
+// replay reverb synth if freed
 ~reverb4synth = Synth(\verb4, [\in, ~reverb4bus, \out, 0, \revtime, 5, \predelay, 0.6, \mix, ~rds.value/100, \rd, ~rds.value/100, \amp, 0.5]);
-//+++++++++++++++++++++
+//+++++++++++++++++++++++++
 // play as live coding ...
-~ratAr = []; ~rtm.do{|rtm| ~ratAr=~ratAr.add(1)};
 ~ratAr = []; ~rtm.do{|rtm| ~ratAr=~ratAr.add(rrand(0.3, 0.8))};
 ~ratAr = []; ~rtm.do{|rtm| ~ratAr=~ratAr.add([0.5, 1, 2, 0.25].choose)};
-
+// stop (0) or play (1) all RTM
 ~rtmMap.do{|but,i| but.valueAction = 0};
 ~rtmMap.do{|but,i| but.valueAction = 1};~ratios.valueAction=75;~rds.valueAction=80;~lens.valueAction=3;
-
+// alternative to GUI
 ~rds.valueAction=60;
 ~rates.valueAction=0.125;
-//+++++++++++++++++++++
+//+++++++++++++++++++++++++
 // to sync or async ROUTINE
 (
 r=Routine {
@@ -216,30 +215,29 @@ r=Routine {
 };
 AppClock.play(r);
 )
-//+++++++++++++++++++++
+//+++++++++++++++++++++++++
 ~min_dur=3;
 ~max_dur=16;
-
 ~deepness=30;
 ~rds.valueAction=~deepness;
 ~rds.valueAction=30;
-//+++++++++++++++++++++
+//+++++++++++++++++++++++++
 // play background ...
 a=Synth(\bg, [\buf, ~waterMisc.choose,\out, ~outA, \amp,1, \xpos, 1.0.sum3rand, \ypos, 1.0.sum3rand]);
 // change here when mix = +1
 a.set(\buf, ~waterMisc.choose, \xpos, 1.0.sum3rand, \ypos, 1.0.sum3rand);
 // free a
 a.free;~rds.valueAction=~deepness;
-
+// ---
 b=Synth(\bg, [\buf, ~waterMisc.choose,\out, ~outB, \amp,1, \xpos, 1.0.sum3rand, \ypos, 1.0.sum3rand]);
 // change here when mix = -1
 b.set(\buf, ~waterMisc.choose, \xpos, 1.0.sum3rand, \ypos, 1.0.sum3rand);
 // free b
 b.free;~rds.valueAction=~deepness;
-
+// ---
 c=Synth(\mix, [\inA, ~outA, \inB, ~outB, \out, ~reverb4bus,\bal,-1]);~reverb4synth.set(\type,1);~uw.valueAction = 1;
 c.free;
-//+++++++++++++++++++++
+//+++++++++++++++++++++++++
 // play with doppler ...
 ~doppler.do{|dop| dop.free};
 ~doppler=[];
@@ -260,7 +258,7 @@ Routine.run {
 }
 )
 ~doppler.do{|dop| dop.set(\amp, 2)};
-//+++++++++++++++++++++
+//+++++++++++++++++++++++++
 // TEST INSTALLATION
 { Pan4.ar(PinkNoise.ar, 1, -1, 0.05) }.play;
 {Out.ar(0, PinkNoise.ar*0.05)}.play;
@@ -270,7 +268,7 @@ Routine.run {
 b = Buffer.read(s, Platform.resourceDir +/+ "sounds/a11wlk01.wav");
 // set volume doppler in situ
 Synth(\doppler, [\out, 0, \buf, b, \xIn, -1, \yIn, -1, \dist, -0.1, \rate,1, \amp, 0.5])
-//+++++++++++++++++++++
+//+++++++++++++++++++++++++
 // perdendosi ROUTINE
 (
 r=Routine {
