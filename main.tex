@@ -33,7 +33,15 @@
 \lstset{
 style=stl,
 emph={givenSoundFile, classesNumber,fileName, somName, treeName, IP, port, tag, eventDuration,valueListToSend,ntimes, dataFolderPath}, emphstyle={\color{black}\textsl},
-literate={~} {$\sim$}{1}, showstringspaces=false,upquote=true}
+literate=
+{~} {$\sim$}{1}
+{°}{{$^{\circ}$}}{1}
+{É}{{\'E}}{1}
+{é}{{\'e}}{1}
+{è}{{\`e}}{1}
+{à}{{\`a}}{1}
+{ê}{{\^e}}{1}
+, showstringspaces=false,upquote=true}
 
 \usepackage{varioref}
 \usepackage{float}
@@ -134,6 +142,12 @@ literate={~} {$\sim$}{1}, showstringspaces=false,upquote=true}
 \usepackage{caption}
 \usepackage[hang,flushmargin]{footmisc}
 
+\usepackage{tikz}
+\newcommand*\circled[1]{\tikz[baseline=(char.base), line width=1pt]{
+            \node[shape=circle,draw,inner sep=1pt] (char) {\textbf{#1}};}}
+\newcommand*\squared[1]{\tikz[baseline=(char.base), line width=1pt]{
+            \node[shape=rectangle,draw,inner sep=2pt] (char) {\textbf{#1}};}}
+            
 \begin{document}
 
 \pagecolor{aureolin!30}
@@ -414,6 +428,11 @@ To finish, in the SuperCollider context:
 \thispagestyle{empty}
 
 \include{mp/oc}
+
+\markboth{... about music vestiges -- Studies}{Generative Sonic Art}
+\thispagestyle{empty}
+
+\include{mp/study}
 
 %++++++++++++++++++++++++++++++++++++++++++++++
 %++++++++++++++++++++++++++++++++++++++++++++++
@@ -818,6 +837,10 @@ The further is the source, less we perceive the high frequencies which are absor
 \include{mp/kjcc}
 
 \include{mp/inscore}
+
+\include{mp/clavicorde}
+
+\include{mp/esg}
 
 \include{src/ref}
 

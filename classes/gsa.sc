@@ -321,10 +321,16 @@ gmn score syntax
 */
 + Integer {
 	midiguido {
-		arg dur = 0.25; // dur is a fraction of the whole note
+		arg dur = 0.25, noteNames; // dur is a fraction of the whole note
 		var notes = ["c", "c#", "d", "e&", "e", "f", "f#", "g", "g#", "a", "b&", "b"]; // my own chromatic scale ...
 		var rat = dur.asFraction;
-		^(notes[this%12] ++ (this.div(12) - 4).asString ++ format("*%/%", rat[0], rat[1]))
+		if (noteNames.isArray)
+		{
+			^noteNames[this%noteNames.size]
+		}
+		{
+			^(notes[this%12] ++ (this.div(12) - 4).asString ++ format("*%/%", rat[0], rat[1]))
+		}
 	}
 
 	degguido {
