@@ -30,26 +30,29 @@ To install: clone or copy this folder to Platform.userExtensionDir
 
 Ulam {
 	*ar { |ar, ind=0, stretch=5, nx=0, ny=\max, sig=\norm, detune=0, rndAmp=1, mul=1, add=0|
-		var signal=Silent.ar;
+		var signal = Silent.ar;
 		ar.asArray.detune(detune).do{ |n|
 			var env = Env.collatz(n, stretch, nx, ny);
 			var sel = Select.ar(ind,
 				[
-//env.exprange(0.001,0.1)
-//env.absrange(-1,1)
 					Resonz.ar(WhiteNoise.ar, n, EnvGen.kr(env.exprange(0.0001,0.1), doneAction:2)),
 					FSinOsc.ar(n) * EnvGen.kr(env, doneAction:2)
 				]
 			);
 			signal = sel * rrand(rndAmp, 1) + signal;
 		};
-		if (sig == \norm)
+		case
+		{ sig == \norm }
 		{
 			signal = signal.range(-1, 1)
-		};
-		if (sig == \tanh)
+		}
+		{ sig == \tanh }
 		{
 			signal = signal.tanh
+		}
+		{ true }
+		{
+			signal = signal
 		};
 		signal = signal * mul + add;
 		^signal
