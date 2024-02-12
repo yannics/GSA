@@ -397,7 +397,7 @@ gmn score syntax
 }
 //----------------------------------------------------------------
 /*
-<https://www.overleaf.com/read/sjhfhthgkgdj>
+<https://github.com/yannics/GSA/blob/master/gsa.pdf>
 Perspectives
 ==================================================================
    method           |   class   |   args
