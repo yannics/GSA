@@ -1,7 +1,7 @@
 /*
 GSA
 version 1.0.9
-<https://www.overleaf.com/read/sjhfhthgkgdj>
+<https://github.com/yannics/GSA/blob/master/gsa.pdf>
 Sound design studies
 ------------------------------------------------------------------
 To install: clone or copy this folder to Platform.userExtensionDir

@@ -26,8 +26,8 @@ SynthDef.new("bd", {
 	boom = Mix.fill(16, { Klank.ar(`[Array.linrand(4, 0.1, 2.0)*freq, nil, Array.linrand(4, 0.5, 1.0)], Impulse.ar(0.02, 0, 0.1)) });
 	noise = Mix.fill(8, { Klank.ar(`[Array.linrand(4, 0.1, 2.0)*freq*5, nil, Array.linrand(4, 0.5, 1.0)], Impulse.ar(0.02, 0, 0.1)) })*(freq/1000);
 
-	boom = (noise+boom)*EnvGen.kr(volEnv, doneAction:2);
-	boom = Pan2.ar(boom, pos);
+	boom = (noise+boom)*EnvGen.kr(volEnv);
+	//boom = Pan2.ar(boom, pos);
 
 	boom = GVerb.ar(
 		LPF.ar(boom*BPeakEQ.ar(WhiteNoise.ar(freq.reciprocal*100), freq*10, 0.5, 12)+boom, LFNoise1.ar(6, 1000, 1000)),
@@ -41,7 +41,7 @@ SynthDef.new("bd", {
 		taillevel.dbamp
 	);
 
-	DetectSilence.ar(boom, time:0.1, doneAction: 2);
+	DetectSilence.ar(boom, time:1, doneAction: 2);
 	Out.ar(0,LPF.ar(boom, freqLPF)*amp)
 }).add;
 

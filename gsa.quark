@@ -1,6 +1,6 @@
 (
   name: "GSA",
-  summary: "Generative Sonic Art <https://www.overleaf.com/read/sjhfhthgkgdj>",
+  summary: "Generative Sonic Art <https://github.com/yannics/GSA/blob/master/gsa.pdf>",
   version: "1.0.8",
   schelp: "",
   url: "https://github.com/yannics/GSA",
