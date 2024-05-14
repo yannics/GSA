@@ -26,8 +26,8 @@ SynthDef.new("bd", {
 	boom = Mix.fill(16, { Klank.ar(`[Array.linrand(4, 0.1, 2.0)*freq, nil, Array.linrand(4, 0.5, 1.0)], Impulse.ar(0.02, 0, 0.1)) });
 	noise = Mix.fill(8, { Klank.ar(`[Array.linrand(4, 0.1, 2.0)*freq*5, nil, Array.linrand(4, 0.5, 1.0)], Impulse.ar(0.02, 0, 0.1)) })*(freq/1000);
 
-	boom = (noise+boom)*EnvGen.kr(volEnv);
-	//boom = Pan2.ar(boom, pos);
+	boom = (noise+boom)*EnvGen.kr(volEnv, doneAction:2);
+	boom = Pan2.ar(boom, pos);
 
 	boom = GVerb.ar(
 		LPF.ar(boom*BPeakEQ.ar(WhiteNoise.ar(freq.reciprocal*100), freq*10, 0.5, 12)+boom, LFNoise1.ar(6, 1000, 1000)),
@@ -41,17 +41,17 @@ SynthDef.new("bd", {
 		taillevel.dbamp
 	);
 
-	DetectSilence.ar(boom, time:1, doneAction: 2);
+	DetectSilence.ar(boom, time:0.1, doneAction: 2);
 	Out.ar(0,LPF.ar(boom, freqLPF)*amp)
 }).add;
 
 SynthDef.new("imp", {
-	arg pan=0, amp=1;
-	Out.ar(0,amp*Pan2.ar(Impulse.ar(0.01), pan)*Line.ar(1, 1, 1, doneAction: 2))
+	arg pan=0, amp=5, freq=2000;
+	Out.ar(0,amp*Pan2.ar(BBandPass.ar(Impulse.ar(0.01),freq,0.5), pan)*Line.ar(1, 1, 1, doneAction: 2))
 }).add;
 
 SynthDef.new("playbuf", {
-	| out=0, amp=1, buf, rate=1, pos=0, freq=1000, rq=0.5, db=6 |
+	| out=0, amp=1, buf, rate=1, pos=0, freq=2000, rq=0.5, db=6 |
 	var sig, chain, chain1, chain2;
 	sig=PlayBuf.ar(1, buf, BufRateScale.kr(buf)*rate, doneAction:2);
 	chain = FFT(LocalBuf(2048), sig);
@@ -59,7 +59,7 @@ SynthDef.new("playbuf", {
     //chain2 = PV_Diffuser(chain1, 1);
 	chain2 = PV_BinScramble(chain1, 0.8 , 0.1, 1 );
 	sig=[IFFT(chain1),IFFT(chain2)]*amp;
-	Out.ar(out, Pan2.ar(BPeakEQ.ar(sig, freq, rq, db),pos));
+	Out.ar(out, Pan2.ar(BBandStop.ar(sig, freq, rq, db),pos));
 }).add;
 
 SynthDef.new("rc", {
@@ -76,5 +76,11 @@ SynthDef.new("rc", {
 	resR = Ringz.ar(lodriver + hidriver, freqsR).mean;
 	Out.ar(0,amp*Balance2.ar(resL, resR, pan)*Line.ar(1, 1, dur, doneAction: 2))
 }).add;
+
+SynthDef(\vst_plugin, {
+	|bus=0|
+	ReplaceOut.ar(bus, VSTPlugin.ar(In.ar(bus, 2), 2))
+}).add;
+
 "synths loaded!".postln;
 )

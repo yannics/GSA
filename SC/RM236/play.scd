@@ -13,6 +13,10 @@ thisProcess.interpreter.executeFile("".resolveRelative +/+ "init.scd");
 ~outBus=0;
 )
 
+/* source plugin: https://valhalladsp.com/shop/reverb/valhalla-supermassive/ */
+~mainOut = VSTPluginController(Synth(\vst_plugin, [\bus, 0], addAction: 'addToTail'));
+~mainOut.open("ValhallaSupermassive", editor:true, verbose:true, action: { |x, ok| ok.if { x.loadPreset('darkhorse') }});
+
 (
 a = ~measure.collect({ arg i;
 	Pbind(
@@ -25,7 +29,7 @@ a = ~measure.collect({ arg i;
 		\av, Pwhite(0.01, 0.05),
 		\cv, Pwhite(-3.0,-1.0),
 		\st, 2,
-		\dist, Pwhite(0.5,0.8),
+		\dist, Pwhite(0.3,0.8),
 		\drylevel, -10,
 		\taillevel, Pif(Pkey(\freq).asFloat>100,-30,-9)
 		)
@@ -35,7 +39,8 @@ b = ~measure.collect({ arg i;
 	Pbind(
 		\instrument, \imp,
 		\out, ~outBus,
-		\amp, Pexprand(0.9,0.5),
+		\amp, Pexprand(0.9,0.5)*2,
+		\freq, 2000,
 		\pan, Pwhite(-1,1),
 		\dur, Pseq(~mixRTM.(~rtmcombination[i][2].asArray, ~rtmcombination[i][3].asArray), 1)
 	)
@@ -47,24 +52,24 @@ c = ~measure.collect({ arg i;
 	Pbind(
 		\instrument, \playbuf,
 		\out, ~outBus,
-		\amp, amp,
+		\amp, amp/4,
 		\buf, Pxrand(~radioNoise, inf),
 		\rate, Pwhite(0.9, 1.1),
-		\freq, Pwhite(500, 1000),
+		\freq, 2000,
 		\rq, Pwhite(0.4, 0.6),
-		\db, Pwhite(4.0, 6.0),
+		\db, Pwhite(4.0, 6.0)*0.25,
 		\dur, Pseq(~mixRTM.(~rtmcombination[i][0].asArray, ~rtmcombination[i][1].asArray), 1)
 	)
 });
 
 x=[a, b, c].flop;
 Routine({
-	//s.record;
+	s.record;
 	2.wait;
-	y = Synth("playbuf", [buf: ~mark[1]]);
+	y = Synth("playbuf", [buf: ~mark[1], amp:0.1]);
 	(~mark[1].duration-0.4).wait;
 	~measure.do({ |i|
-		if(i == (~measure-2)) {y = Synth("rc", [dur: ~mdur*2, amp:0.75, rat:2])};
+		if(i == (~measure-2)) {y = Synth("rc", [dur: ~mdur*2, amp:0.35, rat:2])};
 		Ppar(x[i]).play;
 		~mdur.wait;
 	});
@@ -88,7 +93,8 @@ Routine({
 			Pbind(
 				\instrument, \imp,
 				\out, ~outBus,
-				\amp, Pexprand(0.9,0.5),
+				\amp, Pexprand(0.9,0.5)*2,
+				\freq, 2000,
 				\pan, Pwhite(-1,1),
 				\dur, Pseq(~mixRTM.(~rtmref[[1,2].choose].asArray, ~rtmref[[3,4].choose].asArray), 1)
 			)
@@ -96,6 +102,6 @@ Routine({
 	).play;
 	//---------------------------
 	(~mdur+8).wait;
-	//s.stopRecording;
+	s.stopRecording;
 }).play
 )

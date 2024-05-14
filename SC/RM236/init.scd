@@ -20,10 +20,7 @@
 	~mark= ~mark.add(Buffer.readChannel(s, path.fullPath, channels: [0]));
 });
 
-// array of rtm as array of durations
-~rtmref = [
-	...
-];
+//~rtmref = [ ... ];
 
 ~mdur = ~rtmref[0].sum.value;
 
