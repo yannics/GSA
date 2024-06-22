@@ -4,7 +4,7 @@ categories:: Open Composition
 related:: Classes/Fractal
 
 DESCRIPTION::
-See strong::Section 6.2:: in: Yann Ics [2014/2022]. EMPHASIS::Journal of Generative Sonic Art.:: [online] Available at: https://github.com/yannics/GSA/blob/master/gsa.pdf [Accessed October 8, 2022].
+See strong::Section 6.2:: in: Yann Ics [2014/2024]. EMPHASIS::Journal of Generative Sonic Art.:: [online] Available at: https://github.com/yannics/GSA/blob/master/gsa.pdf [Accessed October 8, 2022].
 
 CLASSMETHODS::
 
@@ -15,7 +15,7 @@ ARGUMENT:: aCollection
 An array of rhythm as absolute or relative durations.
 
 ARGUMENT:: duration
-Duration of the result in second unit. CODE::aCollection.sum{|it| it.asArray[0]}:: by default.
+Duration of the result in second unit, by default equal to CODE::aCollection.sum{ |it| it.asArray[0] }::.
 
 ARGUMENT:: nVoices
 Number of voices or dimensions.
@@ -24,7 +24,7 @@ ARGUMENT:: xVoice
 If CODE::nil::, an interpolation is applied, else it is the x^th voice CODE::duration:: with CODE::ratio:: applied between voices.
 
 ARGUMENT:: ratio
-between the first and the last voice when CODE::xVoive.isNil::, else between adjacent voices. The value of CODE::ratio:: is between 0 and 1 respectively excluded. When the CODE::ratio:: is superior to 1, then this value is identified as the duration of the last voice in second unit and an interpolation is applied between the first voice with the CODE::duration:: value and the last voice with this value.
+between the first and the last voice when CODE::xVoice.isNil::, else between adjacent voices. The value of CODE::ratio:: is between 0 and 1 respectively excluded. When the CODE::ratio:: is superior to 1, then this value is identified as the duration of the last voice in second unit and an interpolation is applied between the first voice with the CODE::duration:: value and the last voice with this value.
 
 ARGUMENT:: syncMinVal
 Minimal duration for synchronization in second unit if required.

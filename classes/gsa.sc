@@ -20,10 +20,11 @@ To install: clone or copy this folder to Platform.userExtensionDir
 ------------|-----------|-----------------------------------------
  dist2db    | Number    | --
  db2dist    | Number    | --
- brownmotion| Number    | step, hi, lo
+ brownMotion| Number    | step, hi, lo
  harmRatio  | Array     | sym, ind, sr, del
  detune     | Array     | n, len
- [xpos, ypos].convertPan4toArray
+ [ arBefore ].peakMorphing([ arAfter ])
+ [ xpos, ypos ].convertPan4toArray
 ==================================================================
 <by.cmsc@gmail.com>
 */
@@ -97,7 +98,7 @@ Distance {
 
 InH2O {
 	*ar { |in, rdepth=0.5, turbulance=#[0.1, 20], abs=(-7), numChans=2, mul=1, add=0|
-		var bus, fcut, noise, chainA, chainB, chain, out;
+		var fcut, noise, chainA, chainB, chain, out;
 		fcut = rdepth.lincurve(0, 1, 20000, 20, abs);
 		noise = LPF.ar(WhiteNoise.ar * (1-rdepth), fcut + LFNoise2.kr(turbulance[0], turbulance[1]));
 		chainA = FFT(LocalBuf(2048!numChans), noise);
@@ -226,7 +227,7 @@ Bal2Quad {
 
 	brownMotion {
 		|step=0.125, lo=0, hi=1|
-		(this + step.xrand2).fold(lo, hi)
+		^(this + step.xrand2).fold(lo, hi)
 	}
 }
 
@@ -273,6 +274,29 @@ Bal2Quad {
 		{
 			^tmp
 		}
+	}
+
+	peakMorphing {
+		| arAfter |
+		var tmp, arBefore = this;
+		tmp=arBefore.collect({arg i, index; [arBefore[index], arAfter[arAfter.minIndex { |item| item absdif: i }]]}) ++ arAfter.collect({arg i, index; [arBefore[arBefore.minIndex { |item| item absdif: i }], arAfter[index]]});
+		^tmp.as(Set).as(Array)
+	}
+
+	/* ---> schelp
+	SECTION:: Peak morphing
+
+	EMPHASIS::Ibid.:: in Section STRONG::6.1::
+
+	CODE::
+	arBefore.peakMorphing(arAfter)
+	::
+
+	with CODE::arBefore:: and CODE::arAfter:: respectively as initial profile and final profile.
+	*/
+
+	butlast {
+		this.copyFromStart(this.size-2)
 	}
 
 	convertPan4toArray {

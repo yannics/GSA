@@ -43,11 +43,7 @@ Fractal {
 
 			if ((0 == rec) || (result[0].minItem <= min))
 			{ [result, lev] }
-			{
-				if (result[0].minItem <= min)
-				{ [result, lev] }
-				{ fractal.(rtm, dur, min, if (rec.isNil) { rec } { rec-1 }, al, result.addFirst(tmpres.flat), lev.addFirst(assoc.(tmpres,al))) }
-			}
+			{ fractal.(rtm, dur, min, if (rec.isNil) { rec } { rec-1 }, al, result.addFirst(tmpres.flat), lev.addFirst(assoc.(tmpres, al))) }
 		};
 
 		alist = al;
@@ -73,31 +69,26 @@ Fractal {
 		}
 	}
 
-	// onset return an ordered array such as each item = [onset, delta t (as duration), array of recursivity level, array of keys from alist dictionary]
+	// onset return an ordered array such as each item = [ onset, delta t (as duration), [ [ fractality_level, index_of_aCollection ] ... ] ]
 	onsets {
-		var ar = this.res.deepCollect(3,{|it|it.asArray});
 		var len = this.depth;
-		var al = if(this.alist.isNil) {this.depth(0)[0].collect(_.asArray)} {this.alist};
-		var init;
 		var dict = Dictionary.new;
+		var mod = this.depth(0)[0].size;
+		var ar, init;
+		ar = this.depth(len-1)[0];
 		// init the onsets dictionary
-		init = Array.with
-		(
-			ar.flop[0][0].integrate.addFirst(0).copyFromStart(ar.flop[0][0].size-1),
-			ar.flop[0][0]
-		).flop;
-		init.do{|in| dict.add(in[0].asSymbol -> [in[1], len.asArray.asSet])};
+		init = Array.with(ar.integrate.addFirst(0).butlast, ar).flop;
+		init.do{|in| dict.add(in[0].asSymbol -> [in[0], in[1], Array.new(len)])};
 		// update the onsets dictionary
-		ar.flop.collect{|it, ir|
-			var onset =	it[0].integrate.addFirst(0).copyFromStart(it[0].size-1);
+		len.collect{|i|
+			var onset = [ this.depth(i)[0].integrate.addFirst(0).butlast, this.depth(i).flop ].flop;
 			// select only the rtm(s) at this level of recursivity
-			onset.select{|ite,i| it[1][i][0]!=0}
-			// replace recursivity level if onset is in dict
-			.do{|os| if(dict[os.asSymbol].notNil,{dict.add(os.asSymbol -> [dict[os.asSymbol][0], dict[os.asSymbol][1].add(len-ir)])})}
+			onset.select{|ev| ev[1][1].asArray[0]!=0}
+			// add recursivity level + rtm index
+			.do{|os, li| dict.add(os[0].asSymbol -> [dict[os[0].asSymbol][0], dict[os[0].asSymbol][1], dict[os[0].asSymbol][2].add([len-i, li%mod])])}
 		};
 		// output dictionary as array
-		^dict.asSortedArray.flatBelow(1)
-		//.sort({ arg a, b; a[0].asFloat < b[0].asFloat})
+		^dict.asSortedArray.collect(_.[1])
 }
 
 	duration { |value|
@@ -107,5 +98,3 @@ Fractal {
 	}
 
 }
-// see HEX0 - mvt I
-// see data-01 - part III
