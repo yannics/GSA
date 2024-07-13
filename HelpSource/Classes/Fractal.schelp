@@ -30,6 +30,8 @@ PRIVATE:: res, reset, alist
 METHOD:: depth
 Get the number of dimensions or the number of recursivity plus one. When CODE::rec:: is provided, it returns the fractality at this level.
 
+When CODE::rec:: >= CODE::aFractal.depth::, it returns an array of all dimensions: CODE::[ aFractal.depth(0), aFractal.depth(1), ... aFractal.depth(aFractal.depth-1) ]::
+
 METHOD:: duration
 Get or reset the duration of CODE::this:: Fractal.
 

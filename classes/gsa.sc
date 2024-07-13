@@ -61,11 +61,10 @@ Ulam {
 }
 
 Delbuf {
-	*ar { |buf, del=0, rate=1, da=2, mul=1, add=0|
+	*ar { |buf, del=0, rate=1, mul=1, add=0|
 		var signal;
 		signal = PlayBuf.ar(1, buf, BufRateScale.kr(buf)*rate);
 		signal = DelayN.ar(signal, 30, del);
-		DetectSilence.ar(signal, doneAction:da);
 		signal = signal * mul + add;
 		^signal
 	}
@@ -73,14 +72,15 @@ Delbuf {
 
 Sow {
 	*ar { |buf, ser, sym=\sup, del=0, mul=1, add=0|
-		var signal, maxAmpIndex, arr;
+		var signal, maxAmpIndex, arr, env;
 		var file = SoundFile.openRead(buf.path);
 		var ar = FloatArray.newClear(file.numFrames * file.numChannels);
 		file.readData(ar);
 		maxAmpIndex = ar.abs.maxIndex;
 		arr = ser.harmRatio(sym, maxAmpIndex, file.sampleRate, del);
-		signal = Mix.new(arr.collect({ |sub| Delbuf.ar(buf, sub[1], sub[0], 0)}));
-		DetectSilence.ar(signal, doneAction:2);
+		env = EnvGen.ar(Env.linen(sustainTime: file.duration/arr.flop[0].minItem, releaseTime: 0.01), doneAction: Done.freeSelf);
+		signal = Mix.new(arr.collect({ |sub| Delbuf.ar(buf, sub[1], sub[0])}));
+		signal = signal.tanh * env;
 		signal = signal * mul + add;
 		^signal
 	}

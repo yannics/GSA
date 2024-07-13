@@ -77,15 +77,30 @@ Fractal {
 		var ar, init;
 		ar = this.depth(len-1)[0];
 		// init the onsets dictionary
-		init = Array.with(ar.integrate.addFirst(0).butlast, ar).flop;
+		init = Array.with(ar.integrate.addFirst(0).butlast.round(0.0001), ar).flop;
 		init.do{|in| dict.add(in[0].asSymbol -> [in[0], in[1], Array.new(len)])};
 		// update the onsets dictionary
 		len.collect{|i|
-			var onset = [ this.depth(i)[0].integrate.addFirst(0).butlast, this.depth(i).flop ].flop;
+			var onset = [ this.depth(i)[0].integrate.addFirst(0).butlast.round(0.0001), this.depth(i).flop ].flop;
 			// select only the rtm(s) at this level of recursivity
 			onset.select{|ev| ev[1][1].asArray[0]!=0}
 			// add recursivity level + rtm index
-			.do{|os, li| dict.add(os[0].asSymbol -> [dict[os[0].asSymbol][0], dict[os[0].asSymbol][1], dict[os[0].asSymbol][2].add([len-i, li%mod])])}
+			.do{|os, li| dict.add(
+				// key
+				os[0].asSymbol
+				->
+				[
+					// onset
+					dict[os[0].asSymbol][0],
+					// duration
+					dict[os[0].asSymbol][1],
+					dict[os[0].asSymbol][2].add([
+						// rec level
+						len-i,
+						// rtm indice
+						li%mod])
+				]
+			)}
 		};
 		// output dictionary as array
 		^dict.asSortedArray.collect(_.[1])
