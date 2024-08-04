@@ -56,7 +56,7 @@ s.waitForBoot({
 		arg out=0, amp=0.8, freq=220, grain=100, pan=0, atk=1, sus=2, rel=2, res=0.4;
 		var env, sig;
 		env = EnvGen.kr(Env([0, 1, 0.7, 0],[atk, sus, rel],[1, 0, -1]), doneAction:2);
-		sig = RLPFD.ar(Dust.ar(grain), freq, res, 0.2, mul:3)!4;
+		sig = {RLPFD.ar(Dust2.ar(grain), freq, res, 0.2, mul:3)}!4;
 		Out.ar(out, SplayAz.ar(4, sig.swap(2,3)*env, 0.5, amp, 2, pan));
 	}).add;
 	/*---------------------*/
@@ -66,6 +66,7 @@ s.waitForBoot({
 	/*---------------------*/
 	// loading scores
 	// The scores are selected and transcribed to a Music Data Score (See 3.2.1 in GSA) on the basis of a rhythmic characteristic that creates an interesting fractal effect.
+	// Note the last line refers respetively to the number of dimensions by phrase, the tempo, the number of pulses for a whole note, and the number of repetition of the score
 	~scores = (PathName("".resolveRelative) +/+ PathName("scores/*.score")).pathMatch.scramble.collect {|score, i|
 		format("     %  %.score", i, PathName(score.asString).fileNameWithoutExtension).postln;
 		FileReader.read(score, true, true).clump(2)};
@@ -86,42 +87,43 @@ s.waitForBoot({
 	~minDur=0.1;
 	// list of all midi phrases from ~scores with their relative fractals
 	~arrayPhrases = ~scores.collect({|score|
-		var tmp=score, last, ratioconvertrealduration;
+		var tmp=score.copyToEnd(0), last, ratioconvertrealduration;
 		last=tmp.pop;
-		ratioconvertrealduration = 60/(last[0][0].asFloat*last[0][1].asFloat);
+		ratioconvertrealduration = 60/(last[0][2].asFloat*last[0][1].asFloat);
 		tmp.collect({| phrase |
 			var fractal;
 			// Fractal (see 6.3 in GSA)
-			fractal = Fractal.newFrom(phrase[0].asFloat, phrase[0].asFloat.sum*ratioconvertrealduration*~ratiophrase, ~minDur, ~recursivity);
-			Array.with(phrase[1].asFloat, fractal.res)});
-	}).flatten(1);
+			Fractal.newFrom(phrase.asFloat.flop, phrase[0].asFloat.sum*ratioconvertrealduration*~ratiophrase, ~minDur, ~recursivity)
+		});
+	}).flatten(1).scramble;
 	/*---------------------*/
 
 	s.sync;
 
 	/*---------------------*/
+	~detune=20; // Hz
 	/* PLAY FRACTAL */
-	~fractal = Pseq(
+	Pdef(\fractal, Pseq(
 		~arrayPhrases.collect({
-			| scorePhrase |
+			| fractal |
 			Ppar(
-				scorePhrase[1][0].size.collect({ arg i;
+				fractal.depth.collect({ arg i;
 					Pbind(
 						\instrument,
 						\risset,
 						\out, 0,
-						\freq, Pseq(scorePhrase[0].asFloat.replace(0, \rest).midicps, 1),
-						\dur, Pseq(scorePhrase[1][0][i], 1),
-						\sustain, Pseq(scorePhrase[1][0][i], 1)*(i/2+1),
-						\amp, Pseq(scorePhrase[1][1][i], 1)*rrand(0.1, 0.2),
-						\dist, Pwhite(0.1, 0.6, inf),
-						\spread, Pwhite(0.2, 0.8, inf),
-						\pos, Pwhite(-1.0, 1.0, inf)
+						\pos, Pwhite(-1.0, 1.0, inf),
+						\freq, Pseq(fractal.depth(i)[1].flatten(1).flop[1].asFloat.replace(0, \rest).midicps)+(Pkey(\pos)*~detune),
+						\dur, Pseq(fractal.depth(i)[0]),
+						\sustain, Pseq(fractal.depth(i)[1].flatten(1).flop[1].asFloat/10)+Pkey(\dur),
+						\amp, Pseq(fractal.depth(i)[1].flatten(1).flop[1].asFloat.normalize)*rrand(0.1, 0.2),
+						\dist, Pwhite(0.2+(i*0.1), 0.8, inf),
+						\spread, Pwhite(0.2, 0.8, inf)
 			)}))
-	}), inf);
+	}), inf));
 
 	/* PLAY CHANT */
-	~air = Pbind(
+	Pdef(\air, Pbind(
 		\instrument,\playChant,
 		\out, 4,
 		\buf, Pser(~chants, inf).trace,
@@ -129,16 +131,16 @@ s.waitForBoot({
 		\xpos, Pwhite(-1.0, 1.0, inf),
 		\ypos, Pwhite(-1.0, 1.0, inf),
 		\amp, 0.2,
-	);
+	));
 
 	/* PLAY DUST */
-	~dust = Pseq(
+	Pdef(\dust,  Pseq(
 		~scores.collect({
 			| score |
 			var file, tempo, fact, mini, dur, amp, pitch;
 			file = score;
 			tempo = file.last[0];
-			fact = 60/tempo[0].asInteger/tempo[1].asInteger;
+			fact = 60/tempo[1].asInteger/tempo[2].asInteger;
 			mini = file.keep(file.size-1).flop[0].flatten.minItem({ arg item, i; item.asFloat });
 			dur = Pseq(file.keep(file.size-1).flop[0].flatten.collect({ arg it; it.asFloat }), inf);
 			amp = Pseq(file.keep(file.size-1).flop[1].flatten.collect({ arg it; (it.asFloat == 0).if({0}, {0.8}) }), inf);
@@ -153,10 +155,10 @@ s.waitForBoot({
 				\grain, Plprand(30, 100, inf),
 				\res, Phprand(0.6, 0.8, inf),
 				\pan, Pwhite(-1.0, 1.0, inf),
-				\amp, amp*2
+				\amp, amp
 			)
 		}
-	), inf);
+	), inf));
 
 	s.sync;
 	s.plotTree;
@@ -166,10 +168,17 @@ s.waitForBoot({
 )
 
 //--------------
-~fractal.play;
-~ariaplay = Ppar([ ~air, ~dust ]).play;
+Pdef(\fractal).play;
+Pdef(\dust).play;
+Pdef(\air).play;
 ~ariamix = Synth(\mixage, [\out, 0, \inA, 4, \inB, 8, \durMini, 30, \durMaxi, 90]);
+~crackles = { |amp=0.3| { Mix(Dust2.ar([1, 8, 16, 32, 64], [0.8, 0.4, 0.2, 0.1, 0.05]) * LFNoise1.kr(0.23, 0.4, 0.63)) }!4 * amp }.play;
 //--------------
-~fractal.stop;
-~ariaplay.stop;
+Pdef(\fractal).stop;
+Pdef(\fractal).pause;
+Pdef(\fractal).resume;
 ~ariamix.free;
+Pdef(\dust).stop;
+Pdef(\air).stop;
+~crackles.set(\amp, 0.6);
+~crackles.free;

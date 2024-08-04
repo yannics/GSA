@@ -2,8 +2,14 @@
 \usepackage{amsmath} 
 \usepackage{amsfonts}
 \usepackage{amssymb}
-\setcounter{tocdepth}{4}
 \usepackage{tocbibind}
+\setcounter{tocdepth}{2}
+
+\usepackage{titlesec}
+\usepackage{appendix, apptools}
+\AtAppendix{%
+\titleformat{\chapter}[display]{\vspace*{-50pt}\bfseries\huge}{\chaptername~\thechapter}{1em}{}
+\titlespacing*{\chapter}{0pt}{0pt}{0pt}}%
 
 \usepackage{bm}
 \usepackage{lmodern}
@@ -457,14 +463,24 @@ To finish, in the SuperCollider context:
 %\addcontentsline{toc}{chapter}{Appendices}
 %\renewcommand{\thesection}{\Alph{section}}
 \makeatletter
-\renewcommand\thesection{}
-\renewcommand\thesubsection{\@Alph\c@section.\@arabic\c@subsection}
+\renewcommand\thechapter{}
+\renewcommand\thesection{\@arabic\c@section}
 \makeatother
 
-\section{Codes}
+\titlespacing*{\chapter}{0pt}{0pt}{5pt}
 
-\subsection{Figures}
-\subsubsection{\ref{fig:g1}}
+%\chapter*{}
+%\addcontentsline{toc}{chapter}{Codes}
+
+\chapter{Codes}
+
+%\chapter{Codes}
+\markboth{Appendices}{Generative Sonic Art}
+\thispagestyle{empty}
+
+%\vspace{1cm}
+\section{Figures}
+\subsection{\ref{fig:g1}}
 \label{an:pro}
 \begin{lstlisting}[language=bash]
 # GNUPLOT
@@ -478,7 +494,7 @@ plot  "profile" every ::1::500 using 1 title '' with lines
 # 500 as 5 seconds according to the time step of 0.01 second
 \end{lstlisting}
 
-\subsubsection{\ref{fig:piano}}
+\subsection{\ref{fig:piano}}
 \label{an:pia}
 \begin{lstlisting}[language=bash]
 # GNUPLOT
@@ -493,7 +509,7 @@ plot  "sample.txt" using ($0+1):1 title '' with impulse
 # sample.txt is the harmonic profile of the sample
 \end{lstlisting}
 
-\subsubsection{\ref{fig:wave}}
+\subsection{\ref{fig:wave}}
 \label{an:wav}
 \begin{lstlisting}[language=bash]
 # Shell script
@@ -610,7 +626,7 @@ rm 1.pl 1.dat 2.dat 3.dat 4.dat 5.dat 1.wav 2.wav
 %	\end{center}
 %\end{figure}
 
-\subsection{Transpose}
+\section{Transpose}
 \label{trans}
 %\addcontentsline{toc}{section}{\nameref{trans}}
 \begin{lstlisting}[language=bash]
@@ -636,7 +652,7 @@ END {
 
 %#############################################################################
 
-\subsection{\texttt{formantAnalysis.sh}}
+\section{\texttt{formantAnalysis.sh}}
 \label{fab}
 
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Bash]
@@ -706,7 +722,7 @@ done
 rm formant.praat
 \end{lstlisting}
 %#############################################################################
-\subsection{\texttt{nw\_display}}
+\section{\texttt{nw\_display}}
 \label{nwck}
 %\addcontentsline{toc}{section}{\nameref{trans}}
 \begin{lstlisting}[language=bash]
@@ -723,20 +739,25 @@ nw_display -s -w 1000 -u '' -t -W 20 -b 'opacity:0' in.nw
 %\input{src/code}
 %#############################################################################
 
-\newpage
+\include{mp/inscore}
+
 %#############################################################################
-\section{Distance}
+
+%\chapter*{}
+\addcontentsline{toc}{chapter}{Distance}
+
+\chapter*{Distance}
 \label{dist}
 \makeatletter 
 \renewcommand{\thefigure}{\@arabic\c@figure}
 \makeatother
 
 \setcounter{figure}{0} 
-The perception of a sonic object in relation to its distance implied a substantial amount of parameters more or less subtle such as the nature of the source itself (mainly power level, directivity of the source, frequencies composing the sound and the mode of propagation), the environment in terms of reverberation, and more specifically in terms of absorption, diffusion, reflection and diffraction, which are dependant of the environment as the density (e.g. air humidity), the temperature, the pressure and perhaps the flux of the milieu (e.g. the wind in the air or the current in water). 
+The perception of a sonic object with its distance implied a substantial amount of parameters more or less subtle such as the nature of the source itself (mainly power level, the directivity of the source, frequencies composing the sound, and the mode of propagation), the environment in terms of reverberation, and more specifically in terms of absorption, diffusion, reflection and diffraction, which are dependant of the environment as the density (e.g. air humidity), the temperature, the pressure and perhaps the flux of the milieu (e.g. the wind in the air or the current in water). 
 
 \bigskip
 
-On this extreme simplified model, I consider a given relative distance from the source, the inaudible point as a relative distance from the source, and the absorption rate defined by its curvature.
+In this extremely simplified model, I consider a given relative distance from the source, the inaudible point as a relative distance from the source, and the absorption rate defined by its curvature.
 
 \begin{figure}[H]
 \begin{center}
@@ -747,7 +768,7 @@ On this extreme simplified model, I consider a given relative distance from the 
 \end{center}
 \end{figure}
 
-We talk about relative distance because too many parameters interact with each others. Then, it is quasi impossible to estimate it with an usual metric system, especially if we compose with abstract object(s). So, the idea is to say the value 0 for the closest distance, and the value 1 for the farthest which has to be inaudible as a point somewhere on the curve of the figure \ref{fig:dist}. 
+We talk about relative distance because too many parameters interact with each other. Then, it is quasi impossible to estimate it with an usual metric system, especially if we compose with abstract object(s). So, the idea is to say the value 0 for the closest distance, and the value 1 for the farthest which has to be inaudible as a point somewhere on the curve of the figure \ref{fig:dist}. 
 
 \bigskip
 
@@ -798,27 +819,36 @@ The further is the source, less we perceive the high frequencies which are absor
 %\end{center}
 %\end{figure}
 
-\newpage
+\include{mp/fractal}
+
 %\begin{mdframed}[style=stylesec]
-\section{Outline of the Standard MIDI File Structure}
+%\chapter*{}
+\addcontentsline{toc}{chapter}{* Outline of the Standard MIDI File Structure}
+
+\chapter*{\Large Outline of the Standard MIDI File Structure}
 \label{infomidi}
 %\label{tript}
 %\smallskip
 %\end{mdframed}
 \input{src/midi}
 
-\newpage
+
 %\begin{mdframed}[style=stylesec]
-\section{The Newick tree format}
+%\chapter*{}
+\addcontentsline{toc}{chapter}{* The Newick tree format}
+\chapter*{The Newick tree format}
 \label{nwdoc}
 %\label{tript}
 %\smallskip
 %\end{mdframed}
 \input{src/newick}
 
-\newpage
+
 %\begin{mdframed}[style=stylesec]
-\section{Psychoacoustics -- Roughness}
+\chapter*{}
+\addcontentsline{toc}{chapter}{* Psychoacoustics -- Roughness}
+\section*{Psychoacoustics -- Roughness}
+
 \label{rugdoc}
 %\label{tript}
 %\smallskip
@@ -835,8 +865,6 @@ The further is the source, less we perceive the high frequencies which are absor
 \include{mp/nord}
 
 \include{mp/kjcc}
-
-\include{mp/inscore}
 
 \include{mp/clavicorde}
 

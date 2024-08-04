@@ -363,6 +363,8 @@ For instance, the number of voices can be equal to the number of notes of a give
 \label{imp3}
 %\addcontentsline{toc}{chapter}{Proposition 3 -- \textsl{Fractal}}
 
+See also appendice \fullref{fracdoc}. 
+
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale=1.7]{img/1548}
@@ -370,6 +372,8 @@ For instance, the number of voices can be equal to the number of notes of a give
 \label{fractal}
 \end{center}
 \end{figure}
+
+\vspace{-5mm}
 
 \titlebox{\textit{\textbf{Fractal}}}
 {A fractal is a natural phenomenon or a mathematical set that exhibits a repeating pattern that displays at every scale. It is also known as expanding symmetry or evolving symmetry. If the replication is exactly the same at every scale, it is called a self-similar pattern -- as showed on figure \ref{fractal}. 
@@ -447,13 +451,13 @@ $int = assoc(rtm, al)$
  \end{itemize}
 \item The \texttt{RES[1]} is a list of events -- for instance, each event can be defined by the command line \textsl{enkode}
 %\footnote{See \href{https://www.overleaf.com/read/sjhfhthgkgdj}{\textit{GSA: Documentation of the executable script \textsl{enkode}}}.}
- -- according to the \texttt{RTM} defined by the option \texttt{AL}. If \texttt{AL = nil} then the new events according to the level of recursion, are defined as $1$, if not as $0$.
+ -- according to the \texttt{RTM} defined by the option \texttt{AL}. If \texttt{AL = nil} then the new events according to the level of recursion, are defined as $1$, if not as $0$. Note the events are grouped according to the initial datasets defined by \texttt{RTM} and \texttt{AL}, which implies to apply a method to flat once \texttt{RES[1][i]} in order to get the bijection between \texttt{RES[0][i]} and \texttt{RES[1][i]}. 
 \item For $n$ from \texttt{0} to \texttt{REC$-1$};
 \begin{itemize}[label=$\rightarrow$]
-\item \texttt{RES[0][$n$].size = RES[1][$n$].size}
+\item \texttt{RES[0][$n$].size = RES[1][$n$].flatten(1).size}
 \item $\sum$ \texttt{RES[0][}$n$\texttt{] =  DUR}
 \end{itemize}
-\item \texttt{RES[i][j].size$-1$} is a multiple of \texttt{RTM.size$-1$}.
+\item \texttt{RES[0][i].size$-1$} is a multiple of \texttt{RTM.size$-1$}.
 
 \item \texttt{RES[0][0]} is the last recursion, as an array of all events duration of the whole sequence.
 

@@ -49,6 +49,7 @@ The mix concerns the layers as such and the balance between the guitares and the
   \smallskip
   Generating rhythmic patterns as Musical Data Score from the `birdscape' analysis.
   
+ 
  \begin{enumerate}
 \item \textsl{enkode} analysis
  
@@ -56,22 +57,25 @@ The mix concerns the layers as such and the balance between the guitares and the
 enkode -I 3 birdscape.wav > data.txt
 \end{lstlisting}
 
-\item generating MDS -- require package N3 and \textsl{cl-mst}
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
-(defparameter *DATA* (mapcar #'N3::string-to-list 
-   (N3::read-text-lines "data.txt")))
+\item generating MDS -- require the packages N3 and \textsl{cl-mst}
 
+\begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
+(defparameter *DATA* (mapcar #'N3::read-file "data.txt"))
+
+;; For each event only its duration and the centroid is retained.  
 (defparameter *SEQ* (loop for i in *DATA* collect 
    (list (car i) (caddr i))))
 
-(defvar *N* nil) ;; number of events
+(defvar *N* nil) ;; as number of events
 
+;; search pattern of n (*N*) events in seq (*seq*)
 (defun loop-rtm (seq n)
   (loop for i from 0 to (- (length seq) n) by n 
      collect (subseq seq i (+ i n))))
      
-(dotimes (n 5)
-  (setf *N* (+ 5 n))
+(dotimes (n 5)       ;; 5 times ...
+  (setf *N* (+ 5 n)) ;; ... from 5 (then to 9) 
+  ;; write mds files
   (N3::>data-file (format nil "mds/105A1408-~S.mds" *N*) 
     (let ((dat (loop for i from 0 to (1- *N*) 
            collect
@@ -91,21 +95,23 @@ enkode -I 3 birdscape.wav > data.txt
 	           collect (cl-mst:rhizome-degree iii mst)))
 	      (maxi (car (N3::ordinate res '>))))
     (list maxi (nth (+ i (position maxi res)) tmp))))))
-	(append (loop for i in dat append (cadr i)) 
+	(append (loop for i in dat append (cadr i))  
+	        ;; last line such as 2 for grouping mds
+	        ;; plus the related degrees of each grouping
+	        ;; as weigths
 	        (list (cons 2 (mapcar #'car dat)))))))
 \end{lstlisting}
-In this case, we only compare incrementally a pattern of \texttt{*N*} events sequentially -- that is to say every  \texttt{*N*} events from the initial pattern -- within the remainder of the sequence with the function \texttt{loop-rtm}.
+
+In this case, we only compare incrementally a pattern of \texttt{*N*} events sequentially -- that is to say every  \texttt{*N*} events from the initial pattern -- within the remainder of the sequence with the function \texttt{loop-rtm}. 
 \end{enumerate}
 
 \begin{figure}[h!]
 \begin{center}
-	\includegraphics[scale=0.5]{img/9809}		
+	\includegraphics[scale=0.45]{img/9809}		
 \caption{Playing and mixing \textit{in situ} with the SuperCollider GUI.}
 \label{hk}
 \end{center}
 \end{figure}
-
-\newpage
 
   \textbf{\textit{b/} Formantic wind}
   

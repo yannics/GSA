@@ -78,22 +78,39 @@ Note the method \texttt{convertPan4toArray}, which distributes amplitudes in the
 The idea is to apply some `macro' formal objects to a sonic object as it is. These macro-forms are described in the previous chapters respectively as \nameref{imp2} on page \pageref{imp2} and \nameref{imp3} on page \pageref{imp3}.
 
 \bigskip
-The sonic object is a sample as a sound file. First, the synthesis algorithm detects the index $ind$ of the absolute maximal value of the signal, in order to compute the duration of the climax of the sample. Then, according to a given array, which is normalised (by divided each element of the array by the smallest value), and which set the ratio of the duplicated sound and the delay to match the climax. For the given array $S$, the ratios $R$ are computed according to two modalities, namely defined by the symbols \texttt{\textbackslash sup} (if we consider the ratio from the biggest value of $S$) or \texttt{\textbackslash inf} (if we consider the ratio from the smallest value of $S$).
+\begin{addmargin}[1em]{0em}%
+\mdfdefinestyle{mystyle}{backgroundcolor=gray!5,linecolor=gray!25,roundcorner=3pt}
+\begin{mdframed}[style=mystyle]
 
-\[
-     R =
-\begin{dcases}
-	\frac{min(S)}{(S, >)}  & \text{if \texttt{\textbackslash sup}}\\
-	\frac{(S, <)}{min(S) \times max(S)}  & \text{if \texttt{\textbackslash inf}} 
-   \end{dcases}
-\]
+\bigskip
+
+{\large \textbf{Sow}}
+
+\hrulefill
+
+\color{gray!80}Arguments:\color{black} 
+
+\bigskip
+
+\begin{tabular}{l c p{8cm}}
+\textbf{buf} &  & The index of the buffer.\\
+\textbf{rat} &  & An array of ratios.\\
+\textbf{del} &  &  Position of the `climax' within the sample duration in second. By default, this position is the absolute maximal value of the signal.
+\end{tabular}
+
+\bigskip
+
+\end{mdframed}
+\end{addmargin}
 
 %\newpage
 \bigskip
-Then, the respective delays $D$ are computed as follow ($sr$ is the sample rate):
+Note the array of ratios must be non-zero positive numbers.
+
+The respective delays according to the array of ratios are computed as follow:
  
 \[
-D = \bigcup_{i \in R} \frac{ind}{sr}  \left( \frac{1}{min(R)} - \frac{1}{R_i} \right)
+\bigcup_{r \in \mathbf{rat}} \mathbf{del} \left( \frac{1}{min(\mathbf{rat})} - \frac{1}{r} \right)
 \]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

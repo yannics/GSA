@@ -71,17 +71,22 @@ Delbuf {
 }
 
 Sow {
-	*ar { |buf, ser, sym=\sup, del=0, mul=1, add=0|
-		var signal, maxAmpIndex, arr, env;
-		var file = SoundFile.openRead(buf.path);
-		var ar = FloatArray.newClear(file.numFrames * file.numChannels);
-		file.readData(ar);
-		maxAmpIndex = ar.abs.maxIndex;
-		arr = ser.harmRatio(sym, maxAmpIndex, file.sampleRate, del);
-		env = EnvGen.ar(Env.linen(sustainTime: file.duration/arr.flop[0].minItem, releaseTime: 0.01), doneAction: Done.freeSelf);
-		signal = Mix.new(arr.collect({ |sub| Delbuf.ar(buf, sub[1], sub[0])}));
-		signal = signal.tanh * env;
-		signal = signal * mul + add;
+	*ar { |buf, rat, del=0, mul=1, add=0|
+		var ret, file, data, maxAmpIndex, env, arr, signal;
+		if ((del > 0) && (del < buf.duration)) { ret=del } { ret=0 };
+		if (ret.asBoolean.not)
+		{
+			file = SoundFile.openRead(buf.path);
+			data = FloatArray.newClear(file.numFrames * file.numChannels);
+			file.readData(data);
+			maxAmpIndex = data.abs.maxIndex;
+			ret = maxAmpIndex/file.sampleRate;
+			format("SOW: buf[%] ind[%] del[%]", buf.bufnum, maxAmpIndex, ret.round(0.001)).postln
+		};
+		env = EnvGen.ar(Env.linen(sustainTime: buf.duration/rat.minItem, releaseTime: 0.01), doneAction: Done.freeSelf);
+		arr = rat.collect{|it| [it, rat.minItem.reciprocal-it.reciprocal * ret]};
+		signal = Mix.new(arr.collect({ |sub| Delbuf.ar(buf, sub[1], sub[0], rat.size.reciprocal)}));
+		signal = signal * env * mul + add;
 		^signal
 	}
 }
@@ -236,31 +241,6 @@ Bal2Quad {
 		var res = this.size.ocwr(ind:true);
 		var dict = Dictionary.newFrom(this.collect{|it, i| [i, it]}.flatten(1));
 		^res.deepCollect(2, {|it| dict.matchAt(it)})
-	}
-
-	harmRatio {
-		| sym=\sup, ind=1, sr=1, del=0 |
-		var res, i;
-		var arr=this.as(Set).as(Array).sort;
-		if (sym == \sup)
-		{
-			res=(arr/this.minItem).reciprocal.reverse
-		};
-		if (sym == \inf)
-		{
-			res=(arr/this.minItem) * this.maxItem.reciprocal
-		};
-		res=res.collect{|it| [it, res.minItem.reciprocal-it.reciprocal * (ind/sr)]};
-		if (del.asBoolean)
-		{
-			i = 0;
-			while({i < res.last[1]}, {i = del + i});
-			i = i - res.last[1];
-			res = res.collect{|it| [it[0], it[1] + i]};
-		}
-		// this.harmRatio.flop[0] = ratio
-		// this.harmRatio.flop[1] = delay
-		^res
 	}
 
 	detune  {

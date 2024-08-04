@@ -1,13 +1,19 @@
-\phantomsection
+%\phantomsection
 %\addcontentsline{toc}{chapter}{References}
-\renewcommand{\bibname}{References
+%\renewcommand{\bibname}{References
 %\\ {\normalsize {\normalfont References to go further or deeper are in gray.}}
-}
+%}
+
+\renewcommand{\bibsection}{\part*{References}}
+\addcontentsline{toc}{part}{References}
+
+\markboth{References}{Generative Sonic Art}
+\thispagestyle{empty}
 
 \renewcommand\bibpreamble{$\rightarrow$ The references to go further or deeper for advanced readers are prepended by an asterisk.}
 
 \begin{thebibliography}{99}
-\thispagestyle{empty}
+%\thispagestyle{empty}
 		
 	\bibitem[Analyse Musicale, 1990]{afum} 
 	\textit{Analyse Musicale : La forme: unit\'{e} et multiplicit\'{e}}. Num\'{e}ro 20, Paris, Juin 1990.

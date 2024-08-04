@@ -14,8 +14,11 @@ Generates the object Fractal
 ARGUMENT:: aCollection
 An array of rhythm as absolute or relative durations, which can be related with any kind of data as follow: CODE::[ [ dur_1, data_1 ], [ dur_2, data_2 ] ... [ dur_n, data_n ] ]::.
 
+NOTE:: when the duration is negative, this is interpreted as a rest (i.e. silent). Mind to apply the method CODE::abs:: when this value is used inside a Routine or simply interpreted as an effective duration.
+::
+
 ARGUMENT:: duration
-Duration of the result in second unit, by default equal to CODE::aCollection.sum{ |it| it.asArray[0] }::.
+Duration of the result in second unit, by default equal to CODE::aCollection.sum{ |it| it.asArray[0].abs }::.
 
 ARGUMENT:: minVal
 Minimal duration accepted in second unit.
@@ -25,18 +28,30 @@ Number of recursivity, also called dimensions. Note CODE::minVal:: outweights CO
 
 INSTANCEMETHODS::
 
-PRIVATE:: res, reset, alist
+PRIVATE:: res, reset, alist, rlist
 
 METHOD:: depth
-Get the number of dimensions or the number of recursivity plus one. When CODE::rec:: is provided, it returns the fractality at this level.
+Get the number of dimensions or the number of recursivity plus one.
 
-When CODE::rec:: >= CODE::aFractal.depth::, it returns an array of all dimensions: CODE::[ aFractal.depth(0), aFractal.depth(1), ... aFractal.depth(aFractal.depth-1) ]::
+When CODE::rec:: is provided:
+
+table::
+## CODE::rec:: || STRONG::returns::
+## link::Classes/Integer:: || the fractality at CODE::this:: level
+## CODE::\last:: || the last recursion: CODE::aFractal.depth(aFractal.depth-1)::
+## CODE::\all:: || an array of all dimensions: CODE::[ aFractal.depth(0), aFractal.depth(1), ... aFractal.depth(\last) ]::
+::
 
 METHOD:: duration
 Get or reset the duration of CODE::this:: Fractal.
 
 METHOD:: onsets
 returns an array of CODE::[ onset, duration, [ [ fractality_level, index_of_aCollection ] ... ] ]::
+
+METHOD:: ratios
+returns an array of ratios with respect to the initial rhythm according to the depth of the fractal.
+
+When CODE::derivative:: is provided as boolean, it returns an array of ratios such as each ratio is related to the next one.
 
 EXAMPLES::
 
