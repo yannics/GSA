@@ -24,7 +24,10 @@ ARGUMENT:: xVoice
 If CODE::nil::, an interpolation is applied, else it is the x^th voice CODE::duration:: with CODE::ratio:: applied between voices.
 
 ARGUMENT:: ratio
-between the first and the last voice when CODE::xVoice.isNil::, else between adjacent voices. The value of CODE::ratio:: is between 0 and 1 respectively excluded. When the CODE::ratio:: is superior to 1, then this value is identified as the duration of the last voice in second unit and an interpolation is applied between the first voice with the CODE::duration:: value and the last voice with this value.
+between the first and the last voice when CODE::xVoice.isNil::, else between adjacent voices.
+
+WARNING::The value of CODE::ratio:: must be a number between 0 and 1 respectively excluded.
+::
 
 ARGUMENT:: syncMinVal
 Minimal duration for synchronization in second unit if required.

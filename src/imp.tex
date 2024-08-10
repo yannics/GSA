@@ -209,14 +209,13 @@ d=
 \textbf{\textit{A}} - 
 %In order to realize the proportional canon as an event climax, we have to compute the durations and the delays of each voice according to a given ratio $\rho$. 
 %as follow : 
-According to the figure \ref{canon1}, let $A$ be the first voice $B$ the last voice, if $\rho$ is set as $\rho \in ]0,1[$, then $B=A\rho$, if $B$ is set as $\rho > 1$\footnote{Mathematically is no sense. This is only a trick to set $B$ instead of $\rho$. Thus when $\rho>1$ this means the duration of the last voice is equal to this value expressed in second and the `real' value of $\rho$ is therefore equal to this value divided by the duration $A$ of the first voice.}, then $\rho=\frac{B}{A}$ ; $d$ is the last delay in relation to the last voice such as:
-  
-\[
-d=A\rho-B\rho 
-\]
+According to the figure \ref{canon1}, let $A$ be the first voice $B$ the last voice, with $\rho \in ]0,1[$, then $B=A\rho$. The delay of the last voice equals $d=A\rho-B\rho$ or $d=A\rho(1-\rho)$.
+% if $B$ is set as $\rho > 1$\footnote{Mathematically is no sense. This is only a trick to set $B$ instead of $\rho$. Thus when $\rho>1$ this means the duration of the last voice is equal to this value expressed in second and the `real' value of $\rho$ is therefore equal to this value divided by the duration $A$ of the first voice.}, then $\rho=\frac{B}{A}$ ; $d$ is the last delay in relation to the last voice such as:
+  %\[
+%d=A\rho-B\rho 
+%\]
 %with $A$ the first voice as the total duration of the canon, and $B$ the last voice. 
-
-  \noindent Thus, each intermediary voice will be a linear interpolation between the delays $0$ and $d$, and between the durations $A$ and $B$.
+ Thus, each intermediary voice will be a linear interpolation between the delays $0$ and $d$, and between the durations $A$ and $B$.
   
 %  Note that $\rho$ in order to be inside the longest duration (that is to say the first voice) has to be set between $-2/3$ and $2/3$ (zero excluded).
   
@@ -302,49 +301,33 @@ The second one consists to manipulate the melody by transformation and/or by con
 \State \textbf{args}
 \State $\qquad n =$ number of voices
 \State $\qquad d_x =$ total duration or $x^{th}$ voice duration when $x$ is set, implying a value between 1 (the first voice) and $n$
-\State $\qquad \rho =$ ratio between 0 and 1 respectively excluded; when $\rho > 1$ this corresponds to the duration of the last voice in second unit, valid only for the process described in \textbf{\textit{A}}
+\State $\qquad \rho =$ ratio between 0 and 1 respectively excluded
 \State $\qquad x =$  $x^{th}$ voice with the duration $d_x$; if $x$ is set -- i.e. $x \neq nil$ -- this implies the algorithmic process described in \textbf{\textit{B}}
 \State
 
 %\If{$x \in \mathbb{N}^{+*}$  \textbf{and} $x \leqslant n$}
 \If{$x$ is $nil$}
-\State
 \State{/* algorithmic process \textbf{\textit{A}} */}
-\State \If{$\rho > 1$}
-\State $d_l=\rho$ and $\rho=\frac{\rho}{d_x}$
-\State \Else
-\State $d_l= d_x \rho$
-\State \EndIf
-\State $T =\:  n.interpolation[\,d_x, d_l \,]$
-\State $D = \: n.interpolation[\,0,  d_x \rho -  d_l \rho\,]$
+\State $T =\:  n.interpolation[\,d_x, d_x \rho \,]$
+\State $D = \: n.interpolation[\,0,  d_x \rho (1 -  \rho )\,]$
 \State
-\Return $(T, D)^T$
-\State
-
 \Else
 \State{/* algorithmic process \textbf{\textit{B}} */}
-
 \State $T=[\:]$
 \State $i =1-x$
 \While{$i=n-x$}
-
 \State $T.add\left [d_x \rho ^i\right ]$
-
 \State $i=i+1$
 \EndWhile
-
-\State
 \State $D=[\,]$
 \For{$i$ from $1$ to $n$}
-
 \State $D.add\left [ T[0] (\rho-\rho^i)  \right ]$
-
 \EndFor
+\EndIf
+\State
 \State
 \Return $(T,D)^T$
 \State{/* The result is a list of durations with delays. */}
-\EndIf
-
 \end{algorithmic}
 \end{algorithm}
 
@@ -356,7 +339,7 @@ For instance, the number of voices can be equal to the number of notes of a give
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %\quad
 %\vspace{2cm}
-
+\newpage
 \section{\textsl{Fractal}}
  \addtocontents{toc}{\smallskip \hspace{\parindent} [ \ref{cfso} -- \ref{hex0} -- \ref{d01} -- \ref{105A1408} ]  \par}
 
@@ -365,25 +348,26 @@ For instance, the number of voices can be equal to the number of notes of a give
 
 See also appendice \fullref{fracdoc}. 
 
-\begin{figure}[H]
-\begin{center}
-\includegraphics[scale=1.7]{img/1548}
-\caption{Illustration of 5 levels of fractal recursivity from the rhythm: quarter note, eighth note, eighth note. In this case, each recursivity implies the doubling of the tempo.}
-\label{fractal}
-\end{center}
-\end{figure}
-
-\vspace{-5mm}
-
 \titlebox{\textit{\textbf{Fractal}}}
 {A fractal is a natural phenomenon or a mathematical set that exhibits a repeating pattern that displays at every scale. It is also known as expanding symmetry or evolving symmetry. If the replication is exactly the same at every scale, it is called a self-similar pattern -- as showed on figure \ref{fractal}. 
 
 %\scriptsize \textit{Source}: \url{https://en.wikipedia.org/wiki/Fractal}
  }
+ 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=\textwidth]{img/1548}
+\caption{Illustration of 5 levels of fractal recursivity from the rhythm: quarter note, eighth note, eighth note. In this case, each recursivity implies the doubling of the tempo.}
+\label{fractal}
+\end{center}
+\end{figure}
+
+%\vspace{-5mm}
 
 
 The fractal recursivity stops when the number of recursivity $rec$ is reached, unless the minimal duration defined with $min$ (meaning $min \ne$ nil) is reached before. For instance, figure \ref{fractal} could be parametrised with $rec=5$ or $min$ equal to the value of the shortest eighth note recognized on level 5. 
 
+\bigskip 
 This kind of fractality describes a process from a final duration into `inferior' dimension according to the maximal differential duration for each recursivity.  
 
 
@@ -473,4 +457,4 @@ $int = assoc(rtm, al)$
 This implies a metaphysical order relationship between the formal inference system and the artistic intent.}
 
 \titlebox{\textit{\textbf{A philosophical point}}}
-{The initial material, here we are talking about a sample as a sound file or a partition, convey its own immanence according to the developmental process implementation. I do make a link between the transcendence of the process and the immanence of the initial component(s). Thus, the result is an emergent form, which can be determinist or indeterminist in chaotic terms \citep{tdc} depending on the case therefore sensitive to initial conditions.}
+{The initial material, here we are talking about a sample as a sound file or a partition, convey its own immanence according to the developmental process implementation. I do make a link between the transcendence of the process and the immanence of the initial component(s), as respectively formal and structural aspects (like the crystallization phenomenon). Thus, the result is an emergent form, which can be determinist or indeterminist in chaotic terms \citep{tdc} depending on the case therefore sensitive to initial conditions.}
