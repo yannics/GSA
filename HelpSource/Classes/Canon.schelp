@@ -9,7 +9,7 @@ See strong::Section 6.2:: in: Yann Ics [2014/2024]. EMPHASIS::Journal of Generat
 CLASSMETHODS::
 
 METHOD:: newFrom
-Generates the object Canon
+Generates the object Canon. The result is a list of durations with their respective delays.
 
 ARGUMENT:: aCollection
 An array of rhythm as absolute or relative durations.
@@ -30,7 +30,7 @@ WARNING::The value of CODE::ratio:: must be a number between 0 and 1 respectivel
 ::
 
 ARGUMENT:: syncMinVal
-Minimal duration for synchronization in second unit if required.
+Minimal duration for synchronization in second unit (0.0001 by default).
 
 INSTANCEMETHODS::
 
