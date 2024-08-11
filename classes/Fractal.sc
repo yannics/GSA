@@ -1,5 +1,6 @@
 Fractal {
 	var <>res, <>alist, <>rlist;
+	const roundVal = 0.0001;
 	*newFrom {
 		| aCollection, duration, minVal=0.01, rec |
 		var rtm, al;
@@ -85,14 +86,14 @@ Fractal {
 		var len = this.depth;
 		var dict = Dictionary.new;
 		var mod = this.depth(0)[0].size;
-		var ar, init;
+		var ar, init, ord;
 		ar = this.depth(len-1)[0];
 		// init the onsets dictionary
-		init = Array.with(ar.abs.integrate.addFirst(0).butlast.round(0.0001), ar).flop;
+		init = Array.with(ar.abs.integrate.addFirst(0).butlast.round(roundVal), ar).flop;
 		init.do{|in| dict.add(in[0].asSymbol -> [in[0], in[1], Array.new(len)])};
 		// update the onsets dictionary
 		len.collect{|i|
-			var onset = [ this.depth(i)[0].abs.integrate.addFirst(0).butlast.round(0.0001), [this.depth(i)[0], this.depth(i)[1].flatten(1)].flop ].flop;
+			var onset = [ this.depth(i)[0].abs.integrate.addFirst(0).butlast.round(roundVal), [this.depth(i)[0], this.depth(i)[1].flatten(1)].flop ].flop;
 			// select only the rtm(s) at this level of recursivity
 			onset.select{|ev| ev[1][1].asArray[0]!=0}
 			// add recursivity level + rtm index
@@ -104,7 +105,7 @@ Fractal {
 					// onset
 					dict[os[0].asSymbol][0],
 					// duration
-					dict[os[0].asSymbol][1],
+					dict[os[0].asSymbol][1].round(roundVal),
 					dict[os[0].asSymbol][2].add([
 						// rec level
 						len-i,
@@ -114,8 +115,9 @@ Fractal {
 			)}
 		};
 		// output dictionary as array
-		^dict.asSortedArray.collect(_.[1])
-}
+		ord = dict.keys.collect(_.asFloat).asArray.sort;
+		^ord.collect{|it, i| dict.at(it.asSymbol)}
+	}
 
 	duration { |value|
 		if(value.isNil)
