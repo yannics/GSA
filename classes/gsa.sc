@@ -83,6 +83,7 @@ Sow {
 			ret = maxAmpIndex/file.sampleRate;
 			format("SOW: buf[%] ind[%] del[%]", buf.bufnum, maxAmpIndex, ret.round(0.001)).postln
 		};
+		ret = ret * rat.minItem.reciprocal;
 		env = EnvGen.ar(Env.linen(sustainTime: buf.duration/rat.minItem, releaseTime: 0.01), doneAction: Done.freeSelf);
 		arr = rat.collect{|it| [it, rat.minItem.reciprocal-it.reciprocal * ret]};
 		signal = Mix.new(arr.collect({ |sub| Delbuf.ar(buf, sub[1], sub[0], rat.size.reciprocal)}));
