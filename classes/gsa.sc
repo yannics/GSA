@@ -33,7 +33,7 @@ Ulam {
 	*ar { |ar, ind=0, stretch=5, nx=0, ny=\max, sig=\norm, detune=0, rndAmp=1, mul=1, add=0|
 		var signal = Silent.ar;
 		ar.asArray.detune(detune).do{ |n|
-			var env = Env.collatz(n, stretch, nx, ny);
+			var env = Env.collatz(n.asInteger, stretch, nx, ny);
 			var sel = Select.ar(ind,
 				[
 					Resonz.ar(WhiteNoise.ar, n, EnvGen.kr(env.exprange(0.0001,0.1), doneAction:2)),
@@ -81,6 +81,7 @@ Sow {
 			file.readData(data);
 			maxAmpIndex = data.abs.maxIndex;
 			ret = maxAmpIndex/file.sampleRate;
+			file.close;
 			format("SOW: buf[%] ind[%] del[%]", buf.bufnum, maxAmpIndex, ret.round(0.001)).postln
 		};
 		ret = ret * rat.minItem.reciprocal;
@@ -172,20 +173,6 @@ Pan4MSXY {
 	}
 }
 
-// experimental ...
-Bal2Quad {
-	*ar {
-		| left, right, xpos=0, ypos=0, mul=1, add=0 |
-		var chain1, chain2, chainLeft, chainRight, out;
-		chain1 = FFT(LocalBuf(2048), left);
-		chain2 = FFT(LocalBuf(2048), right);
-		chainLeft = chain1.pvcalc2(chain2, 2048, { | magnitudes1, phases1, magnitudes2, phases2 | [magnitudes1, phases2] });
-		chainRight = chain1.pvcalc2(chain2, 2048, { | magnitudes1, phases1, magnitudes2, phases2 | [magnitudes2, phases1] });
-		out = [ left, right, IFFT(chainLeft), IFFT(chainRight) ]
-		^out
-	}
-}
-
 + Integer {
 	ocwr {
 		| res, dec = 0, ind=false |
@@ -247,7 +234,9 @@ Bal2Quad {
 	detune  {
 		|n=3, len=1000|
 		var tmp;
-		tmp= this.collect{|it| it + n.rand2};
+		if (n.isFloat && (n>0) && (n<1))
+		{ tmp= this.collect{|it| it + (it*n).rand2} }
+		{ tmp= this.collect{|it| it + n.rand2} };
 		if((len < this.size) && (len > 0))
 		{
 			^tmp.scramble[0..len-1]
