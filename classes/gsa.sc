@@ -222,6 +222,11 @@ Pan4MSXY {
 		|step=0.125, lo=0, hi=1|
 		^(this + step.xrand2).fold(lo, hi)
 	}
+
+	sec2minute {
+		var minute=(this/60).asInteger;
+		format("%'%\"", minute, this-(minute*60)).inform
+	}
 }
 
 + Array  {
@@ -350,15 +355,22 @@ gmn score syntax
 	midiguido {
 		arg
 		dur = 0.25,
+		noteNames,
 		extend = \clip, // or \wrap
 		asChord = true;
 		var rtm = if(extend == \wrap) { dur.asArray.wrapExtend(this.size) } { dur.asArray.clipExtend(this.size) };
-		if (asChord)
+		if (noteNames.isArray)
 		{
-			^("{ " ++ this.size.collect{|i| this[i].midiguido(rtm[i])}.join(", ") ++ " }")
+			^this.collect{|it| it.midiguido(noteNames: noteNames)}
 		}
 		{
-			^this.size.collect{|i| this[i].midiguido(rtm[i])}.join(" ")
+			if (asChord)
+			{
+				^("{ " ++ this.size.collect{|i| this[i].midiguido(rtm[i])}.join(", ") ++ " }")
+			}
+			{
+				^this.size.collect{|i| this[i].midiguido(rtm[i])}.join(" ")
+			}
 		}
 	}
 }
@@ -368,7 +380,8 @@ gmn score syntax
 		|tag, args|
 		var ar=[];
 		if (args.asArray.size == 1)
-		{ ar = if (args.asArray.first.isNumber) { args.asArray } { format("'%'", args.asArray.first).asSymbol.asArray } }
+		{ ar = if (args.asArray.first.isNumber) { args.asArray } { format("'%'", args.asArray.first).asSymbol.asArray } };
+		if (args.asArray.size > 1)
 		{ args.asDict.keysValuesDo{|k,v| ar=ar.add(if (v.isNumber) { format("%=%", k, v) } { format("%='%'", k, v) })} };
 		case
 		{ this.isEmpty && args.isNil }
