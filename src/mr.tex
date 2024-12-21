@@ -8,13 +8,13 @@
 \smallskip
 
 \section{Introduction}
-This article aims to propose an indexing method by estimate the amount of change or variation between two profiles according to a common motive. The profiles in question are symbolic in the sense that the numerical values can refer to any kind of data as melody, dynamic, along with others but in time which is expressed in terms of ordered durations -- such as the formatting of the MDS described in the chapter \textsl{\nameref{mds}}. This approach focuses on the common rhythmic structure in relation to the first derivative applied to it.
+This article aims to propose an indexing method by estimating the amount of change or variation between two profiles according to a common motive. The profiles in question are symbolic in the sense that the numerical values can refer to any kind of data as melody, dynamic, along with others but in time which is expressed in terms of ordered durations -- such as the formatting of the MDS described in the chapter \textsl{\nameref{mds}}. This approach focuses on the common rhythmic structure in relation to the first derivative applied to it.
 
 The originality of the current approach in the case of a melodic line is to consider its profile only on the sync onsets in order to elude any kind of melodic variations as `\textit{note de passage}', `\textit{monnayage}', `\textit{\'{e}chapp\'{e}e}', `\textit{broderie}', etc.
 
 \bigskip
 
-This work does not take into account the cognitive capacity of the listener or any database, neither music experts evaluation because there is no consensus within the musicologist communities to estimate the proximity of two melodic snippets, at least in terms of relevant parameters, excepts for traditional folk music for which the similarity focuses on tonalities (as interval ratio, ranking notes according to the tone, etc.) and/or rhythm in terms of downbeat among others, raising the quantization problem \citep{desqz} in some non-trivial case. Indeed, for instance two `identical' melodies -- that is to say the same pitches and the same rhythm -- can be perceived very differently according to their respective articulation, tempo and context. And \textit{a contrario}, the feeling of two snippets expressed very differently -- in terms of the opposition of timbres, ornamentation, rhythmic subdivisions, harmonic substitution, and so -- can sound very close, even seen as the same basic melody \citep{hfra}. The border between family resemblance and difference -- even `\textit{diff\'{e}rance}'\citep{dlg}\footnote{This concept fits into the Derrida's deconstruction and plays with on one hand the french homophony `\textit{diff\'{e}rence}/\textit{diff\'{e}rance}' referring in broader terms to an ontological difference and in another hand the polysemy of the french word `\textit{diff\'{e}rer}' (deferral in English) in which reality can only be understood as differential gaps hidden in cultural heritage in space and in time, leaving out or postponing any kind of `re-construction' or conclusion as an open problem.} -- is at the least blurry.
+This work does not take into account the cognitive capacity of the listener or any database, nor the music expert's evaluation because there is no consensus within the musicologist communities to estimate the proximity of two melodic snippets, at least in terms of relevant parameters, excepts for traditional folk music for which the similarity focuses on tonalities (as interval ratio, ranking notes according to the tone, etc.) and/or rhythm in terms of downbeat among others, raising the quantization problem \citep{desqz} in some non-trivial case. Indeed, for instance, two `identical' melodies -- that is to say the same pitches and the same rhythm -- can be perceived very differently according to their respective articulation, tempo, and context. And \textit{a contrario}, the feeling of two snippets expressed very differently -- in terms of the opposition of timbres, ornamentation, rhythmic subdivisions, harmonic substitution, and so -- can sound very close, even seen as the same basic melody \citep{hfra}. The border between family resemblance and difference -- even `\textit{diff\'{e}rance}'\citep{dlg}\footnote{This concept fits into Derrida's deconstruction and plays with on one hand the French homophony `\textit{diff\'{e}rence}/\textit{diff\'{e}rance}' referring in broader terms to an ontological difference and in another hand the polysemy of the french word `\textit{diff\'{e}rer}' (deferral in English) in which reality can only be understood as differential gaps hidden in cultural heritage in space and in time, leaving out or postponing any kind of `re-construction' or conclusion as an open problem.} -- is at the least blurry.
 
 \bigskip
 
@@ -22,11 +22,11 @@ This proposition assumes its own bias and aims to be useful in certain circumsta
 
 \section{Description}
 
-The main function \texttt{differential-vector} is an `experimental' proposition allowing to estimate numerically the distance in terms of motivic proximity between two sequences. This distance is defined according to the cartesian coordinate system as a two-dimensional vector i.e. two criteria defined on the x-axis by the events concordance in relation with the length of the sequences in time as a motive and on the y-axis defined by this motivic profile concordance in terms of signs of the first derivative. 
+The main function \texttt{differential-vector} is an `experimental' proposition allowing us to estimate numerically the distance in terms of motivic proximity between two sequences. This distance is defined according to the cartesian coordinate system as a two-dimensional vector i.e. two criteria defined on the x-axis by the events concordance in relation with the length of the sequences in time as a motive and on the y-axis defined by this motivic profile concordance in terms of signs of the first derivative. 
 
 \bigskip
 
-This implies some algorithmic processes that can be described as follow  (note that all keys described below can be parameterised from the main function \texttt{differential-vector} and the uppercase words refer to functions as subprocesses):
+This implies some algorithmic processes that can be described as follows (note that all keys described below can be parameterized from the main function \texttt{differential-vector} and the uppercase words refer to functions as subprocesses):
 
 \begin{enumerate}[label= \Alph* --]
 \item \myuline{Evaluating $x$}.
@@ -35,7 +35,7 @@ This implies some algorithmic processes that can be described as follow  (note t
 \item Computation of the coordinate $x$ with the functions:
 
 \begin{description}[font=\ttfamily,style=nextline]
-\item[\colorbox{gray!20}{DUR->ONSET}] Convert normalised ordered durations to onsets in time for each sequence according to one of the following modalities:
+\item[\colorbox{gray!20}{DUR->ONSET}] Convert normalized ordered durations to onsets in time for each sequence according to one of the following modalities:
 \begin{description}[font=\ttfamily,style=nextline]
 \item[\colorbox{gray!20}{:ended :ignore}] set by default, the last duration is ignored;
 \item[\colorbox{gray!20}{:ended :first}] the last duration is taken into account as a cyclic pattern;
@@ -43,7 +43,7 @@ This implies some algorithmic processes that can be described as follow  (note t
 \end{description}
 
 \item[\colorbox{gray!20}{SUBSEQ-THRES}]
-Match events  from one sequence to the other according to a given threshold -- key \texttt{\colorbox{gray!20}{:thres}} -- applied as a percentage of the minimal duration of the sequences involved (0.2 by default ).
+Match events from one sequence to the other according to a given threshold -- key \texttt{\colorbox{gray!20}{:thres}} -- applied as a percentage of the minimal duration of the sequences involved (0.2 by default ).
 
 \item[\colorbox{gray!20}{FILTERNOWAY}] 
 Remove if needed onset duplicates on adjacent clusters.
@@ -80,7 +80,7 @@ Remove if needed onset duplicates on adjacent clusters.
 
 \item apply tolerance if set to \texttt{\colorbox{gray!20}{:yes}} (\texttt{\colorbox{gray!20}{:no}} by default) -- that is to say the values $+1$ and $0$ or $-1$ and $0$ counts as common values;
 
-\item count the common signs of the motives and get the mean value.
+\item counts the common signs of the motives and get the mean value.
 
 \end{enumerate}
 \item Values of the output (\texttt{\colorbox{gray!20}{:diff}} as the level of difference, \texttt{\colorbox{gray!20}{:sim}} as the level of similarity, \texttt{\colorbox{gray!20}{-norm}} as the normalised euclidean norm of the vector, \texttt{\colorbox{gray!20}{-coord}} as the coordinate vector and \texttt{\colorbox{gray!20}{-list}} the norm with $x$ and $y$):
@@ -96,7 +96,7 @@ Remove if needed onset duplicates on adjacent clusters.
 
 \section{Evaluation}
 
-Let the following trivial example in figure \ref{fig:dtb} be an illustration of the behaviour of the algorithm, notably the different possible evaluations in relation with the length of the sequences (key \texttt{:opt}) and the result in terms of proximity (key \texttt{:result}).
+Let the following trivial example in figure \ref{fig:dtb} be an illustration of the behavior of the algorithm, notably the different possible evaluations in relation to the length of the sequences (key \texttt{:opt}) and the result in terms of proximity (key \texttt{:result}).
 
 \begin{figure}[!hbt]
 	\begin{center}
@@ -145,11 +145,11 @@ cd  & 94 [0.88 - 1.00]  & 76 [0.41 - 1.00] & 81 [0.56 - 1.00] \\
 \end{table}
 
 These tables show a maximal difference of 42\% with the key \texttt{:max} (snippets \texttt{cd} table \ref{table:mrdiff}) and 100\% of similarity with the key \texttt{:min} (snippets \texttt{ac} and \texttt{bd} on table \ref{table:mrsim}).
-For the last two cases, that means all notes of the shortest snippet match with the longest and the melodic profile follows the same shape. Knowing that, the key \texttt{:mean} is a good compromise to moderate this bias. 
+For the last two cases, that means all notes of the shortest snippet match with the longest and the melodic profile follows the same shape. Knowing that the key \texttt{:mean} is a good compromise to moderate this bias. 
 
 Also, the \textsf{D}\sh \  of the snippet (d) does not match with others because of the delay of the onset, and the first \textsf{B} of the snippet (b) disrupt the melodic profile on the snippets (a) and (c) ($y$\texttt{:diff}$=0.11$ and $y$\texttt{:sim}$=0.89$).
 
-Note that difference and similarity as normalised vectors (by dividing the norm of the vector by square root of two) are not complementary values in that sense their sum is not always equal to 100\%. More specifically, when the absolute value of $x$ minus $y$ tends toward one, then the summation of the normalised norm of the vectors, respectively as the difference distance $D$ and as the similarity distance $S$, tends toward the square root of two:
+Note that difference and similarity as normalized vectors (by dividing the norm of the vector by the square root of two) are not complementary values in that sense their sum is not always equal to 100\%. More specifically, when the absolute value of $x$ minus $y$ tends toward one, then the summation of the normalized norm of the vectors, respectively as the difference distance $D$ and as the similarity distance $S$, tends toward the square root of two:
 $$\text{if } |x-y| \to 1 \text{ then } \frac{||\overrightarrow{D}||}{\sqrt{2}} + \frac{||\overrightarrow{S}||}{\sqrt{2}} \to \sqrt{2}$$
  and furthermore
  $$\text{if } |x-y| \to 0 \text{ then } \frac{||\overrightarrow{D}||}{\sqrt{2}} + \frac{||\overrightarrow{S}||}{\sqrt{2}} \to 1$$
@@ -160,4 +160,4 @@ The relevance is relative but this algorithm -- like others -- gives some guidel
 
 \bigskip
 
-Also, one of the possible applications of this motivic research for a given sequence allows -- according to a given number of events as a pattern or directly a given pattern -- to evaluate sequentially the amount and the relevance of redundancy of this pattern through the considered sequence until this sequence as the whole. Thus, this method can detect all `fractality' in the sequence for a deliberate pattern (See \textsl{Discussion} in appendice \fullref{fracdoc}).
+Also, one of the possible applications of this motivic research for a given sequence allows -- according to a given number of events as a pattern or directly a given pattern -- to evaluate sequentially the amount and the relevance of redundancy of this pattern through the considered sequence until this sequence as the whole. Thus, this method can detect all `fractality' in the sequence for a deliberate pattern (See \textsl{Discussion} in appendix \fullref{fracdoc}).

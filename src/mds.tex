@@ -10,22 +10,21 @@
 \section{Purpose}
 \label{purp}
 
-This work allows creating a bridge between data as a musical object or as a traditional score notation, and some algorithmic environment in terms of interpretation, analysis and synthesis such as neural network \textsl{Neuromuse3} (N3) and SuperCollider (SC). 
-Then, this takes the form of a text file, which is interpreted as a data list, referring to the settings defining each sonic object. This text file can be read for instance as a learning dataset  in the N3 context, 
-or as a SC array in the context of \href{http://doc.sccode.org/Tutorials/Streams-Patterns-Events1.html}{\textit{Streams, Patterns and Events}} and \href{http://doc.sccode.org/Tutorials/Getting-Started/15-Sequencing-with-Routines-and-Tasks.html}{\textit{Sequencing with Routines and Tasks}}.
+This work allows creating a bridge between data as a musical object or as a traditional score notation, and some algorithmic environment in terms of interpretation, analysis, and synthesis such as neural network \textsl{Neuromuse3} (N3) and SuperCollider (SC). 
+Then, this takes the form of a text file, which is interpreted as a data list, referring to the settings defining each sonic object. This text file can be read for instance as a learning dataset in the N3 context or as a SC array in the context of \href{http://doc.sccode.org/Tutorials/Streams-Patterns-Events1.html}{\textit{Streams, Patterns, and Events}} and \href{http://doc.sccode.org/Tutorials/Getting-Started/15-Sequencing-with-Routines-and-Tasks.html}{\textit{Sequencing with Routines and Tasks}}.
 
-The aims of this article is then a proposition of formatting what I call a Music Data Score (MDS) from a partition, analysis data and midi file -- using the Common Lisp library \textsl{cl-gsa} --, and a guideline of how to use it in the N3 and SC context.
+The aims of this article are a proposition of formatting what I call a Music Data Score (MDS) from a partition, analysis data, and midi file -- using the Common Lisp library \textsl{cl-gsa} --, and a guideline of how to use it in the N3 and SC context.
 
 \section{Writing Music Data Score}
 
-The main idea is to list in time a set of parameters as an event with at least duration \myuline{as the first argument}, and according to a specific encoding as raw data or class number relating to any kind of object. In any case, the number of parameters depend on the initial accuracy, and on the teleological object.
+The main idea is to list in time a set of parameters as an event with at least duration \myuline{as the first argument}, and according to a specific encoding as raw data or class number relating to any kind of object. In any case, the number of parameters depends on the initial accuracy, and on the teleological object.
 
-The last line is dedicated to the number of grouping as a number of parameters defining an event. It can be added on the same line -- according to the user needs -- for instance the tempo, the number of duration relative to the tempo, the structure as the number of repetition or according to the order number of the phrases and so.
+The last line is dedicated to the number of grouping as a number of parameters defining an event. It can be added on the same line -- according to the user's needs -- for instance the tempo, the number of duration relative to the tempo, the structure as the number of repetitions, or according to the order number of the phrases and so on.
 
 \subsection{Traditional score}
 \label{tradscore}
 
-In this case, we group the data as a musical phrase or by measure or by voices with at least the duration and the pitch. It is possible to add any more information such as the level for instance, or any kind of data describing the event. Note that the number of dimension as to be specified on the last line.
+In this case, we group the data as a musical phrase or by measure or by voices with at least the duration and the pitch. It is possible to add any more information such as the level for instance, or any kind of data describing the event. Note that the number of dimensions is specified on the last line.
 
 \begin{figure}[!hbt]
 	\begin{center}
@@ -35,7 +34,7 @@ In this case, we group the data as a musical phrase or by measure or by voices w
 	\end{center}
 \end{figure}
 
-From a previous work called \texttt{HEX0} (see \fullref{hex0}), the original score in figure \ref{fig:ch34} is encoded according to each bar of the song on 2 lines as follow:
+From a previous work called \texttt{HEX0} (see \fullref{hex0}), the original score in figure \ref{fig:ch34} is encoded according to each bar of the song on 2 lines as follows:
 
 \begin{lstlisting}[language=bash]
 24 12 12 24 6 18
@@ -58,9 +57,9 @@ From a previous work called \texttt{HEX0} (see \fullref{hex0}), the original sco
 \end{lstlisting}
 
 \begin{itemize}
-\item The first line represents the durations as integer according to an irreducible minimum value applied for the whole score.
-\item The second line represents the midi notes; the zero represents silence; the negative midi note represents a tie to the previous one as absolute value.
-\item Some `extra' text can be added depending of the context as for instance in the present case a fermata in the SuperCollider context --  coded \texttt{n+rrand(a,b)} -- which is evaluated between \texttt{n+a} and \texttt{n+b}.
+\item The first line represents the durations as integers according to an irreducible minimum value applied for the whole score.
+\item The second line represents the midi notes; the zero represents silence; the negative midi note represents a tie to the previous one as an absolute value.
+\item Some `extra' text can be added depending on the context as for instance in the present case a fermata in the SuperCollider context --  coded \texttt{n+rrand(a,b)} -- which is evaluated between \texttt{n+a} and \texttt{n+b}.
 \end{itemize}
 
  The last line indicates for the first argument the dimension of the events -- with the command line \textsl{enkode} (see chapter \fullref{enk}) this number is 5 -- and optionally the tempo, the number of the irreducible minimum value to fit the whole note of the tempo, and the structure of the piece (can be for instance a number of repetition -- 9 in the example of the Breton song -- for the whole score or a structure such as ABBAC).
@@ -107,7 +106,7 @@ For any formatted midi file with the extension .mid or .midi there are 2 ways to
 \begin{lstlisting}[language=bash]
 fluidsynth -F outfile.wav /usr/share/sounds/sf2/FluidR3_GM.sf2 infile.mid
 \end{lstlisting}
-\item The conversion midi to MDS can be done as a raw data -- see \textsl{Outline of the Standard MIDI File Structure} in appendice \fullref{infomidi} -- using tools of the Common Lisp library \textsl{cl-gsa} which is described in the two next sections \textsl{Duration} and \textsl{Score}. Note that this library requires in this case the package MIDI. 
+\item The conversion midi to MDS can be done as raw data -- see \textsl{Outline of the Standard MIDI File Structure} in appendix \fullref{infomidi} -- using tools of the Common Lisp library \textsl{cl-gsa} which is described in the two next sections \textsl{Duration} and \textsl{Score}. Note that this library requires in this case the package MIDI. 
 
 \end{enumerate}
 
@@ -119,11 +118,11 @@ For each track of the midi file.
 
 The duration in time is the difference between the value of the \texttt{Note\_on} and the value of the \texttt{Note\_off} or the same value \texttt{Note\_on} with the level set to zero.
 
-In the case of multi-voices part, there is a bias in terms of fitting the duration between two notes or two chords. If the duration is too long, then it is clipped at the beginning of the next event. Needless to say this bias can be avoid if the score is written with only one voice by track. If the duration stops before the next event and if the remaining duration is significative\footnote{This is another bias about the remaining silence. This last does not have to be under the value of the sixty-fourth note
+In the case of the multi-voices part, there is a bias in terms of fitting the duration between two notes or two chords. If the duration is too long, then it is clipped at the beginning of the next event. Needless to say, this bias can be avoided if the score is written with only one voice by track. If the duration stops before the next event and if the remaining duration is significant\footnote {This is another bias about the remaining silence. The latest does not have to be under the value of the sixty-fourth, note
 %, or has to be close to neighboring values.
 by default according to the division value of the midi score.}, a silence is set in between. Note that a silence is set to zero as a midi value.
 
-This is done as follow:
+This is done as follows:
 
 \noindent Let $t$ be the position in time of a $chord$ as a group of notes and $d$ the duration.
 
@@ -141,7 +140,7 @@ if $\Delta_i < 0 \rightarrow [ t_i, \delta_i, chord ]$
 
 \subsubsection{Out time}
 
-All the durations computed just below are reduced in order to get the minimal value as an integer. This is done by calculating the greatest common divisor using the method of prime factorisations.
+All the durations computed just below are reduced in order to get the minimal value as an integer. This is done by calculating the greatest common divisor using the method of prime factorizations.
 
 \subsection{Score}
 \label{score}
@@ -150,7 +149,7 @@ In order to illustrate how to manage the midi conversion to the MDS, here are so
 
 \smallskip
 
-In this case, the scope of the possible division according to the time division of the midi file is set to \texttt{(1 2 4 8)}, that is to say respectively the quarter note, the eighth note, the sixteenth note and the thirty-second note.
+In this case, the scope of the possible division according to the time division of the midi file is set to \texttt{(1 2 4 8)}, that is to say respectively the quarter note, the eighth note, the sixteenth note, and the thirty-second note.
 
 \begin{lstlisting}[language=Lisp]
 CL-GSA> (setf *scope* '(1 2 4 8))
@@ -158,7 +157,7 @@ CL-GSA> (setf *scope* '(1 2 4 8))
 
 \subsubsection{to N3}
 
-In the N3 context, the aim is to format the MDS as an irreducible sonic object in order to be interpreted as an `\textit{infon}', that is to say a clique which can be learned as such. Here, the data has to be ordered according to the network involved, matching each track or voice with its respective SOM (Self organizing Map as a neural network called MLT in N3). 
+In the N3 context, the aim is to format the MDS as an irreducible sonic object in order to be interpreted as an `\textit{infon}', that is to say, a clique that can be learned as such. Here, the data has to be ordered according to the network involved, matching each track or voice with its respective SOM (Self-organizing Map as a neural network called MLT in N3). 
 
 \smallskip
 
@@ -178,7 +177,7 @@ Note that the function \texttt{add-tie} is applied for each track of the score.
 
 \subsubsection{to SC}
 
-For the performances \texttt{K540}, the midi file Kj{\o}lhiea has been converted to a MDS file as follow:
+For the performances \texttt{K540}, the midi file Kj{\o}lhiea has been converted to a MDS file as follows:
 \begin{lstlisting}[language=Lisp]
 (midi2mds (mix-track (scoring-midi "~/Kjolheia.mid")) 
    :out "~/Kjolheia" :to 'SC)
@@ -187,7 +186,7 @@ For the performances \texttt{K540}, the midi file Kj{\o}lhiea has been converted
 Note that the function \texttt{mix-track} allows mixing $n$ tracks or voices to one.
 \newpage
 
-The resulting score is formatted as a couple of lines respectively duration and midi note(s) as an array by track as follow:
+The resulting score is formatted as a couple of lines respectively duration and midi note(s) as an array by track as follows:
 
 \begin{lstlisting}[language=bash]
 2 2 2 2 2 2 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1...
@@ -197,7 +196,7 @@ The resulting score is formatted as a couple of lines respectively duration and 
 
 \smallskip
 
-Then, we can interpret the MDS in the SuperCollider context according to the section \fullref{mds2sc}. Mind to set a duration factor according to the tempo required.
+Then, we can interpret the MDS in the SuperCollider context according to the section \fullref{mds2sc}. Mind setting a duration factor according to the tempo required.
 
 \smallskip
 
@@ -207,7 +206,7 @@ Thus, the score is interpreted as an array and therefore can be read inside a st
 
 \section{Discussion}
 
-This proposition is an attempt of `normalisation' for fixed scores as dataset for `non-real-time synthesis'. Indeed, MDS retains a partition which allows any kind of structural or formal analysis \textit{de facto a posteriori} and algorithmically, on the understanding that does not solve the discrimination issue of the sonic object as an irreducible and signifier axiom\footnote{For instance the counterpoint in terms of relationship between different musical layers, or the sonic object as an emergent phenomenon and perceived as such, which can be subjective and hence dependant of the teleological object.}. 
+This proposition is an attempt for `normalization' for fixed scores as a dataset for `non-real-time synthesis'. Indeed, MDS retains a partition which allows any kind of structural or formal analysis \textit{de facto a posteriori} and algorithmically, on the understanding that does not solve the discrimination issue of the sonic object as an irreducible and signifier axiom\footnote{For instance the counterpoint in terms of relationship between different musical layers, or the sonic object as an emergent phenomenon and perceived as such, which can be subjective and hence dependant of the teleological object.}. 
 
 \bigskip 
 

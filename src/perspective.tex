@@ -7,23 +7,23 @@
 \label{gdf}
 %\addcontentsline{toc}{section}{Generating data files}
 
-One possible approach to manage the algorithms described in this paper is to generate data files in order to be used as arrays according to some third-part algorithms. 
+One possible approach to manage the algorithms described in this paper is to generate data files in order to be used as arrays according to some third-party algorithms. 
 %Some of them are described in \href{https://www.overleaf.com/read/sjhfhthgkgdj}{\textit{GSA: Analytical Modeling}}.
 
-Also, in this perspective, the interesting part is to work from existing music or soundscape as a sound file. Then, the sound file is analysed with the command line \textsl{enkode} in order to generate data as a list of musical or sonic events. The analysis returns for each event the duration, $f0$ as the first significant partial, the centroid, the loudness and the bass loudness after low pass filtering. These data can be interpreted as such, that is to say as raw data, or according to the discrimination in classes described in \fullref{enk:dic}. 
+Also, in this perspective, the interesting part is to work from existing music or soundscape as a sound file. Then, the sound file is analyzed with the command line \textsl{enkode} in order to generate data as a list of musical or sonic events. The analysis returns for each event the duration, $f0$ as the first significant partial, the centroid, the loudness, and the bass loudness after low pass filtering. These data can be interpreted as such, that is to say as raw data, or according to the discrimination in classes described in \fullref{enk:dic}. 
 %-- see \href{https://www.overleaf.com/read/sjhfhthgkgdj}{\textit{GSA: Documentation of the executable script \textsl{enkode}}}. 
 
 \smallskip
 
-In this sense, it is possible to apply the contrastive analysis with the dendrogram for symbolisation as described previously in \fullref{sym} within the Common Lisp package N3 of the artificial neural network \textsl{Neuromuse3}.
-Note that the sound file supposes to be in a \textsl{dataFolderPath}:
+In this sense, it is possible to apply the contrastive analysis with the dendrogram for symbolization as described previously in \fullref{sym} within the Common Lisp package N3 of the artificial neural network \textsl{Neuromuse3}.
+Note that the sound file is supposed to be in a \textsl{dataFolderPath}:
 
 \smallskip
 
  \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
 ;; Display graph to select the optimum number of classes:
 N3> (open-graph <treeName>)
-;; Write file as structure sequence according to selected the number of classes:
+;; Write the file as a structure sequence according to selected the number of classes:
 N3> (write-file (structure-s (list (alpha-seq <somName> <treeName> <classesNumber>)) :result :last) :name '<fileName>.dat' 
     :path '<dataFolderPath>/')
 \end{lstlisting}
@@ -32,7 +32,7 @@ N3> (write-file (structure-s (list (alpha-seq <somName> <treeName> <classesNumbe
 \label{rdf}
 %\addcontentsline{toc}{section}{Reading data files}
 
-From this point, the data can be collected by a third-part application, for example SuperCollider. Then, according to some analysis developed in this paper, all data can be collected into arrays in order to retrieve them by their respectives indices.
+From this point, the data can be collected by a third-party application, for example, SuperCollider. Then, according to some analysis developed in this paper, all data can be collected into arrays in order to retrieve them by their respective indices.
 
 Note in the case of using \textsl{enkode}, if the result is about classes, these numbers should be associated with the values of the 5 first lines of \textsl{$<$fileName$>$.info}.
 
@@ -56,7 +56,7 @@ Note in the case of using \textsl{enkode}, if the result is about classes, these
 \label{idf}
 %\addcontentsline{toc}{section}{Interpretating data files}
 
-The algorithmic interpretation of the data in SuperCollider context may require some preliminary function to select sub-sequence according to the segmentation of the contrastive analysis. 
+The algorithmic interpretation of the data in SuperCollider context may require some preliminary function to select sub-sequences according to the segmentation of the contrastive analysis. 
 
 \begin{enumerate}
     \item Select randomly a rhythm pattern for the algorithms such as \textsl{fractal} or \textsl{proportional canon} with at least \texttt{diffarg} different durations and according to the \texttt{test} function as string or symbol applied to the length of the pattern such as \texttt{"odd"} or \texttt{"even"}:
@@ -67,7 +67,7 @@ The algorithmic interpretation of the data in SuperCollider context may require 
 ~rtm = RTM.new
 (score: ~arrayScores[n], structure: ~arrayStructures[n], diffarg: 3, test: \odd, limit: 10);	
 \end{lstlisting}  
- \item Select a sub-sequence from a sound file, randomly according to a minimal and a maximal values (which can be used to adjust the fade in and the fade out, for a Doppler effect for instance), or depending on a given structure,  randomly or according to a sub-sequence indice:
+ \item Select a sub-sequence from a sound file, randomly according to minimal and maximal values (which can be used to adjust the fade in and the fade out, for a Doppler effect for instance), or depending on a given structure,  randomly or according to a sub-sequence indices:
  
  \smallskip
  

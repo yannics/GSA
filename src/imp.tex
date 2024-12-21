@@ -10,14 +10,14 @@
 
 \bigskip
 
-The electronic background consists to realize a formal and structural direction according to some algorithmic process managed with a SuperCollider code. The material is computed in Common Lisp using the library \textsl{cl-gsa} from samples and/or scores (shortly this consists to `transpose' a given melody to a weighted tone).
+The electronic background consists of realizing a formal and structural direction according to some algorithmic process managed with a SuperCollider code. The material is computed in Common Lisp using the library \textsl{cl-gsa} from samples and/or scores (shortly this consists of `transposing' a given melody to a weighted tone).
 
-Then the direction consists to determinate the duration of transformation between two events. An event is a combinatorics %(or not)
- -- see  algorithm \ref{ocwr} $\sim$\textsc{ocwr} and \textsc{ocwr} box description -- of frequential profiles. These combinatorics is included as set inside a combination called \texttt{symmetric-permutation} from the library \textsl{cl-cycle}. Each frequential profile is determined by an array of frequencies (as peaks), a respective array of amplitudes and a respective array of bandwidths (interpreted as grain) plus a resonant filter. This last is divided in 3 bandwidths which is correlated in temporal directivity to the three first formants and their respective bandwidths and intensity from Praat analysis of the recorded voices according to an appropriate concatenation. This last is scaled in order to match the total duration of the score.
+Then the direction consists of determining the duration of transformation between two events. An event is a combinatorics %(or not)
+ -- see  algorithm \ref{ocwr} $\sim$\textsc{ocwr} and \textsc{ocwr} box description -- of frequential profiles. These combinatorics are included as set inside a combination called \texttt{symmetric-permutation} from the library \textsl{cl-cycle}. Each frequential profile is determined by an array of frequencies (as peaks), a respective array of amplitudes, and a respective array of bandwidths (interpreted as grain) plus a resonant filter. This last is divided into 3 bandwidths which are correlated in temporal directivity to the three first formants and their respective bandwidths and intensity from Praat analysis of the recorded voices according to an appropriate concatenation. This last is scaled in order to match the total duration of the score.
 
 \bigskip
 
-The transformation --  that I call `peak morphing' -- consists to a linear interpolation between 2 points whose match a minimal distance.
+The transformation --  that I call `peak morphing' -- consists of a linear interpolation between 2 points that match a minimal distance.
 
 \begin{figure}[h]
 \begin{center}
@@ -70,7 +70,7 @@ $\sim$\textsc{ocwr}$\,(\,nil, R,  dec-1\,)$
 
 \bigskip
 
-The formal direction can be determined in terms of spatialisation, with $x$ as left/right axis, $y$ as front/back axis and $z$ as distance axis. The latter (see appendice \fullref{dist}) will determinate the presence level (or conversely the absence of sound depending on the audibility threshold).
+The formal direction can be determined in terms of spatialization, with $x$ as the left/right axis, $y$ as the front/back axis, and $z$ as the distance axis. The latter (see appendix \fullref{dist}) will determine the presence level (or conversely the absence of sound depending on the audibility threshold).
 These coordinate will be effective inside the total duration $D$ by a successive transformation duration $d$ according to the equality $D=\displaystyle \sum\limits_{i=1}^{\lambda}d_i$
 $\;$ with $\lambda = card(\mathcal{C}_n)$ where $n=$ the number of synthesis and $\mathcal{C}_n$ the set of combinatorics with $n$ synthesis. 
 
@@ -80,7 +80,7 @@ Note that for  $\mathcal{C}_n=\{ C_1, C_2, \dots, C_{\lambda} \}$ the 'peak morp
 
 $\quad \displaystyle \sum\limits_{0  \le k \le n} \binom{n}{k}=2^n$
 
- For instance with 3 elements there are 8 combinations (subsets) including the empty set: 
+ For instance, with 3 elements there are 8 combinations (subsets) including the empty set: 
  
  $\quad |\{\{\};\{1\};\{2\};\{3\};\{1,2\};\{1,3\};\{2,3\};\{1,2,3\}\}|=2^3 = 8$
  
@@ -138,7 +138,7 @@ $result.add\,(\,[\,nearest(A, b),\,b\,]\,)$
 Thus, the formal direction of each parameter will be defined by (i) determined functions (algorithms), (ii) stochastic distribution and (iii) according to the instrumental score; (i), (ii) and (iii) can be correlated and interdependent as $d=f(i)$ in terms of structural direction such as $\displaystyle \sum\limits_{i=1}^{\lambda}f(i)_i=D$.
 
 \bigskip
-In closing, let see the detailed procedure called initialisation for this soundscape. 
+In closing, let's see the detailed procedure called initialization for this soundscape. 
 
 \begin{enumerate}
 \label{m2tprecedure}
@@ -151,15 +151,15 @@ In closing, let see the detailed procedure called initialisation for this sounds
  
   \item Compute symmetric permutation according to the length of \textsc{ocwr} regardless of $2^n-1$ (minus one excluding the empty set).
   
-  For instance with $n=3$ as the number of profiles according to the point 1., the symmetric permutation takes as argument a random permutation or a deliberate permutation -- regarding the number of permutations for example -- of \texttt{(0 1 2 3 4 5 6)} for \texttt{lst} and for \texttt{code-lst}.
+  For instance with $n=3$ as the number of profiles according to point 1., the symmetric permutation takes as argument a random permutation or a deliberate permutation -- regarding the number of permutations for example -- of \texttt{(0 1 2 3 4 5 6)} for \texttt{lst} and for \texttt{code-lst}.
   \item Associate the combination of \textsc{ocwr} to the values of the flattened list of a symmetric permutation as indices applied to \textsc{ocwr}.
 \end{enumerate}
 \item Group the profile(s) according to the previous combination -- point 2.(c) -- as indices of the array of profiles.
 \item Apply the algorithm \ref{pm} as a 'peak morphing' distribution between two successive events according to the sequence defined in point 3.
-\item Set the durations transformation according to a deliberate shape.
+\item Set the duration transformation according to a deliberate shape.
 
-For instance a sinusoid allows to stretch and to compress a sequence of durations like an elastic time line.
-\item Allocate into buffers the formantic analysis -- see \nameref{fab} in appendice \fullref{fab} -- realized with some given recorded voice(s) as respectively the intensities, the three first formants and their associated bandwidths.
+For instance, a sinusoid allows one to stretch and compress a sequence of durations like an elastic time line.
+\item Allocate into buffers the formantic analysis -- see \nameref{fab} in appendix \fullref{fab} -- realized with some given recorded voice(s) as respectively the intensities, the three first formants, and their associated bandwidths.
 \end{enumerate}
 Then, the sequence (3) is played with some resonant noise according to the frequencies as approximate rates, articulated with the 'peak morphing' (4) -- following the sequence of durations (5) -- and filtered according to some resonances set by the formants (6).
 
@@ -179,18 +179,18 @@ Here are some introductory definitions:
 \smallskip
 
 \titlebox{\textit{\textbf{Proportional canon}}}
-{The canon in music consists to repeat a melodic phrase -- or by extension a series of sound events -- according to various types of formal modalities in a contrapuntal relationship. One of them -- called proportional -- imitates the melodic line by changing the rhythmic values by increasing or decreasing in a proportional relationship, such as the resulting is a polyrhythm according to some factors of the initial tempo.}
+{The canon in music consists of repeating a melodic phrase -- or, by extension, a series of sound events -- according to various types of formal modalities in a contrapuntal relationship. One of them -- called proportional -- imitates the melodic line by changing the rhythmic values by increasing or decreasing in a proportional relationship, such as the resulting is a polyrhythm according to some factors of the initial tempo.}
 
 \titlebox{\textit{\textbf{Event climax}}}
-{A climax depicts a progression as an arsic movement followed most of the time by a thetic movement. This progression results in an increasing information flows -- may refer in this case to the density of events -- to a peak emphasizing the maximum intensity of the climax, and then might decrease in a release time logic.}
+{A climax depicts a progression as an arsic movement followed most of the time by a thetic movement. This progression results in an increasing information flow -- may refer in this case to the density of events -- to a peak emphasizing the maximum intensity of the climax, and then might decrease in a release time logic.}
   
 %===================================== 
 %===================================== 
 %===================================== 
   \bigskip
   
-  In this model, the proportion concerns as well as the duration of the sample than the position in time of the acme of the climax.  Therefore, the algorithm consists to compute the duration of each voice according to a given ratio (or computed ratio via the durations of the first and the last voices), and their respective delay in order to match the acme of the climax.
-  The position of the acme of the climax is depending of the value of the ratio $\rho$ (knowing that $\rho$ has to be a value between $0$ and $1$ respectively excluded), which have an impact on the delay $d$ such as (see figures \ref{canon1} and \ref{canon2}):
+  In this model, the proportion concerns as well as the duration of the sample than the position in time of the acme of the climax.  Therefore, the algorithm consists of computing the duration of each voice according to a given ratio (or computed ratio via the durations of the first and the last voices), and their respective delay in order to match the acme of the climax.
+  The position of the acme of the climax depends of the value of the ratio $\rho$ (knowing that $\rho$ has to be a value between $0$ and $1$ respectively excluded), which has an impact on the delay $d$ such as (see figures \ref{canon1} and \ref{canon2}):
   
 \[
 d=
@@ -202,7 +202,7 @@ d=
  
  \bigskip
  
-  In this order, there are two ways to generate the proportional canon as an event climax, which consists to compute the durations and the delays of each voice according to the ratio $\rho$:
+  In this order, there are two ways to generate the proportional canon as an event climax, which consists of computing the durations and the delays of each voice according to the ratio $\rho$:
    
 \bigskip
 
@@ -262,7 +262,7 @@ Note some outstanding values as $\rho=\frac{1}{2}$ for a perfect symmetry.
 %\bigskip
 \newpage
 
- The construction of the initial rhythm can be intuitive (invention), referenced (quotation) and/or even created algorithmically. In the last case, it is possible to create rhythms with algorithmic processes such as those described with the libraries \textsl{cl-cycle}\footnote{The \textsl{cl-cycle} library is a set of algorithms that use the principle of cyclicality from a numerical sequence. The latter refers to an axiomatic symbolization by metaphorical transposition -- or other -- enabling the interpretation of a `mathematical reality' in a `musical reality' by correlation.} and \textsl{cl-gsa}\footnote{The \textsl{cl-gsa} library can be used to analyze and interpret a melody to create a weighted frequency profile correlated with the melody. However, these tools can be diverted to create rhythms from some relevant weights generated by the analysis.} inter alia.
+ The construction of the initial rhythm can be intuitive (invention), referenced (quotation), and/or even created algorithmically. In the last case, it is possible to create rhythms with algorithmic processes such as those described with the libraries \textsl{cl-cycle}\footnote{The \textsl{cl-cycle} library is a set of algorithms that use the principle of cyclicality from a numerical sequence. The latter refers to an axiomatic symbolization by metaphorical transposition -- or other -- enabling the interpretation of a `mathematical reality' in a `musical reality' by correlation.} and \textsl{cl-gsa}\footnote{The \textsl{cl-gsa} library can be used to analyze and interpret a melody to create a weighted frequency profile correlated with the melody. However, these tools can be diverted to create rhythms from some relevant weights generated by the analysis.} inter alia.
  
  \bigskip
  

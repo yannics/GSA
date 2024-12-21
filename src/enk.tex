@@ -11,27 +11,27 @@
 \begin{info}
 \begin{minipage}{0.95\textwidth}
 \vspace{0.25cm}
-This application as a command line falls within a developmental process as an \myulineyellow{\textsl{alpha version}} within an experimental research. Any feedback is therefore welcomed.
+This application as a command line falls within a developmental process as an \myulineyellow{\textsl{alpha version}} within experimental research. Any feedback is therefore welcomed.
 \vspace{0.25cm}
 \end{minipage}
 \end{info}
 
 \section{Presentation}
 
-\textsl{enkode} is an executable script Bash and it can be used as a command line under Unix or Linux. This executable consists to analysis a signal defined by a sound file according to some modalities that will be described here. 
+\textsl{enkode} is an executable script Bash and it can be used as a command line under Unix or Linux. This executable consists of the analysis of a signal defined by a sound file according to some modalities that will be described here. 
 
-This script was designed more specifically for undetermined pitch percussion music. Then, the modalities concern the analytic discrimination in terms of duration (sample segmentation), relative pitches (defined by $f0$ and the centroid) and dynamics (as loudness and low-pass filtered event loudness as `loudbass') in such a way each segment is analyzed as an array event. Thus, \textsl{enkode} generates data on the \textsl{stdout} for structural or formal analysis and sound synthesis as parameters.
+This script was designed more specifically for undetermined pitch percussion music. Then, the modalities concern the analytic discrimination in terms of duration (sample segmentation), relative pitches (defined by $f0$ and the centroid), and dynamics (as loudness and low-pass filtered event loudness as `loudbass') in such a way each segment is analyzed as an array event. Thus, \textsl{enkode} generates data on the \textsl{stdout} for structural or formal analysis and sound synthesis as parameters.
 
-This is an experimental procedure destinated to illustrate one way to extract relevant characteristics of a sonic segment.
+This is an experimental procedure designed to illustrate one way to extract relevant characteristics of a sonic segment.
 
-\textsl{enkode} needs two main programs. The first one is Praat devoted to the analysis sound files, and the second one is the lisp compiler SBCL for data processing. The Shell script \textsl{enkode} insures the mediation.
+\textsl{enkode} needs two main programs. The first one is Praat devoted to the analysis of sound files, and the second one is the Lisp compiler SBCL for data processing. The Shell script \textsl{enkode} ensures the mediation.
 
 \section{Event segmentation}
 \label{enk:es}
 
 \subsection{Dynamic profile}
 
-Beforehand, we use the analysis of Praat software that has the particularity to process each analysis with a simple script. This script generates initially cochleagram analysis based on the perception of sound by the ear. This allows considering the same encoding of the inner ear to the brain. This translates into a bark scale\footnote{The Bark scale is a psycho-acoustical scale proposed by Eberhard Zwicker in 1961.} ranged in 24 critical bands of hearing, and the perceived sound level expressed in phone. The phonie is a weighted expression of the sound level according to an equal loudness curve (see figure \ref{fig:psycho}) which reflect the sensitivity of the human auditory system. The equal loudness curves have been empirically established in 1933 by Fletcher and Munson, and revised in 1956 by Robinson and Dadson.
+Beforehand, we use the analysis of Praat software that has the particularity to process each analysis with a simple script. This script generates initially cochleagram analysis based on the perception of sound by the ear. This allows considering the same encoding of the inner ear to the brain. This translates into a bark scale\footnote{The Bark scale is a psycho-acoustical scale proposed by Eberhard Zwicker in 1961.} ranged in 24 critical bands of hearing and the perceived sound level expressed in the phone unit. The phonie is a weighted expression of the sound level according to an equal loudness curve (see figure \ref{fig:psycho}), which reflects the sensitivity of the human auditory system. The equal loudness curves were empirically established in 1933 by Fletcher and Munson and revised in 1956 by Robinson and Dadson.
 
 \begin{figure}[!hbt]
 	\begin{center}
@@ -61,19 +61,19 @@ Thus, by adding the loudness of each frame (designating the timbre profile) we g
 
 The TextGrid is a connected sequence of labeled intervals, with boundaries in between. Currently, these intervals correspond to an event.
 
-From figure \ref{fig:g1}, we have to make a segmentation to discriminate each event inside the sample in order to write an appropriate TextGrid file that we will use for further analysis in Praat. For that we have to select each peak and each valley from the profile and fill the following conditions in the case where:
+From figure \ref{fig:g1}, we have to make a segmentation to discriminate each event inside the sample in order to write an appropriate TextGrid file that we will use for further analysis in Praat. For that, we have to select each peak and each valley from the profile and fill in the following conditions in the case where:
 \begin{itemize}
-\item If the sample start or finish on a peak -- for example, due to an inappropriate `cutting' -- it will be ignored.
-\item The differential gap under a threshold loudness between consecutive peak and valley or valley and peak imply their removal. This gap can be set with \texttt{--loudness-diff-threshold} -- the default value is the mean value \myuline{according to the logarithmic scale} of the variations peak/valley and valley/peak.
-\item All peak's level lower than a minimal loudness is deleted. This minimal value of loudness as peak can be set with \texttt{--loudness-min-threshold}. The default value is the minimum value of a peak after the filtering of \texttt{--loudness-diff-threshold}.
+\item If the sample starts or finishes on a peak -- for example, due to an inappropriate `cutting' -- it will be ignored.
+\item The differential gap under a threshold loudness between consecutive peak and valley or valley and peak implies their removal. This gap can be set with \texttt{--loudness-diff-threshold} -- the default value is the mean value \myuline{according to the logarithmic scale} of the variations peak/valley and valley/peak.
+\item All peak levels lower than a minimal loudness is deleted. This minimal value of loudness as peak can be set with \texttt{--loudness-min-threshold}. The default value is the minimum value of a peak after the filtering of \texttt{--loudness-diff-threshold}.
 \item All valley's level upper than a maximal loudness is deleted. This maximal value of loudness as valley can be set with \texttt{--loudness-max-threshold}. The default value is the maximum value of a valley after the filtering of \texttt{--loudness-min-threshold}.
-\item All event whose duration is less than the value of \texttt{--min-duration} -- 0.05 second by default -- will be merged with the next event, except for the last which will be merge in this atypical case with the previous event.
-\item All event whose duration is more than the value of \texttt{--max-duration} -- 10 seconds by default -- will be truncated to fit within this duration.
+\item All events whose duration is less than the value of \texttt{--min-duration} -- 0.05 second by default -- will be merged with the next event, except for the last which will be merged in this atypical case with the previous event.
+\item All events whose duration is more than the value of \texttt{--max-duration} -- 10 seconds by default -- will be truncated to fit within this duration.
 \end{itemize}
 
 \section{Extracting the required values}
 
-Now, with the sample and its associate TextGrid, a script Praat allows getting values for each event as duration, $f0$, centroid, loudness and `loudbass'.
+Now, with the sample and its associate TextGrid, a script Praat allows getting values for each event as duration, $f0$, centroid, loudness, and `loudbass'.
 
 \subsection{Duration}
 
@@ -113,7 +113,7 @@ The spectral centroid represents the frequency center of gravity of a signal. Th
 
 \smallskip
 
-The centroid is defined as follow:
+The centroid is defined as follows:
 
 \begin{equation}
 f_c=\frac{\displaystyle \int_0^\infty f P(f) df}{\displaystyle  \int_0^\infty P(f) df} \nonumber
@@ -137,7 +137,7 @@ with $e(f)$ as the excitation in phon unit.
 
 \smallskip
 
-I state that for a continuous sound, the `amplitude' feeling decreases over time by habituation. The decreasing function is depending of the context and of the duration of the sound object. The first is not quantifiable and the second is moreover depending of the shape of the sound object. Therefore, intuitively and empirically as an experimental evaluation, the mean loudness of a given sound object is estimated as follow:
+I state that for a continuous sound, the `amplitude' feeling decreases over time by habituation. The decreasing function depends on the context and the duration of the sound object. The first is not quantifiable and the second is moreover depending on the shape of the sound object. Therefore, intuitively and empirically as an experimental evaluation, the mean loudness of a given sound object is estimated as follows:
 
 \begin{equation}
 \overline{L}=\frac{\displaystyle \sum_{i=1}^{n}(n-i+1)L_{(i-1)dt}}{\displaystyle \sum_{i=1}^{n}i} \nonumber
@@ -150,27 +150,27 @@ In order to isolate the salience of bass frequencies as presence, we have to rea
 \begin{figure}[!hbt]
 	\begin{center}
 		\includegraphics[scale=0.4]{img/4309}
-		\caption{Low Pass Filter showing the width (fixed to +/- 50 Hz) of the region between pass and stop according to the cut off frequency.}
+		\caption{Low Pass Filter showing the width (fixed to +/- 50 Hz) of the region between pass and stop according to the cut-off frequency.}
 		\label{fig:lpf}
 	\end{center}
 \end{figure}
 
-The cut off frequency can be set with the option \texttt{--cutoff-frequency} (default value is 100 Hz).
+The cut-off frequency can be set with the option \texttt{--cutoff-frequency} (default value is 100 Hz).
 
 \section{Discrimination in classes}
 \label{enk:dic}
 
-The values generated by the previous analysis are destinated to be discriminated into $n$ classes in order to get a numerical score, mainly for structural analysis and as synthesis parameters.
+The values generated by the previous analysis are destined to be discriminated into $n$ classes in order to get a numerical score, mainly for structural analysis and as synthesis parameters.
 This is done by a recursive discrimination based on the mean of the overall values.
 
 \bigskip
 
-Then, with the option \texttt{-I}, \texttt{--as-int}, the result is a data list of positive integers with by line an event, and by column respectively the class number of duration, $f0$, centroid, loudness and `loudbass'. Also, the result can be converted as a thrifty code\footnote{The thrifty code consists to write one information on one bit of n digits. This involves a discrimination of the order of $card(A_n) = n$.} with the option \texttt{-T}, \texttt{--as-tc}, or as a gray code\footnote{Gray code -- according to the Bell Labs researcher Frank Gray who introduced the term of \textit{reflected binary code} in 1947 -- is an ordering of the binary numeral system such that two successive values differ in only one bit.} with the option \texttt{-G}, \texttt{--as-gc}.
+Then, with the option \texttt{-I}, \texttt{--as-int}, the result is a data list of positive integers with by line an event, and by column respectively the class number of duration, $f0$, centroid, loudness and `loudbass'. Also, the result can be converted as a thrifty code\footnote{The thrifty code consists of writing one piece of information on one bit of n digits. This involves discrimination of the order of $card(A_n) = n$.} with the option \texttt{-T}, \texttt{--as-tc}, or as a gray code\footnote{Gray code -- according to the Bell Labs researcher Frank Gray who introduced the term of \textit{reflected binary code} in 1947 -- is an ordering of the binary numeral system such that two successive values differ in only one bit.} with the option \texttt{-G}, \texttt{--as-gc}.
 
 \bigskip
 
-All these options take as argument a positive number which is applied as a number of recursivity for all different parameters, or a list of positive numbers as the number of recursivity with a cardinal equal to 5, that is to say one number by values of events.
-Each class as positive integer means the value of an attractor. This ordered alist is written on the 5 first lines of \textsl{$<$fileName$>$.info}.
+All these options take as argument a positive number which is applied as a number of recursivity for all different parameters, or a list of positive numbers as the number of recursivity with a cardinal equal to 5, that is to say, one number by values of events.
+Each class as a positive integer means the value of an attractor. This ordered `alist' is written on the 5 first lines of \textsl{$<$fileName$>$.info}.
 
 \bigskip
 
@@ -206,17 +206,17 @@ Each class as positive integer means the value of an attractor. This ordered ali
 	\end{center}
 \end{figure}
 
-This way to discriminate data consists to determinate a number of classes relative to attractors. These attractors are computed by the arithmetic mean of the data in terms of the set according to a coefficient of recursivity determining the number of attractors. When the argument $n$ is an integer, the number of attractors is equal to $2^n - 1$ and when the argument $n$ is a float number, the number of attractors is equal to $2^{\lfloor n \rfloor}$.
+This way of discriminating data consists of determining the number of classes relative to attractors. These attractors are computed by the arithmetic mean of the data in terms of the set according to a coefficient of recursivity determining the number of attractors. When the argument $n$ is an integer, the number of attractors is equal to $2^n - 1$, and when the argument $n$ is a float number, the number of attractors is equal to $2^{\lfloor n \rfloor}$.
 
 \bigskip
 
-See the description of this algorithm on figures \ref{fig:gb1} to \ref{fig:gb4}.
+See the description of this algorithm in figures \ref{fig:gb1} to \ref{fig:gb4}.
 
 \noindent
 \begin{info}
 \begin{minipage}{0.95\textwidth}
 \vspace{0.25cm}
-Note that the recursivity stops when all data are captured by an attractor. Then, the number of discrimination can be smaller than the number of expected attractors defined by the value of the argument.%\\ 
+Note that the recursivity stops when all data are captured by an attractor. Then, the number of discriminations can be smaller than the number of expected attractors defined by the value of the argument.%\\ 
 %Also, mind that the number of discrimination is exponential, then you have to choose carefully this or these number(s).
 \vspace{0.25cm}
 \end{minipage}
@@ -255,13 +255,13 @@ NumberOfEvents            119
 MinDiffLoudness           0.018797874
 MaxDiffLoudness           48.29043
 \end{lstlisting}
-This table allows to adjust the different threshold values according to their initial value and their next efficient value.
+This table allows us to adjust the different threshold values according to their initial value and their next efficient value.
 Most of the time, these values have to be adjusted empirically according to the accuracy required.
 
 \smallskip
 
 Sometimes, the discriminative algorithm is not accurate or efficient enough. In this case, the segmentation can be edited or created in Praat. 
-Then, it is recommended to `reframe' the TextGrid, that is to say labelled the first tier as an ordered integer. This can be done with the script \texttt{enkode.praat} -- see section \fullref{enkps}.
+Then, it is recommended to `reframe' the TextGrid, that is to say, labeled the first tier as an ordered integer. This can be done with the script \texttt{enkode.praat} -- see section \fullref{enkps}.
 %In order to format the TextGrid as an ordered integer as label, it is recommended to apply the script \nameref{ftg} -- see appendice \fullref{ftg}.
 
 \item Default behavior:
@@ -318,7 +318,7 @@ August 30, 2024
 
 \section{\textit{Post-scriptum}}
 \label{enkps}
-The script \texttt{enkode.praat} allows to work directly on Praat with the TextGrid of the user. The script does the same than \textsl{enkode} except the \textsl{\nameref{enk:es}} and the \textsl{\nameref{enk:dic}}, as well as the `roughness' analysis (see next section) requiring lisp computation.
+The script \texttt{enkode.praat} allows to work directly on Praat with the TextGrid of the user. The script does the same as \textsl{enkode} except the \textsl{\nameref{enk:es}} and the \textsl{\nameref{enk:dic}}, as well as the `roughness' analysis (see next section) requiring lisp computation.
 Optionally,  the TextGrid can be `reframed'.
 %Mind that the TextGrid has to be well formated -- see \nameref{ftg} in appendice \fullref{ftg}.
 
@@ -339,4 +339,4 @@ Optionally,  the TextGrid can be `reframed'.
 \section{\textit{Addendum}}
 \subsection*{Roughness}
 
-An additional option aims to estimate some kind of roughness. Note that is comprehensively empirical and does not take into account the psycho-acoustic phenomenon, but allows certain relevance in certain situation for sound discrimination for instance. This consists to estimate an emergent frequency from the peaks of the loudness analysis. An accurate time step is required and set at 0.001s by default, that is to say a factor of 0.1 of the analysis time step of \textsl{enkode}. The result is a raw data and have to be interpreted knowing that the roughness is identified as such and as a subjective perception in the range of 15 Hz (below this value, we are talking about \textit{vibrato} or beat) to 300 Hz (beyond that the effect disappears) with a maximum at 70 Hz\footnote{This can be interpreted as follow :\\\indent \quad $roughness = e^{-0.00355 (midinote-37.175)^2}$\\ \indent \quad with $midinote=12 \cdot log_2(frequency \times 0.00227272727) + 69$.\\\indent To know more about roughness in psychoacoustic, see appendice page \pageref{rugdoc}.}. Each value is evaluated as the average of the first derivative of the peaks curve, and correlated with a reliability as the mean value of the standard deviation of the first derivative, which is normalised in order to subtract this value to one as a percentage of confidence.
+An additional option aims to estimate some kind of roughness. Note that is comprehensively empirical and does not take into account the psycho-acoustic phenomenon, but allows certain relevance in certain situations for sound discrimination for instance. This consists of estimating an emergent frequency from the peaks of the loudness analysis. An accurate time step is required and set at 0.001s by default, that is to say, a factor of 0.1 of the analysis time step of \textsl{enkode}. The result is raw data and has to be interpreted knowing that the roughness is identified as such and as a subjective perception in the range of 15 Hz (below this value, we are talking about \textit{vibrato} or beat) to 300 Hz (beyond that the effect disappears) with a maximum at 70 Hz\footnote{This can be interpreted as follow :\\\indent \quad $roughness = e^{-0.00355 (midinote-37.175)^2}$\\ \indent \quad with $midinote=12 \cdot log_2(frequency \times 0.00227272727) + 69$.\\\indent To know more about roughness in psychoacoustic, see appendice page \pageref{rugdoc}.}. Each value is evaluated as the average of the first derivative of the peak curve and correlated with reliability as the mean value of the standard deviation of the first derivative, which is normalized in order to subtract this value to one as a percentage of confidence.

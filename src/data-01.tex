@@ -1,6 +1,6 @@
 \bigskip
 
-Composition for quadraphonic installation, interpreted the 17th of June, 2019 at NOTAM in Oslo.
+Composition for quadraphonic installation, interpreted on the 17th of June, 2019 at NOTAM in Oslo.
 
 \bigskip
 
@@ -9,7 +9,7 @@ Composition for quadraphonic installation, interpreted the 17th of June, 2019 at
 
 \bigskip
 
-The composition \texttt{data-01} is a direct application of the work describe in the chapter \textsl{\nameref{am}} applied to a given sample defined as \texttt{data-01} and it is composed of 3 parts as layers.
+The composition \texttt{data-01} is a direct application of the work described in the chapter \textsl{\nameref{am}} applied to a given sample defined as \texttt{data-01} and it is composed of 3 parts as layers.
 
 \bigskip
 
@@ -20,19 +20,19 @@ The composition \texttt{data-01} is a direct application of the work describe in
 
 \texttt{... before the language ...} 
 
-Interpreted as a continuum background, the part I is a Markov chain applied to the \textsl{Symbolisation} as \textsl{Hierarchical clustering} and the \textsl{Systemic analysis} as \textsl{Developmental process} of the referent sample.
+Interpreted as a continuum background, part I is a Markov chain applied to the \textsl{Symbolisation} as \textsl{Hierarchical clustering} and the \textsl{Systemic analysis} as \textsl{Developmental process} of the referent sample.
 
 \item \textbf{Part II} : \textsc{Collatz synthesis as a proportional canon}. 
 
 \texttt{... and beyond the language ...} 
 
-Triggered process, the part II is a proportional canon of a chosen rhythm (see figure \ref{rtm}) defined by the \textsl{Contrastive analysis} as \textsl{Segmentation by marker} of the sample. The Collatz algorithm as a normalized profile controls the bandwidth ratio of the \textsl{UGen} \texttt{Resonz} applied to a pink noise.
+Triggered process, part II is a proportional canon of a chosen rhythm (see figure \ref{rtm}) defined by the \textsl{Contrastive analysis} as \textsl{Segmentation by marker} of the sample. The Collatz algorithm as a normalized profile controls the bandwidth ratio of the \textsl{UGen} \texttt{Resonz} applied to a pink noise.
 
 \item \textbf{Part III} : \textsc{Fractal on Radio}. 
 
 \texttt{... and into the language.} 
 
-Triggered process, the part III is a `fractalization' of the previous defined rhythm as an alternately spatialized streaming radio.
+Triggered process, part III is a `fractalization' of the previously defined rhythm as an alternately spatialized streaming radio.
 
 %\textbf{\textit{R\'ef.}} ...
  \end{itemize}
@@ -51,14 +51,14 @@ Triggered process, the part III is a `fractalization' of the previous defined rh
 \label{colres}
 
 \smallskip
-This synthesis requires a Collatz sequence defined as follow:
+This synthesis requires a Collatz sequence defined as follows:
 
 \titlebox{\textit{\textbf{Collatz sequence}}}
 {The Collatz sequence is a sequence of numbers relevant to the Collatz conjecture, which theorizes that any number using this algorithm will eventually be reduced to 1 or stop on the trivial cycle \texttt{(4 2 1)}.
 
-Note that in this work, according to the range of number we might use, we are not concerned about this conjecture.
+Note that in this work, according to the range of numbers we might use, we are not concerned about this conjecture.
 
-So, to get a Collatz sequence from any integer $n$ superior to 1, each step is depending of the previous such as if $n_i$ is even, divide $n_i$ by two to get $n_{i+1}$, and if $n_i$ is odd, multiply $n_i$ by three and add one to get $n_{i+1}$, until $n_{i+1}=1$. 
+So, to get a Collatz sequence from any integer $n$ superior to 1, each step depends of the previous such as if $n_i$ is even, divide $n_i$ by two to get $n_{i+1}$, and if $n_i$ is odd, multiply $n_i$ by three and add one to get $n_{i+1}$, until $n_{i+1}=1$. 
 % The conjecture's truth is supported by calculations, but it hasn't yet been proved that no number can indefinitely stay above 1.
 } 
 
@@ -76,7 +76,7 @@ Env.new(n.collatz.add(0).normalize, Array.fill(n.collatz.size, dx))
   
 %  Then, this envelope set dynamically the value of the bandwidth ratio $rq$ (bandwidth/centerFreq) of a resonant filter, with the initial value of the Collatz sequence as the resonant frequency applied to a white noise.
 
-This envelope is currently interpreted musically according to the value of the bandwidth ratio $rq$ (bandwidth/centerFreq) of a resonant filter.  Then, this normalized envelope set dynamically $rq$ with the initial value of the Collatz sequence as the resonant frequency applied to a pink noise.
+This envelope is currently interpreted musically according to the value of the bandwidth ratio $rq$ (bandwidth/centerFreq) of a resonant filter.  Then, this normalized envelope is set dynamically $rq$ with the initial value of the Collatz sequence as the resonant frequency applied to a pink noise.
 
 \smallskip
 
@@ -170,7 +170,7 @@ N3> (mk-alraw *alpha-seq-9* (read-file "aaa.raw"))
 \smallskip
 
 \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
-;; the values to send are defined as follow:
+;; the values to send are defined as follows:
 (let ((nrand (random (length (car (getraw nep))))))
    (send-udp (read-from-string 
       (format nil "(\"/~A\" ~{\"~S\"~})"
@@ -185,7 +185,7 @@ N3> (mk-alraw *alpha-seq-9* (read-file "aaa.raw"))
 \end{lstlisting}
 
 \bigskip
-\noindent Then, the incoming OSC message is interpreted in SuperCollider as follow:
+\noindent Then, the incoming OSC message is interpreted in SuperCollider as follows:
 
 \bigskip
 
@@ -200,7 +200,7 @@ N3> (mk-alraw *alpha-seq-9* (read-file "aaa.raw"))
 
   \bigskip
 
- For convenience, the data needed for the Markov chain are stored in a \textsl{lisp} file. This concerns the \texttt{alpha-seq} according to the retained number of classes as \texttt{*alpha-seq-9*} and the hash table \texttt{*alraw*} which associates alpha symbol to all corresponding raw values.
+ For convenience, the data needed for the Markov chain are stored in a \textsl{lisp} file. This concerns the \texttt{alpha-seq} according to the retained number of classes as \texttt{*alpha-seq-9*} and the hash table \texttt{*alraw*} which associates the alpha symbol to all corresponding raw values.
 
 \bigskip
 \smallskip
@@ -226,7 +226,7 @@ N3> (mk-alraw *alpha-seq-9* (read-file "aaa.raw"))
 %.collect{|nn| nn.asFloat}};
 %\end{lstlisting}
 
-\textbf{$\sim$rtm} -- the selection of the rhythm \textbf{$\sim$rtm} is done inside to the panel of rhythm as indice according to the structure discrimination. The choice is done through a \textsl{pdf} file (see figure \ref{rtm}). 
+\textbf{$\sim$rtm} -- the selection of the rhythm \textbf{$\sim$rtm} is done inside the panel of rhythm as indices according to the structure discrimination. The choice is done through a \textsl{pdf} file (see figure \ref{rtm}). 
 
 \bigskip 
 
@@ -238,7 +238,7 @@ N3> (mk-alraw *alpha-seq-9* (read-file "aaa.raw"))
 \end{center}
 \end{figure}
  
-This last is generated as follow:
+The latest is generated as follows:
  \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Lisp]
 N3> (load (concatenate 'string *NEUROMUSE3-DIRECTORY* 
       "opt/lilypond.lisp"))
@@ -271,7 +271,7 @@ Then compile the Lilypond \textsl{aaa.ly} file.% in \textsl{src} folder.
 ~rrr = ~proportionalCanon.value(~numberOfVoices,~duration,
 	~ratio,1);
  \end{lstlisting}
- \item Display for each event of each voice the timming, the associated score event and the voice number.
+ \item Display for each event of each voice the timing, the associated score event, and the voice number.
  \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,language=Java]
 ~rrr = ~rrr.collect({|it,i|
 	var a = (~rtm.flop[0].wrapExtend(~rtm.size*~repeat)
