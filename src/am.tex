@@ -148,7 +148,7 @@ With this approach, we can accurately see the proximity between 'sub-structures'
 
 \smallskip
 
-Let $A$ and $B$ be sub-sequences, the distance between $A$ and $B$ is computed as follow :
+Let $A$ and $B$ be sub-sequences, the distance between $A$ and $B$ is computed as follows :
 \begin{enumerate}
   \item Remove common local duplicate(s) such as $A \rightarrow A'$ and $B \rightarrow B'$\\ Then the `repetition distance' is $d_1 = | A \setminus A' | + | B \setminus B' |$
   \item Remove patterns such as $A'' = A' \setminus C$ and $B'' = B' \setminus C$ with $C = A' \cap B'$\\ Then the `transposition distance' is applied to the pattern $C$ as $d_2$
@@ -224,7 +224,7 @@ According to the distance between two adjacent sequences, the derivative cluster
 	\smallskip
 		
 \begin{lstlisting}[language=Lisp]
-;; Thus, the initial sequence is segmented as follow :
+;; Thus, the initial sequence is segmented as follows :
 N3> (part-s '(CCC AACC DDACBC AAEC DDACAA BBBBBB EBB BDAC AAEBB BBB EE BBBBACDEAAEAA CBB BBEAA AABBAD ABCC ACEC DDACDBAE CDAA ABBEAAEBAD AE DEAA EAD DC CBE ABBC EBD ABDAA EBAA ABBEAABC DBB))
 ((CCC AACC DDACBC AAEC) (DDACAA BBBBBB) (EBB BDAC AAEBB BBB) 
  (EE BBBBACDEAAEAA) (CBB BBEAA AABBAD ABCC) (ACEC DDACDBAE 
