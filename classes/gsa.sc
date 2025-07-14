@@ -252,9 +252,21 @@ Pan4MSXY {
 	}
 
 	peakMorphing {
-		| arAfter |
-		var tmp, arBefore = this;
-		tmp=arBefore.collect({arg i, index; [arBefore[index], arAfter[arAfter.minIndex { |item| item absdif: i }]]}) ++ arAfter.collect({arg i, index; [arBefore[arBefore.minIndex { |item| item absdif: i }], arAfter[index]]});
+		| arAfter, i=0 |
+		// in case of array of arrays as alist, i is the indice of the item array as the required profile (the first one by default)
+		var tmp, profileBefore, profileAfter, arBefore = this;
+		if(arBefore.every(_.isArray))
+		{
+			profileBefore = arBefore.flop[i];
+			profileAfter = arAfter.flop[i];
+		}
+		{
+			profileBefore = arBefore;
+			profileAfter = arAfter;
+		};
+
+		tmp=profileBefore.collect({arg i, index; [arBefore[index], arAfter[profileAfter.minIndex { |item| item absdif: i }]]}) ++ profileAfter.collect({arg i, index; [arBefore[profileBefore.minIndex { |item| item absdif: i }], arAfter[index]]});
+
 		^tmp.as(Set).as(Array)
 	}
 
