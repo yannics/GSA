@@ -29,6 +29,48 @@ To install: clone or copy this folder to Platform.userExtensionDir
 <by.cmsc@gmail.com>
 */
 
+/////////////////////////////////////////////////////
+/*
+	Pkr
+	(c) 2010 by Patrick Borgeat <patrick@borgeat.de>
+	http://www.cappel-nord.de
+
+	Part of BenoitLib
+	http://github.com/cappelnord/BenoitLib
+	http://www.the-mandelbrots.de
+
+	Retrieve the value of a kr Bus/NodeProxy via
+	Shared Memory Interface if available.
+
+	If not it will pull the value and always
+	yield the last received.
+*/
+Pkr : Pfunc {
+	*new {|bus|
+		var check;
+		var last = 0.0;
+
+		bus = bus.asBus;
+
+		// audio?
+		bus.isSettable.not.if {
+			"Not a kr Bus or NodeProxy. This will only yield 0".warn;
+			^Pfunc({0});
+		};
+
+		check = {bus.server.hasShmInterface}.try;
+
+		check.if ({
+			^Pfunc({bus.getSynchronous()});
+		}, {
+			"No shared memory interface detected. Use localhost server on SC 3.5 or higher to get better performance".warn;
+			bus.get({|v| last = v;});
+			^Pfunc({bus.get({|v| last = v;}); last;});
+		});
+	}
+}
+/////////////////////////////////////////////////////
+
 Ulam {
 	*ar { |ar, ind=0, stretch=5, nx=0, ny=\max, sig=\norm, detune=0, rndAmp=1, mul=1, add=0|
 		var signal = Silent.ar;
@@ -152,8 +194,7 @@ Doppler4 {
 }
 
 Pan4MSXY {
-	*ar { | bufMS, bufXY, dist=0, rate=1, mid=1, side=1, xy=1, xpos=0, ypos=0, loop=false, mul=1, add=0 |
-		var freqLPF = 20000*(exp(-1 * dist * (log(20/20000)).abs));
+	*ar { | bufMS, bufXY, rate=1, mid=1, side=1, xy=1, xpos=0, ypos=0, loop=false, mul=1, add=0 |
 		var sigXY = PlayBuf.ar(
 			2,
 			bufXY,
@@ -164,11 +205,8 @@ Pan4MSXY {
 			bufMS,
 			BufRateScale.kr(bufMS) * rate,
 			loop: loop.asBoolean.binaryValue) * [mid, side];
-		var pan4 = [xpos, ypos].convertPan4toArray;
-		var out = LPF.ar(
-			[sigXY[0], sigXY[1], sigMS[0] + sigMS[1], sigMS[0] - sigMS[1]],
-			freqLPF) * pan4;
-		out = LeakDC.ar(out) * mul + add;
+		var out = [sigXY[0], sigXY[1], sigMS[0] + sigMS[1], sigMS[0] - sigMS[1]];
+		out = LeakDC.ar(out * [xpos, ypos].convertPan4toArray) * mul + add;
 		^out
 	}
 }
