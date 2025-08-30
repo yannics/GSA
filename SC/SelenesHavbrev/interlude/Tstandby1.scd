@@ -34,11 +34,11 @@
     39.do { arg i;
 		a = Pbind(\instrument, \dwgbowed, \out, ~revBusL, \force, Pwhite(0.1,0.9), \pos, Pwhite(0.1,0.9), \amp, ~ampCello, \freq, Pseq([~freq[i]/2]), \dur, ~dur[i]);
 //-----------------------------------------------
-b = Pbind(\instrument, \dwgbowed, \out, ~revBusL, \force, Pwhite(0.1,0.9), \pos, Pwhite(0.1,0.9), \amp, ~ampCello, \freq, Pseq([~freq[i]]), \dur, ~dur[i]);
+		b = Pbind(\instrument, \dwgbowed, \out, ~revBusL, \force, Pwhite(0.1,0.9), \pos, Pwhite(0.1,0.9), \amp, ~ampCello, \freq, Pseq([~freq[i]]), \dur, ~dur[i]);
 //-----------------------------------------------
 		c = Pbind(\instrument, \dwgbowed, \out, ~revBusR, \force, Pwhite(0.1,0.9), \pos, Pwhite(0.1,0.9), \amp, ~ampCello, \freq, Pseq([~freq[i]/2]), \dur, ~dur[i]);
 //-----------------------------------------------
-		d = Pbind(\instrument, \dwgbowed, \out, ~revBusLR, \force, Pwhite(0.1,0.9), \pos, Pwhite(0.1,0.9), \amp, ~ampCello, \freq, Pseq([~freq[i]]), \dur, ~dur[i]);
+		d = Pbind(\instrument, \dwgbowed, \out, ~revBusR, \force, Pwhite(0.1,0.9), \pos, Pwhite(0.1,0.9), \amp, ~ampCello, \freq, Pseq([~freq[i]]), \dur, ~dur[i]);
 //-----------------------------------------------
 ~event=Ptpar([3.0, a, 0.0, b, 3.0, c, 0.0, d]);
         Pseq([~rtmMetal, ~rest, ~event]).play;
